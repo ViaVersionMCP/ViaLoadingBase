@@ -40,7 +40,3 @@ dependencies {
         implementation(lib)
     }
 }
-
-tasks.withType(JavaCompile).configureEach {
-    it.options.release = 17
-}
