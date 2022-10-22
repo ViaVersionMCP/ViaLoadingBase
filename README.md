@@ -1,3 +1,4 @@
+# MOVED DEVELOPMENT TO https://github.com/RejectedVia/ViaProtocolHack
 # ViaProtocolHack
 Universal ViaVersion standalone implementation
 
