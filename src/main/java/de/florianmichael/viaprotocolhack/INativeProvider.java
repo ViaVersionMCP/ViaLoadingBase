@@ -18,7 +18,7 @@ public interface INativeProvider {
 
     boolean isSinglePlayer();
     int nativeVersion();
-    int realClientsideVersion();
+    int targetVersion();
 
     String[] nettyOrder();
     File run();
@@ -38,6 +38,6 @@ public interface INativeProvider {
         if (isSinglePlayer()) {
             return nativeVersion();
         }
-        return realClientsideVersion();
+        return targetVersion();
     }
 }
