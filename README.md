@@ -36,6 +36,11 @@ public class Test implements INativeProvider {
     }
 
     @Override
+    public int nativeVersion() {
+        return 47; // native Version of your Client
+    }
+    
+    @Override
     public int realClientsideVersion() {
         return 47; // the target version you want to connect
     }
@@ -72,12 +77,11 @@ public class Test implements INativeProvider {
     }
 
     @Override
-    public Optional<ViaCommandHandler> commandHandler() {
-        return Optional.empty(); // in case you want commands
+    public void onBuildViaPlatform(ViaManagerImpl.ViaManagerBuilder builder) {
     }
-
-    @Override
-    public List<ProtocolVersion> optionalVersions() {
+    
+    @Override // default: null
+    public List<ProtocolVersion> getOptionalProtocols() {
         return null; // in case you want custom protocols like 1.7
     }
 }

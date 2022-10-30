@@ -34,8 +34,9 @@ public class CustomViaInjector implements ViaInjector {
     public IntSortedSet getServerProtocolVersions() throws Exception {
         final IntSortedSet versions = new IntLinkedOpenHashSet();
 
-        for (ProtocolVersion value : VersionList.getProtocols())
+        for (ProtocolVersion value : VersionList.getProtocols()) {
             versions.add(value.getOriginalVersion());
+        }
 
         return versions;
     }

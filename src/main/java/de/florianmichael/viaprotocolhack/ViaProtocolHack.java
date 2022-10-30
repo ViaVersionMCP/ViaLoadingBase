@@ -40,10 +40,7 @@ public class ViaProtocolHack {
             final ViaVersionPlatform platform = new ViaVersionPlatform(this.logger());
 
             final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new CustomViaInjector()).loader(new CustomViaProviders()).platform(platform);
-
-            if (provider().commandHandler().isPresent()) {
-                builder.commandHandler(provider().commandHandler().get());
-            }
+            provider().onBuildViaPlatform(builder);
 
             Via.init(builder.build());
             MappingDataLoader.enableMappingsCache();

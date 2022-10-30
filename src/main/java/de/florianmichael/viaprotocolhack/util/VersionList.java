@@ -79,51 +79,33 @@ public class VersionList {
         }
     }
 
-    private static boolean isSingleplayer() {
-        if (ViaProtocolHack.instance().provider() == null)
-            return true;
-
-        return ViaProtocolHack.instance().provider().isSinglePlayer();
-    }
-
     public static boolean isEqualTo(final ProtocolVersion protocolVersion) {
-        if (isSingleplayer())
-            return false;
-
         return ViaProtocolHack.instance().provider().realClientsideVersion() == protocolVersion.getVersion();
     }
 
     public static boolean isOlderOrEqualTo(final ProtocolVersion protocolVersion) {
-        if (isSingleplayer())
-            return false;
-
         return ViaProtocolHack.instance().provider().realClientsideVersion() <= protocolVersion.getVersion();
     }
 
     public static boolean isOlderTo(final ProtocolVersion protocolVersion) {
-        if (isSingleplayer() || protocolVersion == null)
-            return false;
-
         return ViaProtocolHack.instance().provider().realClientsideVersion() < protocolVersion.getVersion();
     }
 
     public static boolean isNewerTo(final ProtocolVersion protocolVersion) {
-        if (isSingleplayer() || protocolVersion == null)
-            return false;
-
         return ViaProtocolHack.instance().provider().realClientsideVersion() > protocolVersion.getVersion();
     }
 
     public static boolean isNewerOrEqualTo(final ProtocolVersion protocolVersion) {
-        if (isSingleplayer() || protocolVersion == null)
-            return false;
-
         return ViaProtocolHack.instance().provider().realClientsideVersion() >= protocolVersion.getVersion();
     }
 
     public static List<ProtocolVersion> getProtocols() {
         final List<ProtocolVersion> versions = new ArrayList<>(protocols);
-        versions.addAll(ViaProtocolHack.instance().provider().optionalVersions());
+        final List<ProtocolVersion> optionalVersions = ViaProtocolHack.instance().provider().getOptionalProtocols();
+
+        if (optionalVersions != null) {
+            versions.addAll(optionalVersions);
+        }
         return versions;
     }
 }
