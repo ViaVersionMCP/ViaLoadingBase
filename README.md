@@ -63,17 +63,9 @@ public class Test implements INativeProvider {
         return new JsonObject(); // not important since commands aren't implemented by default
     }
 
-    @Override
+    @Override // default: BasicVersionProvider and completely unlegit Movement Transmitter by Via TM 
     public void createProviders(ViaProviders providers) {
-        providers.register(VersionProvider.class, new BaseVersionProvider() {
-            @Override
-            public int getClosestServerProtocol(UserConnection connection) throws Exception {
-                return ViaProtocolHack.instance().provider().realClientsideVersion();
-            }
-        }); // simple version provider without anything special
-
-        // this is completely unlegit and removed in my private implementation lmao
-        providers.register(MovementTransmitterProvider.class, new BungeeMovementTransmitter());
+        super.createProviders(providers);
     }
 
     @Override
