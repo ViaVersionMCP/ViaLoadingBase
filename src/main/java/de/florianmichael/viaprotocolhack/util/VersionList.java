@@ -80,23 +80,23 @@ public class VersionList {
     }
 
     public static boolean isEqualTo(final ProtocolVersion protocolVersion) {
-        return ViaProtocolHack.instance().provider().realClientsideVersion() == protocolVersion.getVersion();
+        return ViaProtocolHack.instance().provider().getClientsideVersion() == protocolVersion.getVersion();
     }
 
     public static boolean isOlderOrEqualTo(final ProtocolVersion protocolVersion) {
-        return ViaProtocolHack.instance().provider().realClientsideVersion() <= protocolVersion.getVersion();
+        return ViaProtocolHack.instance().provider().getClientsideVersion() <= protocolVersion.getVersion();
     }
 
     public static boolean isOlderTo(final ProtocolVersion protocolVersion) {
-        return ViaProtocolHack.instance().provider().realClientsideVersion() < protocolVersion.getVersion();
+        return ViaProtocolHack.instance().provider().getClientsideVersion() < protocolVersion.getVersion();
     }
 
     public static boolean isNewerTo(final ProtocolVersion protocolVersion) {
-        return ViaProtocolHack.instance().provider().realClientsideVersion() > protocolVersion.getVersion();
+        return ViaProtocolHack.instance().provider().getClientsideVersion() > protocolVersion.getVersion();
     }
 
     public static boolean isNewerOrEqualTo(final ProtocolVersion protocolVersion) {
-        return ViaProtocolHack.instance().provider().realClientsideVersion() >= protocolVersion.getVersion();
+        return ViaProtocolHack.instance().provider().getClientsideVersion() >= protocolVersion.getVersion();
     }
 
     public static List<ProtocolVersion> getProtocols() {
