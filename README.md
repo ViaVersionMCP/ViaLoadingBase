@@ -17,14 +17,11 @@ repositories {
 }
 
 dependencies {
-    implementation("com.viaversion:viaversion:4.5.0-22w43a-SNAPSHOT")
-    implementation("com.viaversion:viabackwards-common:4.5.0-22w43a-SNAPSHOT")
-    implementation("com.viaversion:viarewind:2.0.3-SNAPSHOT")
-    implementation("com.github.RejectedVia:ViaProtocolHack:main-SNAPSHOT")
+    implementation("com.github.RejectedVia:ViaProtocolHack:22w44a")
 }
 ```
 I will always update the versions, above you can just re-copy it if a new Minecraft version releases: <br>
-Current Version: `Minecraft 1.19.2`
+Current Version: `Minecraft 22w44a`
 
 ## Example implementation:
 ```java
