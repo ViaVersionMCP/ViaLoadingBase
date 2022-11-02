@@ -16,7 +16,7 @@ repositories {
     }
 }
 
-var libs = [
+var viaLibs = [
         // ViaVersion -> https://github.com/ViaVersion/ViaVersion
         "com.viaversion:viaversion:4.5.0-22w44a-SNAPSHOT",
 
@@ -31,7 +31,7 @@ var libs = [
 ]
 
 dependencies {
-    for (final def via in libs) {
+    for (final def via in viaLibs) {
         implementation(via)
     }
 }
