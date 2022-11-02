@@ -12,7 +12,6 @@ import de.florianmichael.viaprotocolhack.platform.viaversion.CustomViaInjector;
 import de.florianmichael.viaprotocolhack.util.JLoggerToLog4J;
 import de.florianmichael.viaprotocolhack.util.VersionList;
 import io.netty.channel.DefaultEventLoop;
-import io.netty.channel.DefaultEventLoopGroup;
 import io.netty.channel.EventLoop;
 import org.apache.logging.log4j.LogManager;
 
@@ -24,14 +23,13 @@ public class ViaProtocolHack {
     private final static ViaProtocolHack instance = new ViaProtocolHack();
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(8, new ThreadFactoryBuilder().setDaemon(true).setNameFormat("ViaProtocolHack-%d").build());
-    private EventLoop eventLoop;
+    private final EventLoop eventLoop = new DefaultEventLoop(executorService).next();
     private final Logger logger = new JLoggerToLog4J(LogManager.getLogger("ViaProtocolHack"));
 
     private INativeProvider provider;
     private File directory;
 
     public void init(final INativeProvider provider, final Runnable whenComplete) throws Exception {
-        eventLoop = new DefaultEventLoopGroup(1, executorService).next();
         this.provider = provider;
         this.directory = new File(this.provider.run(), "ViaProtocolHack");
 
