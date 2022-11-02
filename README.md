@@ -4,6 +4,28 @@ Universal ViaVersion standalone implementation
 ## Projects where this is used:
 1. ViaForge: Clientside ViaVersion for Forge
 
+## Add this to your own project
+build.gradle
+```groovy
+repositories {
+    maven {
+        url = "https://repo.viaversion.com/"
+    }
+    maven {
+        url = "https://jitpack.io/"
+    }
+}
+
+dependencies {
+    implementation("com.viaversion:viaversion:4.5.0-22w43a-SNAPSHOT")
+    implementation("com.viaversion:viabackwards-common:4.5.0-22w43a-SNAPSHOT")
+    implementation("com.viaversion:viarewind:2.0.3-SNAPSHOT")
+    implementation("com.github.RejectedVia:ViaProtocolHack:main-SNAPSHOT")
+}
+```
+I will always update the versions, above you can just re-copy it if a new Minecraft version releases: <br>
+Current Version: `Minecraft 1.19.2`
+
 ## Example implementation:
 ```java
 import com.viaversion.viaversion.api.connection.UserConnection;
