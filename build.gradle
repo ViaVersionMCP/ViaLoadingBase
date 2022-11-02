@@ -35,15 +35,7 @@ repositories {
 dependencies {
     for (final def lib in libs) {
         implementation(lib)
-    }
-}
-
-configurations {
-    provided
-}
-
-sourceSets {
-    main {
-        compileClasspath += configurations.provided
+        compileOnly(lib)
+        compileClasspath(lib)
     }
 }
