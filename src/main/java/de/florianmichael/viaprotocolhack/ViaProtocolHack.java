@@ -23,15 +23,15 @@ import java.util.logging.Logger;
 public class ViaProtocolHack {
     private final static ViaProtocolHack instance = new ViaProtocolHack();
 
-    private final ThreadFactory factory = new ThreadFactoryBuilder().setDaemon(true).setNameFormat("ViaProtocolHack-%d").build();
     private final ExecutorService executorService = Executors.newFixedThreadPool(8, new ThreadFactoryBuilder().setDaemon(true).setNameFormat("ViaProtocolHack-%d").build());
-    private final EventLoop eventLoop = new DefaultEventLoopGroup(1, (Executor) factory).next();
+    private EventLoop eventLoop;
     private final Logger logger = new JLoggerToLog4J(LogManager.getLogger("ViaProtocolHack"));
 
     private INativeProvider provider;
     private File directory;
 
     public void init(final INativeProvider provider, final Runnable whenComplete) throws Exception {
+        eventLoop = new DefaultEventLoopGroup(1, executorService).next();
         this.provider = provider;
         this.directory = new File(this.provider.run(), "ViaProtocolHack");
 
