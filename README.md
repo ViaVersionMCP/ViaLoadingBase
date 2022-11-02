@@ -16,8 +16,24 @@ repositories {
     }
 }
 
+var libs = [
+        // ViaVersion -> https://github.com/ViaVersion/ViaVersion
+        "com.viaversion:viaversion:4.5.0-22w44a-SNAPSHOT",
+
+        // ViaBackwards -> https://github.com/ViaVersion/ViaBackwards
+        "com.viaversion:viabackwards-common:4.5.0-22w44a-SNAPSHOT",
+
+        // ViaRewind -> https://github.com/ViaVersion/ViaRewind
+        "com.viaversion:viarewind-core:2.0.3-SNAPSHOT",
+        
+        // ViaProtocolHack -> https://github.com/RejectedVia/ViaProtocolHack
+        "com.github.RejectedVia:ViaProtocolHack:22w44a"
+]
+
 dependencies {
-    implementation("com.github.RejectedVia:ViaProtocolHack:22w44a")
+    for (final def via in libs) {
+        implementation(via)
+    }
 }
 ```
 I will always update the versions, above you can just re-copy it if a new Minecraft version releases: <br>
