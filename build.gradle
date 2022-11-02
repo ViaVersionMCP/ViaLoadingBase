@@ -42,7 +42,6 @@ dependencies {
     for (final def lib in libs) {
         implementation(lib)
         compileOnly(lib)
-        provided(lib)
         compile(lib)
         compileClasspath(lib)
     }
