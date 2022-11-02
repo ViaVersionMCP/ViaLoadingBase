@@ -33,6 +33,12 @@ public interface INativeProvider {
     }
     default void onBuildViaPlatform(ViaManagerImpl.ViaManagerBuilder builder) {
     }
+    default boolean loadBackwards() {
+        return true;
+    }
+    default boolean loadRewind() {
+        return true;
+    }
 
     default int getClientsideVersion() {
         if (isSinglePlayer()) {

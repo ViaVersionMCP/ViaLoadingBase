@@ -4,7 +4,8 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.viaversion.viaversion.ViaManagerImpl;
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.data.MappingDataLoader;
-import de.florianmichael.viaprotocolhack.platform.CustomViaProviders;
+import de.florianmichael.viaprotocolhack.platform.ViaRewindPlatform;
+import de.florianmichael.viaprotocolhack.platform.viaversion.CustomViaProviders;
 import de.florianmichael.viaprotocolhack.platform.ViaBackwardsPlatform;
 import de.florianmichael.viaprotocolhack.platform.ViaVersionPlatform;
 import de.florianmichael.viaprotocolhack.platform.viaversion.CustomViaInjector;
@@ -51,7 +52,14 @@ public class ViaProtocolHack {
             viaManager.getProtocolManager().setMaxPathDeltaIncrease(-1);
             viaManager.init();
 
-            new ViaBackwardsPlatform();
+            if (provider().loadBackwards()) {
+                new ViaBackwardsPlatform();
+            }
+
+            if (provider.loadRewind()) {
+                new ViaRewindPlatform();
+            }
+
         }).whenComplete((unused, throwable) -> whenComplete.run());
     }
 

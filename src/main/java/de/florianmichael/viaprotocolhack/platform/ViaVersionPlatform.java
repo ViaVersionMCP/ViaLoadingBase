@@ -33,7 +33,7 @@ public class ViaVersionPlatform implements ViaPlatform<UUID> {
 
     public ViaVersionPlatform(final Logger logger) {
         this.logger = logger;
-        config = new CustomViaConfig(ViaProtocolHack.instance().directory().toPath().resolve("viaversion.yml").toFile());
+        config = new CustomViaConfig(new File(ViaProtocolHack.instance().directory(), "viaversion.yml"));
     }
 
     @Override
