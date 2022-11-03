@@ -98,6 +98,18 @@ public class Test implements INativeProvider {
         return new JsonObject(); // not important since commands aren't implemented by default
     }
 
+    // #######################
+    // # Netty Version based #
+    // #######################
+    @Override
+    public EventLoop eventLoop(final ThreadFactory threadFactory, final ExecutorService executorService) {
+        // For Netty above 4.1.x, (>= Minecraft 1.12.2)
+        return new DefaultEventLoop(executorService);
+        
+        // For Netty older than 4.0.x (< Minecraft 1.12.2 && > Minecraft 1.6.4)
+        return new LocalEventLoopGroup(1, threadFactory).next();
+    }
+    
     @Override // default: BasicVersionProvider and completely unlegit Movement Transmitter by Via TM 
     public void createProviders(ViaProviders providers) {
         super.createProviders(providers);

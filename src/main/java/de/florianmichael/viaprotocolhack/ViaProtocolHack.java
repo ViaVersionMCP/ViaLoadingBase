@@ -4,7 +4,6 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.viaversion.viaversion.ViaManagerImpl;
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.data.MappingDataLoader;
-import de.florianmichael.viaprotocolhack.netty.implementation.DefaultEventLoopGroup;
 import de.florianmichael.viaprotocolhack.platform.ViaRewindPlatform;
 import de.florianmichael.viaprotocolhack.platform.viaversion.CustomViaProviders;
 import de.florianmichael.viaprotocolhack.platform.ViaBackwardsPlatform;
@@ -12,7 +11,6 @@ import de.florianmichael.viaprotocolhack.platform.ViaVersionPlatform;
 import de.florianmichael.viaprotocolhack.platform.viaversion.CustomViaInjector;
 import de.florianmichael.viaprotocolhack.util.JLoggerToLog4J;
 import de.florianmichael.viaprotocolhack.util.VersionList;
-import io.netty.channel.EventLoop;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
@@ -22,17 +20,15 @@ import java.util.logging.Logger;
 public class ViaProtocolHack {
     private final static ViaProtocolHack instance = new ViaProtocolHack();
 
-    private final ExecutorService executorService = Executors.newFixedThreadPool(8, new ThreadFactoryBuilder().setDaemon(true).setNameFormat("ViaProtocolHack-%d").build());
-    private EventLoop eventLoop;
+    private final ThreadFactory threadFactory = new ThreadFactoryBuilder().setDaemon(true).setNameFormat("ViaProtocolHack-%d").build();
+    private final ExecutorService executorService = Executors.newFixedThreadPool(8, threadFactory);
+
     private final Logger logger = new JLoggerToLog4J(LogManager.getLogger("ViaProtocolHack"));
 
     private INativeProvider provider;
     private File directory;
 
     public void init(final INativeProvider provider, final Runnable whenComplete) throws Exception {
-        //noinspection MoveFieldAssignmentToInitializer
-        eventLoop = new DefaultEventLoopGroup(1, executorService).next();
-
         this.provider = provider;
         this.directory = new File(this.provider.run(), "ViaProtocolHack");
 
@@ -72,12 +68,12 @@ public class ViaProtocolHack {
         return directory;
     }
 
-    public ExecutorService executorService() {
-        return executorService;
+    public ThreadFactory threadFactory() {
+        return threadFactory;
     }
 
-    public EventLoop eventLoop() {
-        return eventLoop;
+    public ExecutorService executorService() {
+        return executorService;
     }
 
     public Logger logger() {

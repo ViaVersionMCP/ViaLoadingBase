@@ -5,14 +5,15 @@ import com.viaversion.viaversion.api.platform.providers.ViaProviders;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import com.viaversion.viaversion.api.protocol.version.VersionProvider;
 import com.viaversion.viaversion.bungee.providers.BungeeMovementTransmitter;
-import com.viaversion.viaversion.commands.ViaCommandHandler;
 import com.viaversion.viaversion.libs.gson.JsonObject;
 import com.viaversion.viaversion.protocols.protocol1_9to1_8.providers.MovementTransmitterProvider;
 import de.florianmichael.viaprotocolhack.provider.DefaultVersionProvider;
+import io.netty.channel.EventLoop;
 
 import java.io.File;
 import java.util.List;
-import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadFactory;
 
 public interface INativeProvider {
 
@@ -23,6 +24,7 @@ public interface INativeProvider {
     String[] nettyOrder();
     File run();
     JsonObject createDump();
+    EventLoop eventLoop(final ThreadFactory threadFactory, final ExecutorService executorService);
 
     default void createProviders(final ViaProviders providers) {
         providers.use(MovementTransmitterProvider.class, new BungeeMovementTransmitter());
