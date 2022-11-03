@@ -83,9 +83,9 @@ public class Test implements INativeProvider {
     @Override
     public String[] nettyOrder() {
         return new String[] {
-                "compress",
-                "decompress"
-        }; // namings of minecrafts compressing and decompressing from the pipeline
+                "decompress",
+                "compress"
+        }; // namings of Minecraft's compressing and decompressing from the pipeline
     }
 
     @Override
