@@ -27,7 +27,7 @@ var viaLibs = [
         "com.viaversion:viarewind-core:2.0.3-SNAPSHOT",
         
         // ViaProtocolHack -> https://github.com/RejectedVia/ViaProtocolHack
-        "com.github.RejectedVia:ViaProtocolHack:22w44a"
+        "com.github.RejectedVia:ViaProtocolHack:ac2c40ba18"
 ]
 
 dependencies {
