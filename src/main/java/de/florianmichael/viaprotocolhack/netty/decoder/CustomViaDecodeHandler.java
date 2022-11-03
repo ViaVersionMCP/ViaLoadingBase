@@ -1,4 +1,4 @@
-package de.florianmichael.viaprotocolhack.netty;
+package de.florianmichael.viaprotocolhack.netty.decoder;
 
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.connection.UserConnection;
@@ -9,6 +9,7 @@ import com.viaversion.viaversion.exception.InformativeException;
 import com.viaversion.viaversion.util.PipelineUtil;
 import de.florianmichael.viaprotocolhack.ViaProtocolHack;
 import de.florianmichael.viaprotocolhack.event.PipelineReorderEvent;
+import de.florianmichael.viaprotocolhack.netty.NettyConstants;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;

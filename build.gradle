@@ -46,7 +46,7 @@ dependencies {
         implementation(lib)
 
     for (final def lib in compileOnlyLibs)
-        implementation(lib)
+        compileOnly(lib)
 }
 
 shadowJar {
