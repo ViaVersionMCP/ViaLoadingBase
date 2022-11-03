@@ -1,4 +1,4 @@
-package de.florianmichael.viaprotocolhack.netty.decoder;
+package de.florianmichael.viaprotocolhack.netty;
 
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.connection.UserConnection;

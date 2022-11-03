@@ -10,6 +10,7 @@ import com.viaversion.viaversion.api.platform.UnsupportedSoftware;
 import com.viaversion.viaversion.api.platform.ViaPlatform;
 import com.viaversion.viaversion.libs.gson.JsonObject;
 import de.florianmichael.viaprotocolhack.ViaProtocolHack;
+import de.florianmichael.viaprotocolhack.platform.viaversion.CustomPlatformTask;
 import de.florianmichael.viaprotocolhack.platform.viaversion.CustomViaAPIWrapper;
 import de.florianmichael.viaprotocolhack.platform.viaversion.CustomViaConfig;
 import de.florianmichael.viaprotocolhack.util.FutureTaskId;
@@ -49,25 +50,18 @@ public class ViaVersionPlatform implements ViaPlatform<UUID> {
 
     @Override
     public PlatformTask<?> runSync(Runnable runnable) {
-        return new FutureTaskId(ViaProtocolHack.instance().eventLoop().submit(runnable).addListener(errorLogger()));
+        return new CustomPlatformTask(ViaProtocolHack.instance().scheduler().runTask(runnable));
     }
 
     @Override
-    public FutureTaskId runSync(Runnable runnable, long ticks) {
-        // ViaVersion seems to not need to run delayed tasks on main thread
-        return new FutureTaskId(ViaProtocolHack.instance().eventLoop()
-                .schedule(() -> runSync(runnable), ticks * 50, TimeUnit.MILLISECONDS)
-                .addListener(errorLogger())
-        );
+    public PlatformTask<?> runSync(Runnable runnable, long ticks) {
+        return new CustomPlatformTask(ViaProtocolHack.instance().scheduler().runTaskLater(runnable, ticks * 50));
+
     }
 
     @Override
-    public FutureTaskId runRepeatingSync(Runnable runnable, long ticks) {
-        // ViaVersion seems to not need to run repeating tasks on main thread
-        return new FutureTaskId(ViaProtocolHack.instance().eventLoop()
-                .scheduleAtFixedRate(() -> runSync(runnable), 0, ticks * 50, TimeUnit.MILLISECONDS)
-                .addListener(errorLogger())
-        );
+    public PlatformTask<?> runRepeatingSync(Runnable runnable, long ticks) {
+        return new CustomPlatformTask(ViaProtocolHack.instance().scheduler().runTaskTimer(runnable, ticks * 50));
     }
 
     @Override

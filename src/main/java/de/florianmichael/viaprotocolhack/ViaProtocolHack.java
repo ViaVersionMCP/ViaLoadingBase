@@ -4,15 +4,14 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.viaversion.viaversion.ViaManagerImpl;
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.data.MappingDataLoader;
-import de.florianmichael.viaprotocolhack.netty.implementation.DefaultEventLoopGroup;
 import de.florianmichael.viaprotocolhack.platform.ViaRewindPlatform;
 import de.florianmichael.viaprotocolhack.platform.viaversion.CustomViaProviders;
 import de.florianmichael.viaprotocolhack.platform.ViaBackwardsPlatform;
 import de.florianmichael.viaprotocolhack.platform.ViaVersionPlatform;
 import de.florianmichael.viaprotocolhack.platform.viaversion.CustomViaInjector;
 import de.florianmichael.viaprotocolhack.util.JLoggerToLog4J;
+import de.florianmichael.viaprotocolhack.util.Scheduler;
 import de.florianmichael.viaprotocolhack.util.VersionList;
-import io.netty.channel.EventLoop;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
@@ -23,16 +22,13 @@ public class ViaProtocolHack {
     private final static ViaProtocolHack instance = new ViaProtocolHack();
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(8, new ThreadFactoryBuilder().setDaemon(true).setNameFormat("ViaProtocolHack-%d").build());
-    private EventLoop eventLoop;
     private final Logger logger = new JLoggerToLog4J(LogManager.getLogger("ViaProtocolHack"));
+    private final Scheduler schedulerLoop = new Scheduler();
 
     private INativeProvider provider;
     private File directory;
 
     public void init(final INativeProvider provider, final Runnable whenComplete) throws Exception {
-        //noinspection MoveFieldAssignmentToInitializer
-        eventLoop = new DefaultEventLoopGroup(1, executorService).next();
-
         this.provider = provider;
         this.directory = new File(this.provider.run(), "ViaProtocolHack");
 
@@ -61,7 +57,10 @@ public class ViaProtocolHack {
                 new ViaRewindPlatform();
             }
 
-        }).whenComplete((unused, throwable) -> whenComplete.run());
+        }).whenComplete((unused, throwable) -> {
+            whenComplete.run();
+            schedulerLoop.run();
+        });
     }
 
     public INativeProvider provider() {
@@ -76,8 +75,8 @@ public class ViaProtocolHack {
         return executorService;
     }
 
-    public EventLoop eventLoop() {
-        return eventLoop;
+    public Scheduler scheduler() {
+        return schedulerLoop;
     }
 
     public Logger logger() {
