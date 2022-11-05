@@ -25,7 +25,7 @@ public class VersionList {
     private static final Map<ProtocolVersion, String> SPECIAL_NAMES = new HashMap<>();
     private static final List<ProtocolVersion> PROTOCOLS = new LinkedList<>();
 
-    public VersionList() {
+    static {
         SPECIAL_NAMES.put(ProtocolVersion.v1_9_3, "1.9.3-1.9.4");
         SPECIAL_NAMES.put(ProtocolVersion.v1_11_1, "1.11.1-1.11.2");
         SPECIAL_NAMES.put(ProtocolVersion.v1_16_4, "1.16.4-1.16.5");
@@ -35,13 +35,18 @@ public class VersionList {
     }
 
     public static void registerProtocols() throws IllegalAccessException {
+        int index = 0;
         for (Field declaredField : ProtocolVersion.class.getDeclaredFields()) {
-            declaredField.setAccessible(true);
-
-            if (declaredField.get(null) instanceof ProtocolVersion) {
-                PROTOCOLS.add((ProtocolVersion) declaredField.get(null));
+            if (declaredField.getType() == ProtocolVersion.class) {
+                index++;
+                if(index > 9) {
+                    ProtocolVersion protocolVersion = (ProtocolVersion) declaredField.get(null);
+                    if(protocolVersion.isKnown())
+                        PROTOCOLS.add(protocolVersion);
+                }
             }
         }
+        Collections.reverse(PROTOCOLS);
     }
 
     public static String formatProtocolName(final ProtocolVersion version) {
@@ -74,10 +79,9 @@ public class VersionList {
 
     public static List<ProtocolVersion> getProtocols() {
         final List<ProtocolVersion> versions = new ArrayList<>(PROTOCOLS);
-        final List<ProtocolVersion> optionalVersions = ViaProtocolHack.instance().provider().getOptionalProtocols();
-
-        if (optionalVersions != null) {
-            versions.addAll(optionalVersions);
+        for(ProtocolVersion protocolVersion : ViaProtocolHack.instance().provider().getOptionalProtocols()) {
+            versions.removeIf(version -> version.getVersion() == protocolVersion.getVersion());
+            versions.add(protocolVersion);
         }
         return versions;
     }
