@@ -32,8 +32,6 @@ public class ViaProtocolHack {
         this.provider = provider;
         this.directory = new File(this.provider.run(), "ViaProtocolHack");
 
-        VersionList.registerProtocols();
-
         CompletableFuture.runAsync(() -> {
             final ViaVersionPlatform platform = new ViaVersionPlatform(this.logger());
 
@@ -59,6 +57,12 @@ public class ViaProtocolHack {
                 Class.forName("de.gerrygames.viarewind.api.ViaRewindPlatform");
                 new ViaRewindPlatform();
             } catch (Exception ignored) {
+            }
+
+            try {
+                VersionList.registerProtocols();
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
             }
 
         }).whenComplete((unused, throwable) -> whenComplete.run());
