@@ -17,19 +17,10 @@ repositories {
 }
 
 var viaLibs = [
-        // This should be always there
-        // ViaVersion -> https://github.com/ViaVersion/ViaVersion
-        "com.viaversion:viaversion:4.5.0-22w44a-SNAPSHOT",
-
-        // If you want to support newer versions then your Platform is
-        // ViaBackwards -> https://github.com/ViaVersion/ViaBackwards
-        "com.viaversion:viabackwards-common:4.5.0-22w44a-SNAPSHOT",
-
-        // If your platform is 1.8 
-        // ViaRewind -> https://github.com/ViaVersion/ViaRewind
-        "com.viaversion:viarewind-core:2.0.3-SNAPSHOT",
+        "com.viaversion:viaversion:latest.integration",
+        "com.viaversion:viabackwards-common:latest.integration",
+        "com.viaversion:viarewind-core:latest.integration",
         
-        // ViaProtocolHack -> https://github.com/RejectedVia/ViaProtocolHack
         "com.github.RejectedVia:ViaProtocolHack:ac2c40ba18"
 ]
 
