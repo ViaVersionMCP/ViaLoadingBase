@@ -37,6 +37,7 @@ public class VersionList {
     public static void registerProtocols() throws IllegalAccessException {
         for (Field declaredField : ProtocolVersion.class.getDeclaredFields()) {
             if (declaredField.get(null) instanceof ProtocolVersion) {
+                declaredField.setAccessible(true);
                 PROTOCOLS.add((ProtocolVersion) declaredField.get(null));
             }
         }
