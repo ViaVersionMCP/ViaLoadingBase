@@ -17,12 +17,15 @@ repositories {
 }
 
 var viaLibs = [
+        // This should be always there
         // ViaVersion -> https://github.com/ViaVersion/ViaVersion
         "com.viaversion:viaversion:4.5.0-22w44a-SNAPSHOT",
 
+        // If you want to support newer versions then your Platform is
         // ViaBackwards -> https://github.com/ViaVersion/ViaBackwards
         "com.viaversion:viabackwards-common:4.5.0-22w44a-SNAPSHOT",
 
+        // If your platform is 1.8 
         // ViaRewind -> https://github.com/ViaVersion/ViaRewind
         "com.viaversion:viarewind-core:2.0.3-SNAPSHOT",
         
@@ -36,6 +39,14 @@ dependencies {
     }
 }
 ```
+### Which library do I need?
+If your platform is older than the latest Minecraft version, you need ViaVersion + ViaBackwards, if your platform is 1.8.x,
+you need ViaVersion + ViaBackwards + ViaRewind, otherwise you only need ViaVersion: <br>
+
+A `1.8.x` Minecraft client for example would need `ViaVersion + ViaBackwards + ViaRewind`. <br>
+A `1.12.x` Minecraft client for example would need `ViaVersion + ViaBackwards`. <br>
+A `1.19.x` Minecraft client, for example, would need `ViaVersion`. <br>
+
 I will always update the versions, above you can just re-copy it if a new Minecraft version releases: <br>
 Current Version: `Minecraft 22w44a`
 

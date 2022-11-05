@@ -49,12 +49,16 @@ public class ViaProtocolHack {
             viaManager.getProtocolManager().setMaxPathDeltaIncrease(-1);
             viaManager.init();
 
-            if (provider().loadBackwards()) {
+            try {
+                Class.forName("com.viaversion.viabackwards.api.ViaBackwardsPlatform");
                 new ViaBackwardsPlatform();
+            } catch (Exception ignored) {
             }
 
-            if (provider.loadRewind()) {
+            try {
+                Class.forName("de.gerrygames.viarewind.api.ViaRewindPlatform");
                 new ViaRewindPlatform();
+            } catch (Exception ignored) {
             }
 
         }).whenComplete((unused, throwable) -> whenComplete.run());
