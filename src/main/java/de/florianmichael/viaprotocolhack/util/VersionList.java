@@ -18,65 +18,36 @@ import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.florianmichael.viaprotocolhack.ViaProtocolHack;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class VersionList {
 
-    private static final List<ProtocolVersion> protocols = new LinkedList<>();
+    private static final Map<ProtocolVersion, String> SPECIAL_NAMES = new HashMap<>();
+    private static final List<ProtocolVersion> PROTOCOLS = new LinkedList<>();
 
-    public static final ProtocolVersion S22w44a = new ProtocolVersion(761, 106, "22w44a", null);
-    public static final ProtocolVersion R1_19_2 = new ProtocolVersion(760, "1.19.1-1.19.2");
-    public static final ProtocolVersion R1_19 = new ProtocolVersion(759, "1.19");
-
-    public static final ProtocolVersion R1_18_2 = new ProtocolVersion(758, "1.18.2");
-    public static final ProtocolVersion R1_18_1 = new ProtocolVersion(757, "1.18-1.18.1");
-
-    public static final ProtocolVersion R1_17_1 = new ProtocolVersion(756, "1.17.1");
-    public static final ProtocolVersion R1_17 = new ProtocolVersion(755, "1.17");
-
-    public static final ProtocolVersion R1_16_5 = new ProtocolVersion(754, "1.16.4-1.16.5");
-    public static final ProtocolVersion R1_16_3 = new ProtocolVersion(753, "1.16.3");
-    public static final ProtocolVersion R1_16_2 = new ProtocolVersion(751, "1.16.2");
-    public static final ProtocolVersion R1_16_1 = new ProtocolVersion(736, "1.16.1");
-    public static final ProtocolVersion R1_16 = new ProtocolVersion(735, "1.16");
-
-    public static final ProtocolVersion R1_15_2 = new ProtocolVersion(578, "1.15.2");
-    public static final ProtocolVersion R1_15_1 = new ProtocolVersion(575, "1.15.1");
-    public static final ProtocolVersion R1_15 = new ProtocolVersion(573, "1.15");
-
-    public static final ProtocolVersion R1_14_4 = new ProtocolVersion(498, "1.14.4");
-    public static final ProtocolVersion R1_14_3 = new ProtocolVersion(490, "1.14.3");
-    public static final ProtocolVersion R1_14_2 = new ProtocolVersion(485, "1.14.2");
-    public static final ProtocolVersion R1_14_1 = new ProtocolVersion(480, "1.14.1");
-    public static final ProtocolVersion R1_14 = new ProtocolVersion(477, "1.14");
-
-    public static final ProtocolVersion R1_13_2 = new ProtocolVersion(404, "1.13.2");
-    public static final ProtocolVersion R1_13_1 = new ProtocolVersion(401, "1.13.1");
-    public static final ProtocolVersion R1_13 = new ProtocolVersion(393, "1.13");
-
-    public static final ProtocolVersion R1_12_2 = new ProtocolVersion(340, "1.12.2");
-    public static final ProtocolVersion R1_12_1 = new ProtocolVersion(338, "1.12.1");
-    public static final ProtocolVersion R1_12 = new ProtocolVersion(335, "1.12");
-
-    public static final ProtocolVersion R1_11_1 = new ProtocolVersion(316, "1.11.1-1.11.2");
-    public static final ProtocolVersion R1_11 = new ProtocolVersion(315, "1.11");
-
-    public static final ProtocolVersion R1_10 = new ProtocolVersion(210, "1.10.x");
-
-    public static final ProtocolVersion R1_9_4 = new ProtocolVersion(110, "1.9.3-1.9.4");
-    public static final ProtocolVersion R1_9_2 = new ProtocolVersion(109, "1.9.2");
-    public static final ProtocolVersion R1_9_1 = new ProtocolVersion(108, "1.9.1");
-    public static final ProtocolVersion R1_9 = new ProtocolVersion(107, "1.9");
-
-    public static final ProtocolVersion R1_8 = new ProtocolVersion(47, "1.8.x");
+    public VersionList() {
+        SPECIAL_NAMES.put(ProtocolVersion.v1_9_3, "1.9.3-1.9.4");
+        SPECIAL_NAMES.put(ProtocolVersion.v1_11_1, "1.11.1-1.11.2");
+        SPECIAL_NAMES.put(ProtocolVersion.v1_16_4, "1.16.4-1.16.5");
+        SPECIAL_NAMES.put(ProtocolVersion.v1_18, "1.18-1.18.1");
+        SPECIAL_NAMES.put(ProtocolVersion.v1_19_1, "1.19.1-1.19.2");
+        SPECIAL_NAMES.put(ProtocolVersion.v1_19_3, "22w44a");
+    }
 
     public static void registerProtocols() throws IllegalAccessException {
-        for (Field declaredField : VersionList.class.getDeclaredFields()) {
-            if (declaredField.get(null) instanceof ProtocolVersion)
-                protocols.add((ProtocolVersion) declaredField.get(null));
+        for (Field declaredField : ProtocolVersion.class.getDeclaredFields()) {
+            if (declaredField.get(null) instanceof ProtocolVersion) {
+                PROTOCOLS.add((ProtocolVersion) declaredField.get(null));
+            }
         }
+    }
+
+    public static String formatProtocolName(final ProtocolVersion version) {
+        if (SPECIAL_NAMES.containsKey(version)) {
+            return SPECIAL_NAMES.get(version);
+        }
+
+        return version.getName();
     }
 
     public static boolean isEqualTo(final ProtocolVersion protocolVersion) {
@@ -100,7 +71,7 @@ public class VersionList {
     }
 
     public static List<ProtocolVersion> getProtocols() {
-        final List<ProtocolVersion> versions = new ArrayList<>(protocols);
+        final List<ProtocolVersion> versions = new ArrayList<>(PROTOCOLS);
         final List<ProtocolVersion> optionalVersions = ViaProtocolHack.instance().provider().getOptionalProtocols();
 
         if (optionalVersions != null) {
