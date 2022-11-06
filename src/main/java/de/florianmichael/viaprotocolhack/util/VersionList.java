@@ -22,17 +22,7 @@ import java.util.*;
 
 public class VersionList {
 
-    private static final Map<ProtocolVersion, String> SPECIAL_NAMES = new HashMap<>();
     private static final List<ProtocolVersion> PROTOCOLS = new LinkedList<>();
-
-    static {
-        SPECIAL_NAMES.put(ProtocolVersion.v1_9_3, "1.9.3-1.9.4");
-        SPECIAL_NAMES.put(ProtocolVersion.v1_11_1, "1.11.1-1.11.2");
-        SPECIAL_NAMES.put(ProtocolVersion.v1_16_4, "1.16.4-1.16.5");
-        SPECIAL_NAMES.put(ProtocolVersion.v1_18, "1.18-1.18.1");
-        SPECIAL_NAMES.put(ProtocolVersion.v1_19_1, "1.19.1-1.19.2");
-        SPECIAL_NAMES.put(ProtocolVersion.v1_19_3, "22w44a");
-    }
 
     public static void registerProtocols() throws IllegalAccessException {
         int index = 0;
@@ -48,14 +38,6 @@ public class VersionList {
             }
         }
         Collections.reverse(PROTOCOLS);
-    }
-
-    public static String formatProtocolName(final ProtocolVersion version) {
-        if (SPECIAL_NAMES.containsKey(version)) {
-            return SPECIAL_NAMES.get(version);
-        }
-
-        return version.getName();
     }
 
     public static boolean isEqualTo(final ProtocolVersion protocolVersion) {
