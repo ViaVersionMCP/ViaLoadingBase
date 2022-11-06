@@ -32,6 +32,12 @@ public class ViaProtocolHack {
         this.provider = provider;
         this.directory = new File(this.provider.run(), "ViaProtocolHack");
 
+        try {
+            VersionList.registerProtocols();
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
         CompletableFuture.runAsync(() -> {
             final ViaVersionPlatform platform = new ViaVersionPlatform(this.logger());
 
@@ -58,13 +64,6 @@ public class ViaProtocolHack {
                 new ViaRewindPlatform();
             } catch (Exception ignored) {
             }
-
-            try {
-                VersionList.registerProtocols();
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-
         }).whenComplete((unused, throwable) -> whenComplete.run());
     }
 

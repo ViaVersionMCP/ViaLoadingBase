@@ -39,10 +39,11 @@ public class VersionList {
         for (Field declaredField : ProtocolVersion.class.getDeclaredFields()) {
             if (declaredField.getType() == ProtocolVersion.class) {
                 index++;
-                if(index > 9) {
+                if (index > 9) {
                     ProtocolVersion protocolVersion = (ProtocolVersion) declaredField.get(null);
-                    if(protocolVersion.isKnown())
+                    if (protocolVersion.isKnown()) {
                         PROTOCOLS.add(protocolVersion);
+                    }
                 }
             }
         }
