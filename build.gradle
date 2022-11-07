@@ -18,9 +18,6 @@ var compileOnlyLibs = [
         // Netty All -> https://mvnrepository.com/artifact/io.netty/netty-all
         "io.netty:netty-all:5.0.0.Alpha2",
 
-        // Logger -> https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core
-        "org.apache.logging.log4j:log4j-core:2.19.0",
-
         // ViaBackwards -> https://github.com/ViaVersion/ViaBackwards
         "com.viaversion:viabackwards-common:latest.integration",
 

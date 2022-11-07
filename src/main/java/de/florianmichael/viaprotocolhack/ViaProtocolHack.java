@@ -9,9 +9,7 @@ import de.florianmichael.viaprotocolhack.platform.viaversion.CustomViaProviders;
 import de.florianmichael.viaprotocolhack.platform.ViaBackwardsPlatform;
 import de.florianmichael.viaprotocolhack.platform.ViaVersionPlatform;
 import de.florianmichael.viaprotocolhack.platform.viaversion.CustomViaInjector;
-import de.florianmichael.viaprotocolhack.util.JLoggerToLog4J;
 import de.florianmichael.viaprotocolhack.util.VersionList;
-import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
 import java.util.concurrent.*;
@@ -23,12 +21,12 @@ public class ViaProtocolHack {
     private final ThreadFactory threadFactory = new ThreadFactoryBuilder().setDaemon(true).setNameFormat("ViaProtocolHack-%d").build();
     private final ExecutorService executorService = Executors.newFixedThreadPool(8, threadFactory);
 
-    private final Logger logger = new JLoggerToLog4J(LogManager.getLogger("ViaProtocolHack"));
+    private final Logger logger = Logger.getLogger("ViaProtocolHack");
 
     private INativeProvider provider;
     private File directory;
 
-    public void init(final INativeProvider provider, final Runnable whenComplete) throws Exception {
+    public void init(final INativeProvider provider, final Runnable whenComplete) {
         this.provider = provider;
         this.directory = new File(this.provider.run(), "ViaProtocolHack");
 
