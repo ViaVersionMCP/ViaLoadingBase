@@ -11,6 +11,7 @@ import de.florianmichael.viaprotocolhack.provider.DefaultVersionProvider;
 import io.netty.channel.EventLoop;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -31,7 +32,7 @@ public interface INativeProvider {
         providers.use(VersionProvider.class, new DefaultVersionProvider());
     }
     default List<ProtocolVersion> getOptionalProtocols() {
-        return null;
+        return new ArrayList<>();
     }
     default void onBuildViaPlatform(ViaManagerImpl.ViaManagerBuilder builder) {
     }

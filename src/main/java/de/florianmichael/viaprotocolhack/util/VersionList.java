@@ -62,7 +62,7 @@ public class VersionList {
 
     public static List<ProtocolVersion> getProtocols() {
         final List<ProtocolVersion> versions = new ArrayList<>(PROTOCOLS);
-        for(ProtocolVersion protocolVersion : ViaProtocolHack.instance().provider().getOptionalProtocols()) {
+        for (ProtocolVersion protocolVersion : ViaProtocolHack.instance().provider().getOptionalProtocols()) {
             versions.removeIf(version -> version.getVersion() == protocolVersion.getVersion());
             versions.add(protocolVersion);
         }
