@@ -5,7 +5,7 @@ plugins {
 
 var realLibs = [
         // ViaVersion -> https://github.com/ViaVersion/ViaVersion
-        "com.viaversion:viaversion:latest.integration",
+        "com.viaversion:viaversion:4.5.0-22w45a-SNAPSHOT",
 
         // Snake YML -> https://github.com/snakeyaml/snakeyaml
         "org.yaml:snakeyaml:1.29",
