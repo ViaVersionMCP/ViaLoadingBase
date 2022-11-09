@@ -39,7 +39,7 @@ A `1.12.x` Minecraft client for example would need `ViaVersion + ViaBackwards`. 
 A `1.19.x` Minecraft client, for example, would need `ViaVersion`. <br>
 
 I will always update the versions, above you can just re-copy it if a new Minecraft version releases: <br>
-Current Version: `Minecraft 22w44a`
+Current Version: `Minecraft 22w45a`
 
 ## Example implementation:
 ```java
