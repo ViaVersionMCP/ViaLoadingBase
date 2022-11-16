@@ -41,6 +41,7 @@ public class ViaProtocolHack {
 
             final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new CustomViaInjector()).loader(new CustomViaProviders()).platform(platform);
             provider().onBuildViaPlatform(builder);
+            whenComplete.run();
 
             Via.init(builder.build());
             MappingDataLoader.enableMappingsCache();
@@ -62,7 +63,7 @@ public class ViaProtocolHack {
                 new ViaRewindPlatform();
             } catch (Exception ignored) {
             }
-        }).whenComplete((unused, throwable) -> whenComplete.run());
+        });
     }
 
     public INativeProvider provider() {
