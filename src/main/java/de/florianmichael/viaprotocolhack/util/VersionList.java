@@ -22,8 +22,7 @@ import java.util.*;
 
 public class VersionList {
 
-    public static final List<ProtocolVersion> PROTOCOLS = new LinkedList<>();
-    private static final Map<Integer, Integer> INDEXED_TRACKER = new HashMap<>();
+    private static final List<ProtocolVersion> PROTOCOLS = new LinkedList<>();
 
     public static void registerProtocols() throws IllegalAccessException {
         int index = 0;
@@ -39,39 +38,34 @@ public class VersionList {
             }
         }
         Collections.reverse(PROTOCOLS);
-
-        for (ProtocolVersion protocolVersion : ViaProtocolHack.instance().provider().getOptionalProtocols()) {
-            PROTOCOLS.removeIf(version -> version.getVersion() == protocolVersion.getVersion());
-            PROTOCOLS.add(protocolVersion);
-        }
-
-        for (ProtocolVersion protocol : PROTOCOLS) {
-            INDEXED_TRACKER.put(protocol.getVersion(), PROTOCOLS.size() - PROTOCOLS.indexOf(protocol) - 1);
-        }
     }
 
     public static boolean isEqualTo(final ProtocolVersion protocolVersion) {
-        return Objects.equals(INDEXED_TRACKER.get(ViaProtocolHack.instance().provider().getClientsideVersion()), INDEXED_TRACKER.get(protocolVersion.getVersion()));
+        return ViaProtocolHack.instance().provider().getClientsideVersion() == protocolVersion.getVersion();
     }
 
     public static boolean isOlderOrEqualTo(final ProtocolVersion protocolVersion) {
-        return INDEXED_TRACKER.get(ViaProtocolHack.instance().provider().getClientsideVersion()) <= INDEXED_TRACKER.get(protocolVersion.getVersion());
+        return ViaProtocolHack.instance().provider().getClientsideVersion() <= protocolVersion.getVersion();
     }
 
     public static boolean isOlderTo(final ProtocolVersion protocolVersion) {
-        return INDEXED_TRACKER.get(ViaProtocolHack.instance().provider().getClientsideVersion()) < INDEXED_TRACKER.get(protocolVersion.getVersion());
+        return ViaProtocolHack.instance().provider().getClientsideVersion() < protocolVersion.getVersion();
     }
 
     public static boolean isNewerTo(final ProtocolVersion protocolVersion) {
-        return INDEXED_TRACKER.get(ViaProtocolHack.instance().provider().getClientsideVersion()) > INDEXED_TRACKER.get(protocolVersion.getVersion());
+        return ViaProtocolHack.instance().provider().getClientsideVersion() > protocolVersion.getVersion();
     }
 
     public static boolean isNewerOrEqualTo(final ProtocolVersion protocolVersion) {
-        return INDEXED_TRACKER.get(ViaProtocolHack.instance().provider().getClientsideVersion()) >= INDEXED_TRACKER.get(protocolVersion.getVersion());
+        return ViaProtocolHack.instance().provider().getClientsideVersion() >= protocolVersion.getVersion();
     }
 
-    @Deprecated
     public static List<ProtocolVersion> getProtocols() {
-        return VersionList.PROTOCOLS;
+        final List<ProtocolVersion> versions = new ArrayList<>(PROTOCOLS);
+        for (ProtocolVersion protocolVersion : ViaProtocolHack.instance().provider().getOptionalProtocols()) {
+            versions.removeIf(version -> version.getVersion() == protocolVersion.getVersion());
+            versions.add(protocolVersion);
+        }
+        return versions;
     }
 }
