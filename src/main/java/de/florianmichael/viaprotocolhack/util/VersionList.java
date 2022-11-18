@@ -45,11 +45,8 @@ public class VersionList {
             PROTOCOLS.add(protocolVersion);
         }
 
-        final List<ProtocolVersion> indexed = new ArrayList<>(PROTOCOLS);
-        Collections.reverse(indexed);
-
-        for (int i = 0; i < indexed.size(); i++) {
-            INDEXED_TRACKER.put(indexed.get(i).getVersion(), i);
+        for (ProtocolVersion protocol : PROTOCOLS) {
+            INDEXED_TRACKER.put(protocol.getVersion(), PROTOCOLS.size() - PROTOCOLS.indexOf(protocol) - 1);
         }
     }
 
