@@ -46,7 +46,7 @@ public class VersionList {
         }
 
         for (int i = 0; i < PROTOCOLS.size(); i++) {
-            INDEXED_TRACKER.put(PROTOCOLS.get(i).getVersion(), i);
+            INDEXED_TRACKER.put(PROTOCOLS.get(i).getVersion(), PROTOCOLS.size() - i);
         }
     }
 
