@@ -1,17 +1,14 @@
 plugins {
     id "java"
-    id "com.github.johnrengelman.shadow" version "7.0.0"
 }
 
-var realLibs = [
+var libs = [
         // ViaVersion -> https://github.com/ViaVersion/ViaVersion
         "com.viaversion:viaversion:4.5.0-22w45a-SNAPSHOT",
 
         // Snake YML -> https://github.com/snakeyaml/snakeyaml
         "org.yaml:snakeyaml:1.29",
-]
 
-var compileOnlyLibs = [
         // Google Common -> https://mvnrepository.com/artifact/com.google.guava/guava
         "com.google.guava:guava:31.1-jre",
 
@@ -39,21 +36,7 @@ repositories {
 }
 
 dependencies {
-    for (final def lib in realLibs)
-        implementation(lib)
-
-    for (final def lib in compileOnlyLibs)
+    for (final def lib in libs) {
         compileOnly(lib)
-}
-
-shadowJar {
-    archiveClassifier.set("shadow")
-    compileJava.options.encoding = "UTF-8"
-    exclude "native-binaries/*"
-
-    dependencies {
-        for (final def lib in realLibs) {
-            include(dependency(lib))
-        }
     }
 }

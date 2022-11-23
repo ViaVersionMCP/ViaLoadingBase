@@ -21,7 +21,7 @@ var viaLibs = [
         "com.viaversion:viabackwards-common:latest.integration",
         "com.viaversion:viarewind-core:latest.integration",
         
-        "com.github.RejectedVia:ViaProtocolHack:22w45a"
+        "com.github.RejectedVia:ViaProtocolHack:latest.integration"
 ]
 
 dependencies {
@@ -37,8 +37,6 @@ you need ViaVersion + ViaBackwards + ViaRewind, otherwise you only need ViaVersi
 A `1.8.x` Minecraft client for example would need `ViaVersion + ViaBackwards + ViaRewind`. <br>
 A `1.12.x` Minecraft client for example would need `ViaVersion + ViaBackwards`. <br>
 A `1.19.x` Minecraft client, for example, would need `ViaVersion`. <br>
-
-If a new Minecraft versions is released, you can just change the ViaProtocolHack version to the Minecraft version
 ## Example implementation:
 ```java
 import com.viaversion.viaversion.api.connection.UserConnection;
