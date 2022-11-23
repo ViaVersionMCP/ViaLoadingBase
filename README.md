@@ -21,7 +21,7 @@ var viaLibs = [
         "com.viaversion:viabackwards-common:latest.integration",
         "com.viaversion:viarewind-core:latest.integration",
         
-        "com.github.RejectedVia:ViaProtocolHack:latest.integration"
+        "com.github.RejectedVia:ViaProtocolHack:<newest version (checkout jitpack.io for that)>"
 ]
 
 dependencies {
