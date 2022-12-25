@@ -9,10 +9,13 @@ import de.florianmichael.viaprotocolhack.platform.viaversion.CustomViaProviders;
 import de.florianmichael.viaprotocolhack.platform.ViaBackwardsPlatform;
 import de.florianmichael.viaprotocolhack.platform.ViaVersionPlatform;
 import de.florianmichael.viaprotocolhack.platform.viaversion.CustomViaInjector;
+import de.florianmichael.viaprotocolhack.util.JLoggerToLog4j;
 import de.florianmichael.viaprotocolhack.util.VersionList;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
 import java.util.concurrent.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ViaProtocolHack {
@@ -21,7 +24,7 @@ public class ViaProtocolHack {
     private final ThreadFactory threadFactory = new ThreadFactoryBuilder().setDaemon(true).setNameFormat("ViaProtocolHack-%d").build();
     private final ExecutorService executorService = Executors.newFixedThreadPool(8, threadFactory);
 
-    private final Logger logger = Logger.getLogger("ViaProtocolHack");
+    private final Logger logger = new JLoggerToLog4j(LogManager.getLogger("ViaProtocolHack"));
 
     private INativeProvider provider;
     private File directory;
@@ -56,13 +59,22 @@ public class ViaProtocolHack {
             try {
                 Class.forName("com.viaversion.viabackwards.api.ViaBackwardsPlatform");
                 new ViaBackwardsPlatform();
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                logger().log(Level.INFO, "Failed to load ViaBackwards:");
+                e.printStackTrace();
             }
 
             try {
                 Class.forName("de.gerrygames.viarewind.api.ViaRewindPlatform");
                 new ViaRewindPlatform();
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                logger().log(Level.INFO, "Failed to load ViaRewind:");
+                e.printStackTrace();
+            }
+        }).whenComplete((unused, throwable) -> {
+            if (throwable != null) {
+                logger().log(Level.INFO, "Failed to load ViaProtocolHack:");
+                throwable.printStackTrace();
             }
         });
     }
