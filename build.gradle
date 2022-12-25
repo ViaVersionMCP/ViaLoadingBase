@@ -17,12 +17,12 @@ repositories {
 
 dependencies {
     // Via Version
-    implementation("com.viaversion:viaversion-api:latest.integration")
-    implementation("com.viaversion:viabackwards-common:latest.integration")
-    implementation("com.viaversion:viarewind-core:latest.integration")
+    compileOnly("com.viaversion:viaversion-api:latest.integration")
+    compileOnly("com.viaversion:viabackwards-common:latest.integration")
+    compileOnly("com.viaversion:viarewind-core:latest.integration")
 
-    implementation("org.yaml:snakeyaml:1.29")
-    implementation("com.google.guava:guava:31.1-jre")
-    implementation("io.netty:netty-all:5.0.0.Alpha2")
-    implementation("org.apache.logging.log4j:log4j-core:2.19.0")
+    compileOnly("org.yaml:snakeyaml:1.29")
+    compileOnly("com.google.guava:guava:31.1-jre")
+    compileOnly("io.netty:netty-all:5.0.0.Alpha2")
+    compileOnly("org.apache.logging.log4j:log4j-core:2.19.0")
 }
