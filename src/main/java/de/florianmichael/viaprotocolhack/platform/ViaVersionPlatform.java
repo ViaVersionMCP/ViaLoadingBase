@@ -107,7 +107,7 @@ public class ViaVersionPlatform implements ViaPlatform<UUID> {
 
     @Override
     public boolean isProxy() {
-        return true;
+        return false;
     }
 
     @Override
@@ -136,7 +136,7 @@ public class ViaVersionPlatform implements ViaPlatform<UUID> {
 
     @Override
     public String getPluginVersion() {
-        return "4.5.0-22w42a-SNAPSHOT";
+        return "4.5.2-SNAPSHOT";
     }
 
     @Override

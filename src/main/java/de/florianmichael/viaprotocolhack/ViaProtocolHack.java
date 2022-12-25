@@ -59,6 +59,7 @@ public class ViaProtocolHack {
             try {
                 Class.forName("com.viaversion.viabackwards.api.ViaBackwardsPlatform");
                 new ViaBackwardsPlatform();
+                logger().log(Level.INFO, "Loaded ViaBackwards");
             } catch (Exception e) {
                 logger().log(Level.INFO, "Failed to load ViaBackwards:");
                 e.printStackTrace();
@@ -67,6 +68,7 @@ public class ViaProtocolHack {
             try {
                 Class.forName("de.gerrygames.viarewind.api.ViaRewindPlatform");
                 new ViaRewindPlatform();
+                logger().log(Level.INFO, "Loaded ViaRewind");
             } catch (Exception e) {
                 logger().log(Level.INFO, "Failed to load ViaRewind:");
                 e.printStackTrace();
@@ -75,6 +77,8 @@ public class ViaProtocolHack {
             if (throwable != null) {
                 logger().log(Level.INFO, "Failed to load ViaProtocolHack:");
                 throwable.printStackTrace();
+            } else {
+                logger().log(Level.INFO, "Loaded ViaProtocolHack");
             }
         });
     }
