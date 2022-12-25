@@ -39,82 +39,48 @@ public class ViaProtocolHack {
             throw new RuntimeException(e);
         }
 
-        final ViaVersionPlatform platform = new ViaVersionPlatform(this.logger());
+        CompletableFuture.runAsync(() -> {
+            final ViaVersionPlatform platform = new ViaVersionPlatform(this.logger());
 
-        final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new CustomViaInjector()).loader(new CustomViaProviders()).platform(platform);
-        provider().onBuildViaPlatform(builder);
+            final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new CustomViaInjector()).loader(new CustomViaProviders()).platform(platform);
+            provider().onBuildViaPlatform(builder);
 
-        Via.init(builder.build());
-        whenComplete.run();
+            Via.init(builder.build());
+            whenComplete.run();
 
-        MappingDataLoader.enableMappingsCache();
+            MappingDataLoader.enableMappingsCache();
 
-        final ViaManagerImpl viaManager = (ViaManagerImpl) Via.getManager();
+            final ViaManagerImpl viaManager = (ViaManagerImpl) Via.getManager();
 
-        viaManager.getProtocolManager().setMaxProtocolPathSize(Integer.MAX_VALUE);
-        viaManager.getProtocolManager().setMaxPathDeltaIncrease(-1);
-        viaManager.init();
+            viaManager.getProtocolManager().setMaxProtocolPathSize(Integer.MAX_VALUE);
+            viaManager.getProtocolManager().setMaxPathDeltaIncrease(-1);
+            viaManager.init();
 
-        try {
-            Class.forName("com.viaversion.viabackwards.api.ViaBackwardsPlatform");
-            new ViaBackwardsPlatform();
-            logger().log(Level.INFO, "Loaded ViaBackwards");
-        } catch (Exception e) {
-            logger().log(Level.INFO, "Failed to load ViaBackwards:");
-            e.printStackTrace();
-        }
+            try {
+                Class.forName("com.viaversion.viabackwards.api.ViaBackwardsPlatform");
+                new ViaBackwardsPlatform();
+                logger().log(Level.INFO, "Loaded ViaBackwards");
+            } catch (Exception e) {
+                logger().log(Level.INFO, "Failed to load ViaBackwards:");
+                e.printStackTrace();
+            }
 
-        try {
-            Class.forName("de.gerrygames.viarewind.api.ViaRewindPlatform");
-            new ViaRewindPlatform();
-            logger().log(Level.INFO, "Loaded ViaRewind");
-        } catch (Exception e) {
-            logger().log(Level.INFO, "Failed to load ViaRewind:");
-            e.printStackTrace();
-        }
-
-//        CompletableFuture.runAsync(() -> {
-//            final ViaVersionPlatform platform = new ViaVersionPlatform(this.logger());
-//
-//            final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new CustomViaInjector()).loader(new CustomViaProviders()).platform(platform);
-//            provider().onBuildViaPlatform(builder);
-//
-//            Via.init(builder.build());
-//            whenComplete.run();
-//
-//            MappingDataLoader.enableMappingsCache();
-//
-//            final ViaManagerImpl viaManager = (ViaManagerImpl) Via.getManager();
-//
-//            viaManager.getProtocolManager().setMaxProtocolPathSize(Integer.MAX_VALUE);
-//            viaManager.getProtocolManager().setMaxPathDeltaIncrease(-1);
-//            viaManager.init();
-//
-//            try {
-//                Class.forName("com.viaversion.viabackwards.api.ViaBackwardsPlatform");
-//                new ViaBackwardsPlatform();
-//                logger().log(Level.INFO, "Loaded ViaBackwards");
-//            } catch (Exception e) {
-//                logger().log(Level.INFO, "Failed to load ViaBackwards:");
-//                e.printStackTrace();
-//            }
-//
-//            try {
-//                Class.forName("de.gerrygames.viarewind.api.ViaRewindPlatform");
-//                new ViaRewindPlatform();
-//                logger().log(Level.INFO, "Loaded ViaRewind");
-//            } catch (Exception e) {
-//                logger().log(Level.INFO, "Failed to load ViaRewind:");
-//                e.printStackTrace();
-//            }
-//        }).whenComplete((unused, throwable) -> {
-//            if (throwable != null) {
-//                logger().log(Level.INFO, "Failed to load ViaProtocolHack:");
-//                throwable.printStackTrace();
-//            } else {
-//                logger().log(Level.INFO, "Loaded ViaProtocolHack");
-//            }
-//        });
+            try {
+                Class.forName("de.gerrygames.viarewind.api.ViaRewindPlatform");
+                new ViaRewindPlatform();
+                logger().log(Level.INFO, "Loaded ViaRewind");
+            } catch (Exception e) {
+                logger().log(Level.INFO, "Failed to load ViaRewind:");
+                e.printStackTrace();
+            }
+        }).whenComplete((unused, throwable) -> {
+            if (throwable != null) {
+                logger().log(Level.INFO, "Failed to load ViaProtocolHack:");
+                throwable.printStackTrace();
+            } else {
+                logger().log(Level.INFO, "Loaded ViaProtocolHack");
+            }
+        });
     }
 
     public INativeProvider provider() {
