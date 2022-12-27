@@ -48,31 +48,41 @@ public class ViaProtocolHack {
             Via.init(builder.build());
             whenComplete.run();
 
+            final ViaManagerImpl viaManager = (ViaManagerImpl) Via.getManager();
+
+            viaManager.addEnableListener(() -> {
+                try {
+                    Class.forName("com.viaversion.viabackwards.api.ViaBackwardsPlatform");
+                    new ViaBackwardsPlatform();
+                    logger().log(Level.INFO, "Loaded ViaBackwards");
+                } catch (Exception e) {
+                    if (e instanceof ClassNotFoundException) {
+                        logger().log(Level.INFO, "ViaBackwards is not provided");
+                    } else {
+                        logger().log(Level.INFO, "Failed to load ViaBackwards:");
+                        e.printStackTrace();
+                    }
+                }
+
+                try {
+                    Class.forName("de.gerrygames.viarewind.api.ViaRewindPlatform");
+                    new ViaRewindPlatform();
+                    logger().log(Level.INFO, "Loaded ViaRewind");
+                } catch (Exception e) {
+                    if (e instanceof ClassNotFoundException) {
+                        logger().log(Level.INFO, "ViaRewind is not provided");
+                    } else {
+                        logger().log(Level.INFO, "Failed to load ViaRewind:");
+                        e.printStackTrace();
+                    }
+                }
+            });
             MappingDataLoader.enableMappingsCache();
 
-            final ViaManagerImpl viaManager = (ViaManagerImpl) Via.getManager();
 
             viaManager.getProtocolManager().setMaxProtocolPathSize(Integer.MAX_VALUE);
             viaManager.getProtocolManager().setMaxPathDeltaIncrease(-1);
             viaManager.init();
-
-            try {
-                Class.forName("com.viaversion.viabackwards.api.ViaBackwardsPlatform");
-                new ViaBackwardsPlatform();
-                logger().log(Level.INFO, "Loaded ViaBackwards");
-            } catch (Exception e) {
-                logger().log(Level.INFO, "Failed to load ViaBackwards:");
-                e.printStackTrace();
-            }
-
-            try {
-                Class.forName("de.gerrygames.viarewind.api.ViaRewindPlatform");
-                new ViaRewindPlatform();
-                logger().log(Level.INFO, "Loaded ViaRewind");
-            } catch (Exception e) {
-                logger().log(Level.INFO, "Failed to load ViaRewind:");
-                e.printStackTrace();
-            }
         }).whenComplete((unused, throwable) -> {
             if (throwable != null) {
                 logger().log(Level.INFO, "Failed to load ViaProtocolHack:");
