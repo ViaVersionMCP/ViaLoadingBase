@@ -107,7 +107,7 @@ public class ViaVersionPlatform implements ViaPlatform<UUID> {
 
     @Override
     public boolean isProxy() {
-        return false;
+        return true;
     }
 
     @Override

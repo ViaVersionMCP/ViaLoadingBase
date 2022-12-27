@@ -51,34 +51,10 @@ public class ViaProtocolHack {
             final ViaManagerImpl viaManager = (ViaManagerImpl) Via.getManager();
 
             viaManager.addEnableListener(() -> {
-                try {
-                    Class.forName("com.viaversion.viabackwards.api.ViaBackwardsPlatform");
-                    new ViaBackwardsPlatform();
-                    logger().log(Level.INFO, "Loaded ViaBackwards");
-                } catch (Exception e) {
-                    if (e instanceof ClassNotFoundException) {
-                        logger().log(Level.INFO, "ViaBackwards is not provided");
-                    } else {
-                        logger().log(Level.INFO, "Failed to load ViaBackwards:");
-                        e.printStackTrace();
-                    }
-                }
-
-                try {
-                    Class.forName("de.gerrygames.viarewind.api.ViaRewindPlatform");
-                    new ViaRewindPlatform();
-                    logger().log(Level.INFO, "Loaded ViaRewind");
-                } catch (Exception e) {
-                    if (e instanceof ClassNotFoundException) {
-                        logger().log(Level.INFO, "ViaRewind is not provided");
-                    } else {
-                        logger().log(Level.INFO, "Failed to load ViaRewind:");
-                        e.printStackTrace();
-                    }
-                }
+                loadSubPlatform("ViaBackwards", "com.viaversion.viabackwards.api.ViaBackwardsPlatform", ViaBackwardsPlatform::new);
+                loadSubPlatform("ViaRewind", "de.gerrygames.viarewind.api.ViaRewindPlatform", ViaRewindPlatform::new);
             });
             MappingDataLoader.enableMappingsCache();
-
 
             viaManager.getProtocolManager().setMaxProtocolPathSize(Integer.MAX_VALUE);
             viaManager.getProtocolManager().setMaxPathDeltaIncrease(-1);
@@ -91,6 +67,21 @@ public class ViaProtocolHack {
                 logger().log(Level.INFO, "Loaded ViaProtocolHack");
             }
         });
+    }
+
+    private void loadSubPlatform(final String name, final String classPath, final Runnable runnable) {
+        try {
+            Class.forName(classPath);
+            runnable.run();
+            logger().log(Level.INFO, "Loaded " + name);
+        } catch (Exception e) {
+            if (e instanceof ClassNotFoundException) {
+                logger().log(Level.INFO, name + " is not provided");
+            } else {
+                logger().log(Level.INFO, "Failed to load " + name + ":");
+                e.printStackTrace();
+            }
+        }
     }
 
     public INativeProvider provider() {
