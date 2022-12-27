@@ -79,7 +79,7 @@ public class ViaProtocolHack {
         });
     }
 
-    private boolean hasClass(final String classPath) {
+    public static boolean hasClass(final String classPath) {
         try {
             Class.forName(classPath);
             return true;
@@ -88,15 +88,16 @@ public class ViaProtocolHack {
         }
     }
 
-    private void loadSubPlatform(final String name, final BooleanSupplier caller) {
+    public static void loadSubPlatform(final String name, final BooleanSupplier caller) {
+        final Logger logger = ViaProtocolHack.instance().logger();
         try {
             if (caller.getAsBoolean()) {
-                logger().log(Level.INFO, "Loaded " + name);
+                logger.log(Level.INFO, "Loaded " + name);
             } else {
-                logger().log(Level.WARNING, name + " is not provided at all?");
+                logger.log(Level.WARNING, name + " is not provided at all?");
             }
         } catch (Exception e) {
-            logger().log(Level.WARNING, "Failed to load " + name + ":");
+            logger.log(Level.WARNING, "Failed to load " + name + ":");
             e.printStackTrace();
         }
     }
