@@ -11,6 +11,7 @@ import de.florianmichael.viaprotocolhack.platform.ViaVersionPlatform;
 import de.florianmichael.viaprotocolhack.platform.viaversion.CustomViaInjector;
 import de.florianmichael.viaprotocolhack.util.JLoggerToLog4j;
 import de.florianmichael.viaprotocolhack.util.VersionList;
+import io.netty.channel.EventLoop;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
@@ -39,34 +40,31 @@ public class ViaProtocolHack {
             throw new RuntimeException(e);
         }
 
-        CompletableFuture.runAsync(() -> {
-            final ViaVersionPlatform platform = new ViaVersionPlatform(this.logger());
+        final CompletableFuture<Void> startup = new CompletableFuture<>();
+        final EventLoop eventLoop = provider().eventLoop(threadFactory(), executorService());
+        eventLoop.submit(startup::join);
 
-            final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new CustomViaInjector()).loader(new CustomViaProviders()).platform(platform);
-            provider().onBuildViaPlatform(builder);
+        final ViaVersionPlatform platform = new ViaVersionPlatform(this.logger());
 
-            Via.init(builder.build());
-            whenComplete.run();
+        final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new CustomViaInjector()).loader(new CustomViaProviders()).platform(platform);
+        provider().onBuildViaPlatform(builder);
 
-            final ViaManagerImpl viaManager = (ViaManagerImpl) Via.getManager();
+        Via.init(builder.build());
+        whenComplete.run();
 
-            viaManager.addEnableListener(() -> {
-                loadSubPlatform("ViaBackwards", "com.viaversion.viabackwards.api.ViaBackwardsPlatform", ViaBackwardsPlatform::new);
-                loadSubPlatform("ViaRewind", "de.gerrygames.viarewind.api.ViaRewindPlatform", ViaRewindPlatform::new);
-            });
-            MappingDataLoader.enableMappingsCache();
+        final ViaManagerImpl viaManager = (ViaManagerImpl) Via.getManager();
 
-            viaManager.getProtocolManager().setMaxProtocolPathSize(Integer.MAX_VALUE);
-            viaManager.getProtocolManager().setMaxPathDeltaIncrease(-1);
-            viaManager.init();
-        }).whenComplete((unused, throwable) -> {
-            if (throwable != null) {
-                logger().log(Level.INFO, "Failed to load ViaProtocolHack:");
-                throwable.printStackTrace();
-            } else {
-                logger().log(Level.INFO, "Loaded ViaProtocolHack");
-            }
+        viaManager.addEnableListener(() -> {
+            loadSubPlatform("ViaBackwards", "com.viaversion.viabackwards.api.ViaBackwardsPlatform", ViaBackwardsPlatform::new);
+            loadSubPlatform("ViaRewind", "de.gerrygames.viarewind.api.ViaRewindPlatform", ViaRewindPlatform::new);
         });
+        MappingDataLoader.enableMappingsCache();
+
+        viaManager.getProtocolManager().setMaxProtocolPathSize(Integer.MAX_VALUE);
+        viaManager.getProtocolManager().setMaxPathDeltaIncrease(-1);
+        viaManager.init();
+
+        startup.complete(null);
     }
 
     private void loadSubPlatform(final String name, final String classPath, final Runnable runnable) {
