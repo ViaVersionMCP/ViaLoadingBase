@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
 import java.util.concurrent.*;
+import java.util.function.BooleanSupplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -51,8 +52,17 @@ public class ViaProtocolHack {
             final ViaManagerImpl viaManager = (ViaManagerImpl) Via.getManager();
 
             viaManager.addEnableListener(() -> {
-                loadSubPlatform("ViaBackwards", "com.viaversion.viabackwards.api.ViaBackwardsPlatform", ViaBackwardsPlatform::new);
-                loadSubPlatform("ViaRewind", "de.gerrygames.viarewind.api.ViaRewindPlatform", ViaRewindPlatform::new);
+                loadSubPlatform("ViaBackwards", () -> {
+                    final boolean isBackwardsLoaded = hasClass("com.viaversion.viabackwards.api.ViaBackwardsPlatform");
+                    if (isBackwardsLoaded) new ViaBackwardsPlatform();
+                    return isBackwardsLoaded;
+                });
+
+                loadSubPlatform("ViaRewind", () -> {
+                    final boolean isRewindLoaded = hasClass("de.gerrygames.viarewind.api.ViaRewindPlatform");
+                    if (isRewindLoaded) new ViaRewindPlatform();
+                    return isRewindLoaded;
+                });
             });
             MappingDataLoader.enableMappingsCache();
 
@@ -69,18 +79,25 @@ public class ViaProtocolHack {
         });
     }
 
-    private void loadSubPlatform(final String name, final String classPath, final Runnable runnable) {
+    private boolean hasClass(final String classPath) {
         try {
             Class.forName(classPath);
-            runnable.run();
-            logger().log(Level.INFO, "Loaded " + name);
-        } catch (Exception e) {
-            if (e instanceof ClassNotFoundException) {
-                logger().log(Level.INFO, name + " is not provided");
+            return true;
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
+    private void loadSubPlatform(final String name, final BooleanSupplier caller) {
+        try {
+            if (caller.getAsBoolean()) {
+                logger().log(Level.INFO, "Loaded " + name);
             } else {
-                logger().log(Level.INFO, "Failed to load " + name + ":");
-                e.printStackTrace();
+                logger().log(Level.WARNING, name + " is not provided at all?");
             }
+        } catch (Exception e) {
+            logger().log(Level.WARNING, "Failed to load " + name + ":");
+            e.printStackTrace();
         }
     }
 
