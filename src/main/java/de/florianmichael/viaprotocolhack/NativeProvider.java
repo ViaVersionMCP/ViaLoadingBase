@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
 
-public interface INativeProvider {
+public interface NativeProvider {
 
     boolean isSinglePlayer();
     int nativeVersion();

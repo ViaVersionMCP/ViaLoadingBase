@@ -4,10 +4,10 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.viaversion.viaversion.ViaManagerImpl;
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.data.MappingDataLoader;
-import de.florianmichael.viaprotocolhack.platform.ViaRewindPlatform;
+import de.florianmichael.viaprotocolhack.platform.ViaRewindPlatformImpl;
 import de.florianmichael.viaprotocolhack.platform.viaversion.CustomViaProviders;
-import de.florianmichael.viaprotocolhack.platform.ViaBackwardsPlatform;
-import de.florianmichael.viaprotocolhack.platform.ViaVersionPlatform;
+import de.florianmichael.viaprotocolhack.platform.ViaBackwardsPlatformImpl;
+import de.florianmichael.viaprotocolhack.platform.ViaVersionPlatformImpl;
 import de.florianmichael.viaprotocolhack.platform.viaversion.CustomViaInjector;
 import de.florianmichael.viaprotocolhack.util.JLoggerToLog4j;
 import de.florianmichael.viaprotocolhack.util.VersionList;
@@ -27,10 +27,10 @@ public class ViaProtocolHack {
 
     private final Logger logger = new JLoggerToLog4j(LogManager.getLogger("ViaProtocolHack"));
 
-    private INativeProvider provider;
+    private NativeProvider provider;
     private File directory;
 
-    public void init(final INativeProvider provider, final Runnable whenComplete) {
+    public void init(final NativeProvider provider, final Runnable whenComplete) {
         this.provider = provider;
         this.directory = new File(this.provider.run(), "ViaProtocolHack");
 
@@ -41,7 +41,7 @@ public class ViaProtocolHack {
         }
 
         CompletableFuture.runAsync(() -> {
-            final ViaVersionPlatform platform = new ViaVersionPlatform(this.logger());
+            final ViaVersionPlatformImpl platform = new ViaVersionPlatformImpl(this.logger());
 
             final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new CustomViaInjector()).loader(new CustomViaProviders()).platform(platform);
             provider().onBuildViaPlatform(builder);
@@ -54,13 +54,13 @@ public class ViaProtocolHack {
             viaManager.addEnableListener(() -> {
                 loadSubPlatform("ViaBackwards", () -> {
                     final boolean isBackwardsLoaded = hasClass("com.viaversion.viabackwards.api.ViaBackwardsPlatform");
-                    if (isBackwardsLoaded) new ViaBackwardsPlatform();
+                    if (isBackwardsLoaded) new ViaBackwardsPlatformImpl();
                     return isBackwardsLoaded;
                 });
 
                 loadSubPlatform("ViaRewind", () -> {
                     final boolean isRewindLoaded = hasClass("de.gerrygames.viarewind.api.ViaRewindPlatform");
-                    if (isRewindLoaded) new ViaRewindPlatform();
+                    if (isRewindLoaded) new ViaRewindPlatformImpl();
                     return isRewindLoaded;
                 });
             });
@@ -102,7 +102,7 @@ public class ViaProtocolHack {
         }
     }
 
-    public INativeProvider provider() {
+    public NativeProvider provider() {
         return provider;
     }
 

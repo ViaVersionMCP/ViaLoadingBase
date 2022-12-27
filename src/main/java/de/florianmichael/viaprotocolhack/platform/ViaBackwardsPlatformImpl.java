@@ -1,13 +1,14 @@
 package de.florianmichael.viaprotocolhack.platform;
 
+import com.viaversion.viabackwards.api.ViaBackwardsPlatform;
 import de.florianmichael.viaprotocolhack.ViaProtocolHack;
 
 import java.io.File;
 import java.util.logging.Logger;
 
-public class ViaBackwardsPlatform implements com.viaversion.viabackwards.api.ViaBackwardsPlatform {
+public class ViaBackwardsPlatformImpl implements ViaBackwardsPlatform {
 
-    public ViaBackwardsPlatform() {
+    public ViaBackwardsPlatformImpl() {
         this.init(ViaProtocolHack.instance().directory());
     }
 

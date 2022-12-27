@@ -24,14 +24,14 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-public class ViaVersionPlatform implements ViaPlatform<UUID> {
+public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
     private final ViaAPI<UUID> api = new CustomViaAPIWrapper();
 
     private final Logger logger;
     private final CustomViaConfig config;
 
-    public ViaVersionPlatform(final Logger logger) {
+    public ViaVersionPlatformImpl(final Logger logger) {
         this.logger = logger;
         config = new CustomViaConfig(new File(ViaProtocolHack.instance().directory(), "viaversion.yml"));
     }

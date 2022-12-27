@@ -49,7 +49,7 @@ import com.viaversion.viaversion.commands.ViaCommandHandler;
 import com.viaversion.viaversion.libs.gson.JsonObject;
 import com.viaversion.viaversion.protocols.base.BaseVersionProvider;
 import com.viaversion.viaversion.protocols.protocol1_9to1_8.providers.MovementTransmitterProvider;
-import de.florianmichael.viaprotocolhack.INativeProvider;
+import de.florianmichael.viaprotocolhack.NativeProvider;
 import de.florianmichael.viaprotocolhack.ViaProtocolHack;
 
 import java.io.File;
