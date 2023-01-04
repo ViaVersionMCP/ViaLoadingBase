@@ -4,61 +4,105 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.viaversion.viaversion.ViaManagerImpl;
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.data.MappingDataLoader;
-import de.florianmichael.viaprotocolhack.platform.CustomViaProviders;
-import de.florianmichael.viaprotocolhack.platform.ViaBackwardsPlatform;
-import de.florianmichael.viaprotocolhack.platform.ViaVersionPlatform;
+import de.florianmichael.viaprotocolhack.platform.ViaRewindPlatformImpl;
+import de.florianmichael.viaprotocolhack.platform.viaversion.CustomViaProviders;
+import de.florianmichael.viaprotocolhack.platform.ViaBackwardsPlatformImpl;
+import de.florianmichael.viaprotocolhack.platform.ViaVersionPlatformImpl;
 import de.florianmichael.viaprotocolhack.platform.viaversion.CustomViaInjector;
-import de.florianmichael.viaprotocolhack.util.JLoggerToLog4J;
+import de.florianmichael.viaprotocolhack.util.JLoggerToLog4j;
 import de.florianmichael.viaprotocolhack.util.VersionList;
-import io.netty.channel.DefaultEventLoop;
-import io.netty.channel.EventLoop;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
+import java.util.function.BooleanSupplier;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ViaProtocolHack {
     private final static ViaProtocolHack instance = new ViaProtocolHack();
 
-    private final ExecutorService executorService = Executors.newFixedThreadPool(8, new ThreadFactoryBuilder().setDaemon(true).setNameFormat("ViaProtocolHack-%d").build());
-    private final EventLoop eventLoop = new DefaultEventLoop(executorService);
-    private final Logger logger = new JLoggerToLog4J(LogManager.getLogger("ViaProtocolHack"));
+    private final ThreadFactory threadFactory = new ThreadFactoryBuilder().setDaemon(true).setNameFormat("ViaProtocolHack-%d").build();
+    private final ExecutorService executorService = Executors.newFixedThreadPool(8, threadFactory);
 
-    private INativeProvider provider;
+    private final Logger logger = new JLoggerToLog4j(LogManager.getLogger("ViaProtocolHack"));
+
+    private NativeProvider provider;
     private File directory;
 
-    public void init(final INativeProvider provider, final Runnable whenComplete) throws Exception {
+    public void init(final NativeProvider provider, final Runnable whenComplete) {
         this.provider = provider;
         this.directory = new File(this.provider.run(), "ViaProtocolHack");
 
-        VersionList.registerProtocols();
+        try {
+            VersionList.registerProtocols();
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
 
         CompletableFuture.runAsync(() -> {
-            final ViaVersionPlatform platform = new ViaVersionPlatform(this.logger());
+            final ViaVersionPlatformImpl platform = new ViaVersionPlatformImpl(this.logger());
 
             final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new CustomViaInjector()).loader(new CustomViaProviders()).platform(platform);
-
-            if (provider().commandHandler().isPresent()) {
-                builder.commandHandler(provider().commandHandler().get());
-            }
+            provider().onBuildViaPlatform(builder);
 
             Via.init(builder.build());
-            MappingDataLoader.enableMappingsCache();
+            whenComplete.run();
 
             final ViaManagerImpl viaManager = (ViaManagerImpl) Via.getManager();
+
+            viaManager.addEnableListener(() -> {
+                loadSubPlatform("ViaBackwards", () -> {
+                    final boolean isBackwardsLoaded = hasClass("com.viaversion.viabackwards.api.ViaBackwardsPlatform");
+                    if (isBackwardsLoaded) new ViaBackwardsPlatformImpl();
+                    return isBackwardsLoaded;
+                });
+
+                loadSubPlatform("ViaRewind", () -> {
+                    final boolean isRewindLoaded = hasClass("de.gerrygames.viarewind.api.ViaRewindPlatform");
+                    if (isRewindLoaded) new ViaRewindPlatformImpl();
+                    return isRewindLoaded;
+                });
+            });
+            MappingDataLoader.enableMappingsCache();
 
             viaManager.getProtocolManager().setMaxProtocolPathSize(Integer.MAX_VALUE);
             viaManager.getProtocolManager().setMaxPathDeltaIncrease(-1);
             viaManager.init();
-
-            new ViaBackwardsPlatform();
-        }).whenComplete((unused, throwable) -> whenComplete.run());
+        }).whenComplete((unused, throwable) -> {
+            if (throwable != null) {
+                logger().log(Level.INFO, "Failed to load ViaProtocolHack:");
+                throwable.printStackTrace();
+            } else {
+                logger().log(Level.INFO, "Loaded ViaProtocolHack");
+            }
+        });
     }
 
-    public INativeProvider provider() {
+    public static boolean hasClass(final String classPath) {
+        try {
+            Class.forName(classPath);
+            return true;
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
+    public static void loadSubPlatform(final String name, final BooleanSupplier caller) {
+        final Logger logger = ViaProtocolHack.instance().logger();
+        try {
+            if (caller.getAsBoolean()) {
+                logger.log(Level.INFO, "Loaded " + name);
+            } else {
+                logger.log(Level.WARNING, name + " is not provided at all?");
+            }
+        } catch (Exception e) {
+            logger.log(Level.WARNING, "Failed to load " + name + ":");
+            e.printStackTrace();
+        }
+    }
+
+    public NativeProvider provider() {
         return provider;
     }
 
@@ -66,12 +110,12 @@ public class ViaProtocolHack {
         return directory;
     }
 
-    public ExecutorService executorService() {
-        return executorService;
+    public ThreadFactory threadFactory() {
+        return threadFactory;
     }
 
-    public EventLoop eventLoop() {
-        return eventLoop;
+    public ExecutorService executorService() {
+        return executorService;
     }
 
     public Logger logger() {

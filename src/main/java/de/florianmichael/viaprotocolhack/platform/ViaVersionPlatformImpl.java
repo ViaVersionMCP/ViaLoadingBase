@@ -24,24 +24,25 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-public class ViaVersionPlatform implements ViaPlatform<UUID> {
+public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
-    private final Logger logger;
     private final ViaAPI<UUID> api = new CustomViaAPIWrapper();
 
-    private CustomViaConfig config;
+    private final Logger logger;
+    private final CustomViaConfig config;
 
-    public ViaVersionPlatform(final Logger logger) {
+    public ViaVersionPlatformImpl(final Logger logger) {
         this.logger = logger;
-        config = new CustomViaConfig(ViaProtocolHack.instance().directory().toPath().resolve("viaversion.yml").toFile());
+        config = new CustomViaConfig(new File(ViaProtocolHack.instance().directory(), "viaversion.yml"));
     }
 
     @Override
     public FutureTaskId runAsync(Runnable runnable) {
         return new FutureTaskId(CompletableFuture.runAsync(runnable, ViaProtocolHack.instance().executorService())
                 .exceptionally(throwable -> {
-                    if (!(throwable instanceof CancellationException))
+                    if (!(throwable instanceof CancellationException)) {
                         throwable.printStackTrace();
+                    }
 
                     return null;
                 }));
@@ -49,13 +50,18 @@ public class ViaVersionPlatform implements ViaPlatform<UUID> {
 
     @Override
     public PlatformTask<?> runSync(Runnable runnable) {
-        return new FutureTaskId(ViaProtocolHack.instance().eventLoop().submit(runnable).addListener(errorLogger()));
+        return new FutureTaskId(ViaProtocolHack.instance().provider().eventLoop(
+                ViaProtocolHack.instance().threadFactory(),
+                ViaProtocolHack.instance().executorService()
+        ).submit(runnable).addListener(errorLogger()));
     }
 
     @Override
     public FutureTaskId runSync(Runnable runnable, long ticks) {
-        // ViaVersion seems to not need to run delayed tasks on main thread
-        return new FutureTaskId(ViaProtocolHack.instance().eventLoop()
+        return new FutureTaskId(ViaProtocolHack.instance().provider().eventLoop(
+                        ViaProtocolHack.instance().threadFactory(),
+                        ViaProtocolHack.instance().executorService()
+                )
                 .schedule(() -> runSync(runnable), ticks * 50, TimeUnit.MILLISECONDS)
                 .addListener(errorLogger())
         );
@@ -63,8 +69,10 @@ public class ViaVersionPlatform implements ViaPlatform<UUID> {
 
     @Override
     public FutureTaskId runRepeatingSync(Runnable runnable, long ticks) {
-        // ViaVersion seems to not need to run repeating tasks on main thread
-        return new FutureTaskId(ViaProtocolHack.instance().eventLoop()
+        return new FutureTaskId(ViaProtocolHack.instance().provider().eventLoop(
+                        ViaProtocolHack.instance().threadFactory(),
+                        ViaProtocolHack.instance().executorService()
+                )
                 .scheduleAtFixedRate(() -> runSync(runnable), 0, ticks * 50, TimeUnit.MILLISECONDS)
                 .addListener(errorLogger())
         );
@@ -128,7 +136,7 @@ public class ViaVersionPlatform implements ViaPlatform<UUID> {
 
     @Override
     public String getPluginVersion() {
-        return "4.5.0-22w42a-SNAPSHOT";
+        return "4.5.2-SNAPSHOT";
     }
 
     @Override

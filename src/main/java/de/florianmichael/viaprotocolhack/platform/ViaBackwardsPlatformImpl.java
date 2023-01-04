@@ -1,15 +1,15 @@
 package de.florianmichael.viaprotocolhack.platform;
 
+import com.viaversion.viabackwards.api.ViaBackwardsPlatform;
 import de.florianmichael.viaprotocolhack.ViaProtocolHack;
 
 import java.io.File;
 import java.util.logging.Logger;
 
-public class ViaBackwardsPlatform implements com.viaversion.viabackwards.api.ViaBackwardsPlatform {
-    private final File file;
+public class ViaBackwardsPlatformImpl implements ViaBackwardsPlatform {
 
-    public ViaBackwardsPlatform() {
-        this.init(this.file = new File(ViaProtocolHack.instance().directory(), "ViaBackwards"));
+    public ViaBackwardsPlatformImpl() {
+        this.init(ViaProtocolHack.instance().directory());
     }
 
     @Override
@@ -28,6 +28,6 @@ public class ViaBackwardsPlatform implements com.viaversion.viabackwards.api.Via
 
     @Override
     public File getDataFolder() {
-        return new File(this.file, "viabackwards.yml");
+        return new File(ViaProtocolHack.instance().directory(), "viabackwards.yml");
     }
 }
