@@ -1,4 +1,4 @@
-package de.florianmichael.viaprotocolhack.platform.viaversion;
+package de.florianmichael.vialoadingbase.platform.viaversion;
 
 import com.viaversion.viaversion.configuration.AbstractViaConfig;
 

@@ -1,4 +1,4 @@
-package de.florianmichael.viaprotocolhack.util;
+package de.florianmichael.vialoadingbase.util;
 
 import com.viaversion.viaversion.api.platform.PlatformTask;
 

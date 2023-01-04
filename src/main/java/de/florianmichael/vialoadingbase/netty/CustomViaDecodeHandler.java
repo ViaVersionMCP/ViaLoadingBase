@@ -1,4 +1,4 @@
-package de.florianmichael.viaprotocolhack.netty;
+package de.florianmichael.vialoadingbase.netty;
 
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.connection.UserConnection;
@@ -7,9 +7,8 @@ import com.viaversion.viaversion.exception.CancelCodecException;
 import com.viaversion.viaversion.exception.CancelDecoderException;
 import com.viaversion.viaversion.exception.InformativeException;
 import com.viaversion.viaversion.util.PipelineUtil;
-import de.florianmichael.viaprotocolhack.ViaProtocolHack;
-import de.florianmichael.viaprotocolhack.event.PipelineReorderEvent;
-import de.florianmichael.viaprotocolhack.netty.NettyConstants;
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
+import de.florianmichael.vialoadingbase.event.PipelineReorderEvent;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -48,7 +47,7 @@ public class CustomViaDecodeHandler extends MessageToMessageDecoder<ByteBuf> {
     }
 
     private void reorder(ChannelHandlerContext ctx) {
-        final String[] order = ViaProtocolHack.instance().provider().nettyOrder();
+        final String[] order = ViaLoadingBase.instance().provider().nettyOrder();
 
         final int decoderIndex = ctx.pipeline().names().indexOf(order[0]);
         if (decoderIndex == -1) return;

@@ -1,16 +1,16 @@
-package de.florianmichael.viaprotocolhack;
+package de.florianmichael.vialoadingbase;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.viaversion.viaversion.ViaManagerImpl;
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.data.MappingDataLoader;
-import de.florianmichael.viaprotocolhack.platform.ViaRewindPlatformImpl;
-import de.florianmichael.viaprotocolhack.platform.viaversion.CustomViaProviders;
-import de.florianmichael.viaprotocolhack.platform.ViaBackwardsPlatformImpl;
-import de.florianmichael.viaprotocolhack.platform.ViaVersionPlatformImpl;
-import de.florianmichael.viaprotocolhack.platform.viaversion.CustomViaInjector;
-import de.florianmichael.viaprotocolhack.util.JLoggerToLog4j;
-import de.florianmichael.viaprotocolhack.util.VersionList;
+import de.florianmichael.vialoadingbase.platform.ViaRewindPlatformImpl;
+import de.florianmichael.vialoadingbase.platform.viaversion.CustomViaProviders;
+import de.florianmichael.vialoadingbase.platform.ViaBackwardsPlatformImpl;
+import de.florianmichael.vialoadingbase.platform.ViaVersionPlatformImpl;
+import de.florianmichael.vialoadingbase.platform.viaversion.CustomViaInjector;
+import de.florianmichael.vialoadingbase.util.JLoggerToLog4j;
+import de.florianmichael.vialoadingbase.util.VersionList;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
@@ -19,20 +19,20 @@ import java.util.function.BooleanSupplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ViaProtocolHack {
-    private final static ViaProtocolHack instance = new ViaProtocolHack();
+public class ViaLoadingBase {
+    private final static ViaLoadingBase instance = new ViaLoadingBase();
 
-    private final ThreadFactory threadFactory = new ThreadFactoryBuilder().setDaemon(true).setNameFormat("ViaProtocolHack-%d").build();
+    private final ThreadFactory threadFactory = new ThreadFactoryBuilder().setDaemon(true).setNameFormat("ViaLoadingBase-%d").build();
     private final ExecutorService executorService = Executors.newFixedThreadPool(8, threadFactory);
 
-    private final Logger logger = new JLoggerToLog4j(LogManager.getLogger("ViaProtocolHack"));
+    private final Logger logger = new JLoggerToLog4j(LogManager.getLogger("ViaLoadingBase"));
 
     private NativeProvider provider;
     private File directory;
 
-    public void init(final NativeProvider provider, final Runnable whenComplete) {
+    public void init(final NativeProvider provider, final Runnable onLoadSubPlatforms) {
         this.provider = provider;
-        this.directory = new File(this.provider.run(), "ViaProtocolHack");
+        this.directory = new File(this.provider.run(), "ViaLoadingBase");
 
         try {
             VersionList.registerProtocols();
@@ -47,7 +47,6 @@ public class ViaProtocolHack {
             provider().onBuildViaPlatform(builder);
 
             Via.init(builder.build());
-            whenComplete.run();
 
             final ViaManagerImpl viaManager = (ViaManagerImpl) Via.getManager();
 
@@ -63,6 +62,8 @@ public class ViaProtocolHack {
                     if (isRewindLoaded) new ViaRewindPlatformImpl();
                     return isRewindLoaded;
                 });
+
+                onLoadSubPlatforms.run();
             });
             MappingDataLoader.enableMappingsCache();
 
@@ -71,10 +72,10 @@ public class ViaProtocolHack {
             viaManager.init();
         }).whenComplete((unused, throwable) -> {
             if (throwable != null) {
-                logger().log(Level.INFO, "Failed to load ViaProtocolHack:");
+                logger().log(Level.INFO, "Failed to load ViaLoadingBase:");
                 throwable.printStackTrace();
             } else {
-                logger().log(Level.INFO, "Loaded ViaProtocolHack");
+                logger().log(Level.INFO, "Loaded ViaLoadingBase");
             }
         });
     }
@@ -89,7 +90,7 @@ public class ViaProtocolHack {
     }
 
     public static void loadSubPlatform(final String name, final BooleanSupplier caller) {
-        final Logger logger = ViaProtocolHack.instance().logger();
+        final Logger logger = ViaLoadingBase.instance().logger();
         try {
             if (caller.getAsBoolean()) {
                 logger.log(Level.INFO, "Loaded " + name);
@@ -122,7 +123,7 @@ public class ViaProtocolHack {
         return logger;
     }
 
-    public static ViaProtocolHack instance() {
+    public static ViaLoadingBase instance() {
         return instance;
     }
 }

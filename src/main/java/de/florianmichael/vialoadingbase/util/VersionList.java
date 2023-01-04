@@ -12,10 +12,10 @@
  * The owner "Florian Michael" is free to change this license.
  */
 
-package de.florianmichael.viaprotocolhack.util;
+package de.florianmichael.vialoadingbase.util;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
-import de.florianmichael.viaprotocolhack.ViaProtocolHack;
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -40,7 +40,7 @@ public class VersionList {
         }
         Collections.reverse(PROTOCOLS);
 
-        for (ProtocolVersion protocolVersion : ViaProtocolHack.instance().provider().getOptionalProtocols()) {
+        for (ProtocolVersion protocolVersion : ViaLoadingBase.instance().provider().getOptionalProtocols()) {
             PROTOCOLS.removeIf(version -> version.getVersion() == protocolVersion.getVersion());
             PROTOCOLS.add(protocolVersion);
         }
@@ -51,23 +51,23 @@ public class VersionList {
     }
 
     public static boolean isEqualTo(final ProtocolVersion protocolVersion) {
-        return Objects.equals(INDEXED_TRACKER.get(ViaProtocolHack.instance().provider().getClientsideVersion()), INDEXED_TRACKER.get(protocolVersion.getVersion()));
+        return Objects.equals(INDEXED_TRACKER.get(ViaLoadingBase.instance().provider().getClientsideVersion()), INDEXED_TRACKER.get(protocolVersion.getVersion()));
     }
 
     public static boolean isOlderOrEqualTo(final ProtocolVersion protocolVersion) {
-        return INDEXED_TRACKER.get(ViaProtocolHack.instance().provider().getClientsideVersion()) <= INDEXED_TRACKER.get(protocolVersion.getVersion());
+        return INDEXED_TRACKER.get(ViaLoadingBase.instance().provider().getClientsideVersion()) <= INDEXED_TRACKER.get(protocolVersion.getVersion());
     }
 
     public static boolean isOlderTo(final ProtocolVersion protocolVersion) {
-        return INDEXED_TRACKER.get(ViaProtocolHack.instance().provider().getClientsideVersion()) < INDEXED_TRACKER.get(protocolVersion.getVersion());
+        return INDEXED_TRACKER.get(ViaLoadingBase.instance().provider().getClientsideVersion()) < INDEXED_TRACKER.get(protocolVersion.getVersion());
     }
 
     public static boolean isNewerTo(final ProtocolVersion protocolVersion) {
-        return INDEXED_TRACKER.get(ViaProtocolHack.instance().provider().getClientsideVersion()) > INDEXED_TRACKER.get(protocolVersion.getVersion());
+        return INDEXED_TRACKER.get(ViaLoadingBase.instance().provider().getClientsideVersion()) > INDEXED_TRACKER.get(protocolVersion.getVersion());
     }
 
     public static boolean isNewerOrEqualTo(final ProtocolVersion protocolVersion) {
-        return INDEXED_TRACKER.get(ViaProtocolHack.instance().provider().getClientsideVersion()) >= INDEXED_TRACKER.get(protocolVersion.getVersion());
+        return INDEXED_TRACKER.get(ViaLoadingBase.instance().provider().getClientsideVersion()) >= INDEXED_TRACKER.get(protocolVersion.getVersion());
     }
 
     @Deprecated

@@ -1,4 +1,4 @@
-package de.florianmichael.viaprotocolhack.util;
+package de.florianmichael.vialoadingbase.util;
 
 import java.text.MessageFormat;
 import java.util.logging.Level;

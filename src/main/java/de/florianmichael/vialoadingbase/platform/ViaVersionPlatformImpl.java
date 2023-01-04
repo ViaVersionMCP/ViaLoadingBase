@@ -1,4 +1,4 @@
-package de.florianmichael.viaprotocolhack.platform;
+package de.florianmichael.vialoadingbase.platform;
 
 import com.viaversion.viaversion.api.ViaAPI;
 import com.viaversion.viaversion.api.command.ViaCommandSender;
@@ -9,10 +9,10 @@ import com.viaversion.viaversion.api.platform.PlatformTask;
 import com.viaversion.viaversion.api.platform.UnsupportedSoftware;
 import com.viaversion.viaversion.api.platform.ViaPlatform;
 import com.viaversion.viaversion.libs.gson.JsonObject;
-import de.florianmichael.viaprotocolhack.ViaProtocolHack;
-import de.florianmichael.viaprotocolhack.platform.viaversion.CustomViaAPIWrapper;
-import de.florianmichael.viaprotocolhack.platform.viaversion.CustomViaConfig;
-import de.florianmichael.viaprotocolhack.util.FutureTaskId;
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
+import de.florianmichael.vialoadingbase.platform.viaversion.CustomViaAPIWrapper;
+import de.florianmichael.vialoadingbase.platform.viaversion.CustomViaConfig;
+import de.florianmichael.vialoadingbase.util.FutureTaskId;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
@@ -33,12 +33,12 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
     public ViaVersionPlatformImpl(final Logger logger) {
         this.logger = logger;
-        config = new CustomViaConfig(new File(ViaProtocolHack.instance().directory(), "viaversion.yml"));
+        config = new CustomViaConfig(new File(ViaLoadingBase.instance().directory(), "viaversion.yml"));
     }
 
     @Override
     public FutureTaskId runAsync(Runnable runnable) {
-        return new FutureTaskId(CompletableFuture.runAsync(runnable, ViaProtocolHack.instance().executorService())
+        return new FutureTaskId(CompletableFuture.runAsync(runnable, ViaLoadingBase.instance().executorService())
                 .exceptionally(throwable -> {
                     if (!(throwable instanceof CancellationException)) {
                         throwable.printStackTrace();
@@ -50,17 +50,17 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
     @Override
     public PlatformTask<?> runSync(Runnable runnable) {
-        return new FutureTaskId(ViaProtocolHack.instance().provider().eventLoop(
-                ViaProtocolHack.instance().threadFactory(),
-                ViaProtocolHack.instance().executorService()
+        return new FutureTaskId(ViaLoadingBase.instance().provider().eventLoop(
+                ViaLoadingBase.instance().threadFactory(),
+                ViaLoadingBase.instance().executorService()
         ).submit(runnable).addListener(errorLogger()));
     }
 
     @Override
     public FutureTaskId runSync(Runnable runnable, long ticks) {
-        return new FutureTaskId(ViaProtocolHack.instance().provider().eventLoop(
-                        ViaProtocolHack.instance().threadFactory(),
-                        ViaProtocolHack.instance().executorService()
+        return new FutureTaskId(ViaLoadingBase.instance().provider().eventLoop(
+                        ViaLoadingBase.instance().threadFactory(),
+                        ViaLoadingBase.instance().executorService()
                 )
                 .schedule(() -> runSync(runnable), ticks * 50, TimeUnit.MILLISECONDS)
                 .addListener(errorLogger())
@@ -69,9 +69,9 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
     @Override
     public FutureTaskId runRepeatingSync(Runnable runnable, long ticks) {
-        return new FutureTaskId(ViaProtocolHack.instance().provider().eventLoop(
-                        ViaProtocolHack.instance().threadFactory(),
-                        ViaProtocolHack.instance().executorService()
+        return new FutureTaskId(ViaLoadingBase.instance().provider().eventLoop(
+                        ViaLoadingBase.instance().threadFactory(),
+                        ViaLoadingBase.instance().executorService()
                 )
                 .scheduleAtFixedRate(() -> runSync(runnable), 0, ticks * 50, TimeUnit.MILLISECONDS)
                 .addListener(errorLogger())
@@ -131,7 +131,7 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
     @Override
     public File getDataFolder() {
-        return ViaProtocolHack.instance().directory();
+        return ViaLoadingBase.instance().directory();
     }
 
     @Override
@@ -141,7 +141,7 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
     @Override
     public String getPlatformName() {
-        return "ViaProtocolHack by FlorianMichael";
+        return "ViaLoadingBase by FlorianMichael";
     }
 
     @Override
@@ -176,6 +176,6 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
     @Override
     public JsonObject getDump() {
-        return ViaProtocolHack.instance().provider().createDump();
+        return ViaLoadingBase.instance().provider().createDump();
     }
 }

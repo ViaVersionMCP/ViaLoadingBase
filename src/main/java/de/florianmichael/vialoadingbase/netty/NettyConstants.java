@@ -1,4 +1,4 @@
-package de.florianmichael.viaprotocolhack.netty;
+package de.florianmichael.vialoadingbase.netty;
 
 public class NettyConstants {
 

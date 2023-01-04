@@ -1,13 +1,13 @@
-package de.florianmichael.viaprotocolhack.provider;
+package de.florianmichael.vialoadingbase.provider;
 
 import com.viaversion.viaversion.api.connection.UserConnection;
 import com.viaversion.viaversion.protocols.base.BaseVersionProvider;
-import de.florianmichael.viaprotocolhack.ViaProtocolHack;
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
 
 public class DefaultVersionProvider extends BaseVersionProvider {
 
     public int getVersion() {
-        return ViaProtocolHack.instance().provider().getClientsideVersion();
+        return ViaLoadingBase.instance().provider().getClientsideVersion();
     }
 
     @Override

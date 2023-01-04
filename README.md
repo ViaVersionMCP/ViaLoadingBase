@@ -1,4 +1,4 @@
-# ViaProtocolHack
+# ViaLoadingBase
 Universal ViaVersion standalone implementation
 
 ## Projects where this is used:
@@ -22,7 +22,7 @@ var viaLibs = [
         "com.viaversion:viarewind-core:latest.integration",
         "org.yaml:snakeyaml:1.29",
         
-        "com.github.RejectedVia:ViaProtocolHack:<newest version (checkout jitpack.io for that)>"
+        "com.github.FlorianMichael:ViaLoadingBase:<newest version (checkout jitpack.io for that)>"
 ]
 
 dependencies {
@@ -39,6 +39,7 @@ A `1.8.x` Minecraft client for example would need `ViaVersion + ViaBackwards + V
 A `1.12.x` Minecraft client for example would need `ViaVersion + ViaBackwards`. <br>
 A `1.19.x` Minecraft client, for example, would need `ViaVersion`. <br>
 ## Example implementation:
+
 ```java
 import com.viaversion.viaversion.api.connection.UserConnection;
 import com.viaversion.viaversion.api.platform.providers.ViaProviders;
@@ -49,8 +50,8 @@ import com.viaversion.viaversion.commands.ViaCommandHandler;
 import com.viaversion.viaversion.libs.gson.JsonObject;
 import com.viaversion.viaversion.protocols.base.BaseVersionProvider;
 import com.viaversion.viaversion.protocols.protocol1_9to1_8.providers.MovementTransmitterProvider;
-import de.florianmichael.viaprotocolhack.NativeProvider;
-import de.florianmichael.viaprotocolhack.ViaProtocolHack;
+import de.florianmichael.vialoadingbase.NativeProvider;
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
 
 import java.io.File;
 import java.util.List;
@@ -59,8 +60,8 @@ import java.util.Optional;
 public class Test implements INativeProvider {
 
     public void main() throws Exception {
-        ViaProtocolHack.instance().init(this, () -> {
-            System.out.println("ViaProtocolHack is finished");
+        ViaLoadingBase.instance().init(this, () -> {
+            System.out.println("ViaLoadingBase is finished");
         });
     }
 
@@ -73,7 +74,7 @@ public class Test implements INativeProvider {
     public int nativeVersion() {
         return 47; // native Version of your Client
     }
-    
+
     @Override
     public int realClientsideVersion() {
         return 47; // the target version you want to connect
@@ -81,7 +82,7 @@ public class Test implements INativeProvider {
 
     @Override
     public String[] nettyOrder() {
-        return new String[] {
+        return new String[]{
                 "decompress",
                 "compress"
         }; // namings of Minecraft's compressing and decompressing from the pipeline
@@ -104,11 +105,11 @@ public class Test implements INativeProvider {
     public EventLoop eventLoop(final ThreadFactory threadFactory, final ExecutorService executorService) {
         // For Netty above 4.1.x, (>= Minecraft 1.12.2)
         return new DefaultEventLoop(executorService);
-        
+
         // For Netty older than 4.0.x (< Minecraft 1.12.2 && > Minecraft 1.6.4)
         return new LocalEventLoopGroup(1, threadFactory).next();
     }
-    
+
     @Override // default: BasicVersionProvider and completely unlegit Movement Transmitter by Via TM 
     public void createProviders(ViaProviders providers) {
         super.createProviders(providers);
@@ -117,7 +118,7 @@ public class Test implements INativeProvider {
     @Override
     public void onBuildViaPlatform(ViaManagerImpl.ViaManagerBuilder builder) {
     }
-    
+
     @Override // default: null
     public List<ProtocolVersion> getOptionalProtocols() {
         return null; // in case you want custom protocols like 1.7

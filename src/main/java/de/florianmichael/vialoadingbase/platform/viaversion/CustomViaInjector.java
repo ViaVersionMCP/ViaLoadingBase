@@ -1,12 +1,12 @@
-package de.florianmichael.viaprotocolhack.platform.viaversion;
+package de.florianmichael.vialoadingbase.platform.viaversion;
 
 import com.viaversion.viaversion.api.platform.ViaInjector;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import com.viaversion.viaversion.libs.fastutil.ints.IntLinkedOpenHashSet;
 import com.viaversion.viaversion.libs.fastutil.ints.IntSortedSet;
 import com.viaversion.viaversion.libs.gson.JsonObject;
-import de.florianmichael.viaprotocolhack.netty.NettyConstants;
-import de.florianmichael.viaprotocolhack.util.VersionList;
+import de.florianmichael.vialoadingbase.netty.NettyConstants;
+import de.florianmichael.vialoadingbase.util.VersionList;
 
 public class CustomViaInjector implements ViaInjector {
 

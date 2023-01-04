@@ -1,4 +1,4 @@
-package de.florianmichael.viaprotocolhack.netty;
+package de.florianmichael.vialoadingbase.netty;
 
 import com.viaversion.viaversion.api.connection.UserConnection;
 import com.viaversion.viaversion.exception.CancelCodecException;
