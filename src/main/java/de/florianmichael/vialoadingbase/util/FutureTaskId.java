@@ -1,3 +1,4 @@
+
 package de.florianmichael.vialoadingbase.util;
 
 import com.viaversion.viaversion.api.platform.PlatformTask;
@@ -21,4 +22,5 @@ public class FutureTaskId implements PlatformTask<Future<?>> {
     public void cancel() {
         object.cancel(false);
     }
+
 }

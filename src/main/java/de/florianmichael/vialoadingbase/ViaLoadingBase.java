@@ -12,6 +12,7 @@ import de.florianmichael.vialoadingbase.platform.ViaVersionPlatformImpl;
 import de.florianmichael.vialoadingbase.platform.viaversion.CustomViaInjector;
 import de.florianmichael.vialoadingbase.util.JLoggerToLog4j;
 import de.florianmichael.vialoadingbase.util.VersionListEnum;
+import io.netty.channel.EventLoop;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
@@ -25,7 +26,7 @@ public class ViaLoadingBase {
     private final static ViaLoadingBase instance = new ViaLoadingBase();
 
     private final ThreadFactory threadFactory = new ThreadFactoryBuilder().setDaemon(true).setNameFormat("ViaLoadingBase-%d").build();
-    private final ExecutorService executorService = Executors.newFixedThreadPool(8, threadFactory);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), threadFactory);
 
     private final Logger logger = new JLoggerToLog4j(LogManager.getLogger("ViaLoadingBase"));
 
@@ -42,6 +43,10 @@ public class ViaLoadingBase {
         return ViaLoadingBase.instance().targetVersion;
     }
 
+    public EventLoop getEventLoop() {
+        return provider.eventLoop(threadFactory, executorService);
+    }
+
     public void init(final NativeProvider provider, final Runnable onLoadSubPlatforms) {
         this.provider = provider;
         this.directory = new File(this.provider.run(), "ViaLoadingBase");
@@ -49,7 +54,7 @@ public class ViaLoadingBase {
         final ViaVersionPlatformImpl platform = new ViaVersionPlatformImpl(this.logger());
 
         final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new CustomViaInjector()).loader(new CustomViaProviders()).platform(platform);
-        provider().createViaPlatform(builder);
+        provider.createViaPlatform(builder);
 
         Via.init(builder.build());
 

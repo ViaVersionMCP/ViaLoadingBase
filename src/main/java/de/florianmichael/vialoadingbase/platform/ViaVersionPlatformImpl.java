@@ -1,5 +1,6 @@
 package de.florianmichael.vialoadingbase.platform;
 
+import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.ViaAPI;
 import com.viaversion.viaversion.api.command.ViaCommandSender;
 import com.viaversion.viaversion.api.configuration.ConfigurationProvider;
@@ -19,9 +20,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import java.io.File;
 import java.util.Collection;
 import java.util.UUID;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.logging.Logger;
 
 public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
@@ -37,54 +36,17 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
     }
 
     @Override
-    public FutureTaskId runAsync(Runnable runnable) {
-        return new FutureTaskId(CompletableFuture.runAsync(runnable, ViaLoadingBase.instance().executorService())
-                .exceptionally(throwable -> {
-                    if (!(throwable instanceof CancellationException)) {
-                        throwable.printStackTrace();
-                    }
-
-                    return null;
-                }));
-    }
-
-    @Override
-    public PlatformTask<?> runSync(Runnable runnable) {
-        return new FutureTaskId(ViaLoadingBase.instance().provider().eventLoop(
-                ViaLoadingBase.instance().threadFactory(),
-                ViaLoadingBase.instance().executorService()
-        ).submit(runnable).addListener(errorLogger()));
-    }
-
-    @Override
-    public FutureTaskId runSync(Runnable runnable, long ticks) {
-        return new FutureTaskId(ViaLoadingBase.instance().provider().eventLoop(
-                        ViaLoadingBase.instance().threadFactory(),
-                        ViaLoadingBase.instance().executorService()
-                )
-                .schedule(() -> runSync(runnable), ticks * 50, TimeUnit.MILLISECONDS)
-                .addListener(errorLogger())
-        );
-    }
-
-    @Override
-    public FutureTaskId runRepeatingSync(Runnable runnable, long ticks) {
-        return new FutureTaskId(ViaLoadingBase.instance().provider().eventLoop(
-                        ViaLoadingBase.instance().threadFactory(),
-                        ViaLoadingBase.instance().executorService()
-                )
-                .scheduleAtFixedRate(() -> runSync(runnable), 0, ticks * 50, TimeUnit.MILLISECONDS)
-                .addListener(errorLogger())
-        );
-    }
-
-    @Override
     public ViaCommandSender[] getOnlinePlayers() {
         return new ViaCommandSender[0];
     }
 
     @Override
-    public void sendMessage(UUID uuid, String s) {
+    public void sendMessage(UUID uuid, String msg) {
+        if (uuid == null) {
+            this.getLogger().info(msg);
+        } else {
+            this.getLogger().info("[" + uuid + "] " + msg);
+        }
     }
 
     @Override
@@ -97,12 +59,53 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
         return ViaPlatform.super.disconnect(connection, message);
     }
 
-    protected <T extends Future<?>> GenericFutureListener<T> errorLogger() {
-        return future -> {
-            if (!future.isCancelled() && future.cause() != null) {
-                future.cause().printStackTrace();
-            }
-        };
+    @Override
+    public FutureTaskId runAsync(Runnable runnable) {
+        return new FutureTaskId(CompletableFuture
+                .runAsync(runnable, ViaLoadingBase.instance().executorService())
+                .exceptionally(throwable -> {
+                    if (!(throwable instanceof CancellationException)) {
+                        throwable.printStackTrace();
+                    }
+                    return null;
+                })
+        );
+    }
+
+    @Override
+    public FutureTaskId runSync(Runnable runnable) {
+        return new FutureTaskId(ViaLoadingBase.instance().getEventLoop()
+                .submit(runnable)
+                .addListener(future -> {
+                    if (!future.isCancelled() && future.cause() != null) {
+                        future.cause().printStackTrace();
+                    }
+                })
+        );
+    }
+
+    @Override
+    public FutureTaskId runSync(Runnable runnable, long ticks) {
+        return new FutureTaskId(ViaLoadingBase.instance().getEventLoop()
+                .schedule(() -> runSync(runnable), ticks * 50, TimeUnit.MILLISECONDS)
+                .addListener(future -> {
+                    if (!future.isCancelled() && future.cause() != null) {
+                        future.cause().printStackTrace();
+                    }
+                })
+        );
+    }
+
+    @Override
+    public FutureTaskId runRepeatingSync(Runnable runnable, long ticks) {
+        return new FutureTaskId(ViaLoadingBase.instance().getEventLoop()
+                .scheduleAtFixedRate(runnable, 0, ticks * 50, TimeUnit.MILLISECONDS)
+                .addListener(future -> {
+                    if (!future.isCancelled() && future.cause() != null) {
+                        future.cause().printStackTrace();
+                    }
+                })
+        );
     }
 
     @Override
