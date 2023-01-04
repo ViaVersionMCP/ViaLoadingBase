@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.viaversion.viaversion.ViaManagerImpl;
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.data.MappingDataLoader;
+import com.viaversion.viaversion.protocol.ProtocolManagerImpl;
 import de.florianmichael.vialoadingbase.platform.ViaRewindPlatformImpl;
 import de.florianmichael.vialoadingbase.platform.viaversion.CustomViaProviders;
 import de.florianmichael.vialoadingbase.platform.ViaBackwardsPlatformImpl;
@@ -45,44 +46,36 @@ public class ViaLoadingBase {
         this.provider = provider;
         this.directory = new File(this.provider.run(), "ViaLoadingBase");
 
-        CompletableFuture.runAsync(() -> {
-            final ViaVersionPlatformImpl platform = new ViaVersionPlatformImpl(this.logger());
+        final ViaVersionPlatformImpl platform = new ViaVersionPlatformImpl(this.logger());
 
-            final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new CustomViaInjector()).loader(new CustomViaProviders()).platform(platform);
-            provider().createViaPlatform(builder);
+        final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new CustomViaInjector()).loader(new CustomViaProviders()).platform(platform);
+        provider().createViaPlatform(builder);
 
-            Via.init(builder.build());
+        Via.init(builder.build());
 
-            final ViaManagerImpl viaManager = (ViaManagerImpl) Via.getManager();
+        final ViaManagerImpl viaManager = (ViaManagerImpl) Via.getManager();
 
-            viaManager.addEnableListener(() -> {
-                loadSubPlatform("ViaBackwards", () -> {
-                    final boolean isBackwardsLoaded = hasClass("com.viaversion.viabackwards.api.ViaBackwardsPlatform");
-                    if (isBackwardsLoaded) new ViaBackwardsPlatformImpl();
-                    return isBackwardsLoaded;
-                });
-
-                loadSubPlatform("ViaRewind", () -> {
-                    final boolean isRewindLoaded = hasClass("de.gerrygames.viarewind.api.ViaRewindPlatform");
-                    if (isRewindLoaded) new ViaRewindPlatformImpl();
-                    return isRewindLoaded;
-                });
-
-                onLoadSubPlatforms.run();
+        viaManager.addEnableListener(() -> {
+            loadSubPlatform("ViaBackwards", () -> {
+                final boolean isBackwardsLoaded = hasClass("com.viaversion.viabackwards.api.ViaBackwardsPlatform");
+                if (isBackwardsLoaded) new ViaBackwardsPlatformImpl();
+                return isBackwardsLoaded;
             });
-            MappingDataLoader.enableMappingsCache();
 
-            viaManager.getProtocolManager().setMaxProtocolPathSize(Integer.MAX_VALUE);
-            viaManager.getProtocolManager().setMaxPathDeltaIncrease(-1);
-            viaManager.init();
-        }).whenComplete((unused, throwable) -> {
-            if (throwable != null) {
-                logger().log(Level.INFO, "Failed to load ViaLoadingBase:");
-                throwable.printStackTrace();
-            } else {
-                logger().log(Level.INFO, "Loaded ViaLoadingBase");
-            }
+            loadSubPlatform("ViaRewind", () -> {
+                final boolean isRewindLoaded = hasClass("de.gerrygames.viarewind.api.ViaRewindPlatform");
+                if (isRewindLoaded) new ViaRewindPlatformImpl();
+                return isRewindLoaded;
+            });
+
+            onLoadSubPlatforms.run();
         });
+        MappingDataLoader.enableMappingsCache();
+
+        viaManager.init();
+        viaManager.getProtocolManager().setMaxProtocolPathSize(Integer.MAX_VALUE);
+        viaManager.getProtocolManager().setMaxPathDeltaIncrease(-1);
+        ((ProtocolManagerImpl) viaManager.getProtocolManager()).refreshVersions();
     }
 
     public void switchVersionTo(final int protocolVersion) {
