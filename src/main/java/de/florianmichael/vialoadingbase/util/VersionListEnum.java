@@ -125,8 +125,10 @@ public enum VersionListEnum {
         RENDER_VERSIONS.add(r1_16_4tor1_16_5);
         RENDER_VERSIONS.add(r1_16_3);
         RENDER_VERSIONS.add(r1_16_2);
+        RENDER_VERSIONS.add(sCombatTest8c);
         RENDER_VERSIONS.add(r1_16_1);
         RENDER_VERSIONS.add(r1_16);
+        RENDER_VERSIONS.add(s20w14infinite);
         RENDER_VERSIONS.add(r1_15_2);
         RENDER_VERSIONS.add(r1_15_1);
         RENDER_VERSIONS.add(r1_15);
@@ -135,6 +137,7 @@ public enum VersionListEnum {
         RENDER_VERSIONS.add(r1_14_2);
         RENDER_VERSIONS.add(r1_14_1);
         RENDER_VERSIONS.add(r1_14);
+        RENDER_VERSIONS.add(s3d_shareware);
         RENDER_VERSIONS.add(r1_13_2);
         RENDER_VERSIONS.add(r1_13_1);
         RENDER_VERSIONS.add(r1_13);
@@ -183,15 +186,12 @@ public enum VersionListEnum {
         RENDER_VERSIONS.add(a1_0_16toa1_0_16_2);
         RENDER_VERSIONS.add(a1_0_15);
         RENDER_VERSIONS.add(c0_28toc0_30);
+        RENDER_VERSIONS.add(c0_30cpe);
         RENDER_VERSIONS.add(c0_0_20ac0_27);
         RENDER_VERSIONS.add(c0_0_19a_06);
         RENDER_VERSIONS.add(c0_0_18a_02);
         RENDER_VERSIONS.add(c0_0_16a_02);
         RENDER_VERSIONS.add(c0_0_15a_1);
-        RENDER_VERSIONS.add(sCombatTest8c);
-        RENDER_VERSIONS.add(s20w14infinite);
-        RENDER_VERSIONS.add(s3d_shareware);
-        RENDER_VERSIONS.add(c0_30cpe);
     }
 
     public static VersionListEnum fromProtocolVersion(final ProtocolVersion protocolVersion) {
