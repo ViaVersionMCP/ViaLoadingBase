@@ -6,7 +6,6 @@ import com.viaversion.viaversion.libs.fastutil.ints.IntLinkedOpenHashSet;
 import com.viaversion.viaversion.libs.fastutil.ints.IntSortedSet;
 import com.viaversion.viaversion.libs.gson.JsonObject;
 import de.florianmichael.vialoadingbase.netty.NettyConstants;
-import de.florianmichael.vialoadingbase.util.VersionList;
 
 public class CustomViaInjector implements ViaInjector {
 
@@ -31,18 +30,19 @@ public class CustomViaInjector implements ViaInjector {
     }
 
     @Override
-    public IntSortedSet getServerProtocolVersions() throws Exception {
+    public IntSortedSet getServerProtocolVersions() {
         final IntSortedSet versions = new IntLinkedOpenHashSet();
-
-        for (ProtocolVersion value : VersionList.getProtocols()) {
-            versions.add(value.getOriginalVersion());
+        for (ProtocolVersion value : ProtocolVersion.getProtocols()) {
+            if (value.getOriginalVersion() >= ProtocolVersion.v1_7_1.getOriginalVersion()) {
+                versions.add(value.getOriginalVersion());
+            }
         }
 
         return versions;
     }
 
     @Override
-    public int getServerProtocolVersion() throws Exception {
+    public int getServerProtocolVersion() {
         return this.getServerProtocolVersions().firstInt();
     }
 

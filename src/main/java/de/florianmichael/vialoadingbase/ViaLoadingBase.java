@@ -10,7 +10,6 @@ import de.florianmichael.vialoadingbase.platform.ViaBackwardsPlatformImpl;
 import de.florianmichael.vialoadingbase.platform.ViaVersionPlatformImpl;
 import de.florianmichael.vialoadingbase.platform.viaversion.CustomViaInjector;
 import de.florianmichael.vialoadingbase.util.JLoggerToLog4j;
-import de.florianmichael.vialoadingbase.util.VersionList;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
@@ -20,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ViaLoadingBase {
+    public static final String VERSION = "${vialoadingbase_version}";
     private final static ViaLoadingBase instance = new ViaLoadingBase();
 
     private final ThreadFactory threadFactory = new ThreadFactoryBuilder().setDaemon(true).setNameFormat("ViaLoadingBase-%d").build();
@@ -34,17 +34,11 @@ public class ViaLoadingBase {
         this.provider = provider;
         this.directory = new File(this.provider.run(), "ViaLoadingBase");
 
-        try {
-            VersionList.registerProtocols();
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-
         CompletableFuture.runAsync(() -> {
             final ViaVersionPlatformImpl platform = new ViaVersionPlatformImpl(this.logger());
 
             final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new CustomViaInjector()).loader(new CustomViaProviders()).platform(platform);
-            provider().onBuildViaPlatform(builder);
+            provider().createViaPlatform(builder);
 
             Via.init(builder.build());
 

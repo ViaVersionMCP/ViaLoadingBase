@@ -115,8 +115,8 @@ public class Test implements INativeProvider {
         super.createProviders(providers);
     }
 
-    @Override
-    public void onBuildViaPlatform(ViaManagerImpl.ViaManagerBuilder builder) {
+    @Override // in case you want to implement custom stuff to your via platform
+    public void createViaPlatform(ViaManagerImpl.ViaManagerBuilder builder) {
     }
 
     @Override // default: null
