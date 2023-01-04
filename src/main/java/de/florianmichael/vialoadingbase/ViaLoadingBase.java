@@ -10,6 +10,7 @@ import de.florianmichael.vialoadingbase.platform.ViaBackwardsPlatformImpl;
 import de.florianmichael.vialoadingbase.platform.ViaVersionPlatformImpl;
 import de.florianmichael.vialoadingbase.platform.viaversion.CustomViaInjector;
 import de.florianmichael.vialoadingbase.util.JLoggerToLog4j;
+import de.florianmichael.vialoadingbase.util.VersionListEnum;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
@@ -29,6 +30,16 @@ public class ViaLoadingBase {
 
     private NativeProvider provider;
     private File directory;
+
+    private VersionListEnum targetVersion = VersionListEnum.r1_19_3;
+
+    public static VersionListEnum getTargetVersion() {
+        final NativeProvider provider = ViaLoadingBase.instance().provider();
+        if (provider.isSinglePlayer()) {
+            return provider.nativeVersion();
+        }
+        return ViaLoadingBase.instance().targetVersion;
+    }
 
     public void init(final NativeProvider provider, final Runnable onLoadSubPlatforms) {
         this.provider = provider;
@@ -72,6 +83,10 @@ public class ViaLoadingBase {
                 logger().log(Level.INFO, "Loaded ViaLoadingBase");
             }
         });
+    }
+
+    public void switchVersionTo(final int protocolVersion) {
+        targetVersion = VersionListEnum.fromProtocolId(protocolVersion);
     }
 
     public static boolean hasClass(final String classPath) {

@@ -7,6 +7,7 @@ import com.viaversion.viaversion.bungee.providers.BungeeMovementTransmitter;
 import com.viaversion.viaversion.libs.gson.JsonObject;
 import com.viaversion.viaversion.protocols.protocol1_9to1_8.providers.MovementTransmitterProvider;
 import de.florianmichael.vialoadingbase.provider.DefaultVersionProvider;
+import de.florianmichael.vialoadingbase.util.VersionListEnum;
 import io.netty.channel.EventLoop;
 
 import java.io.File;
@@ -16,8 +17,7 @@ import java.util.concurrent.ThreadFactory;
 public interface NativeProvider {
 
     boolean isSinglePlayer();
-    int nativeVersion();
-    int targetVersion();
+    VersionListEnum nativeVersion();
 
     String[] nettyOrder();
     File run();
@@ -29,12 +29,5 @@ public interface NativeProvider {
         providers.use(VersionProvider.class, new DefaultVersionProvider());
     }
     default void createViaPlatform(ViaManagerImpl.ViaManagerBuilder builder) {
-    }
-
-    default int getClientsideVersion() {
-        if (isSinglePlayer()) {
-            return nativeVersion();
-        }
-        return targetVersion();
     }
 }
