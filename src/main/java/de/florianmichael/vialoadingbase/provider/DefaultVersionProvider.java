@@ -6,14 +6,10 @@ import de.florianmichael.vialoadingbase.ViaLoadingBase;
 
 public class DefaultVersionProvider extends BaseVersionProvider {
 
-    public int getVersion() {
-        return ViaLoadingBase.instance().provider().getClientsideVersion();
-    }
-
     @Override
     public int getClosestServerProtocol(UserConnection connection) throws Exception {
         if (connection.isClientSide()) {
-            return this.getVersion();
+            return ViaLoadingBase.getTargetVersion().getOriginalVersion();
         }
         return super.getClosestServerProtocol(connection);
     }
