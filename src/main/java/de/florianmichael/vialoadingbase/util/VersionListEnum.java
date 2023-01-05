@@ -99,7 +99,7 @@ public enum VersionListEnum {
     public static final List<VersionListEnum> LEGACY_VERSIONS = new ArrayList<>();
     public static final List<VersionListEnum> OFFICIAL_SUPPORTED_PROTOCOLS = new ArrayList<>();
 
-    private final static Map<String, String> SPECIAL_NAMES = new HashMap<>() {
+    private final static Map<String, String> SPECIAL_NAMES = new HashMap<String, String>() {
         {
             put("1.7-1.7.5", "1.7.2-1.7.5");
             put("1.9.3/4", "1.9.3-1.9.4");
