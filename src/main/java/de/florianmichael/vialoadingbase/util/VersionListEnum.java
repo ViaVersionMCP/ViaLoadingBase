@@ -99,6 +99,17 @@ public enum VersionListEnum {
     public static final List<VersionListEnum> LEGACY_VERSIONS = new ArrayList<>();
     public static final List<VersionListEnum> OFFICIAL_SUPPORTED_PROTOCOLS = new ArrayList<>();
 
+    private final static Map<String, String> SPECIAL_NAMES = new HashMap<>() {
+        {
+            put("1.7-1.7.5", "1.7.2-1.7.5");
+            put("1.9.3/4", "1.9.3-1.9.4");
+            put("1.11.1/2", "1.11.1-1.11.2");
+            put("1.16.4/5", "1.16.4-1.16.5");
+            put("1.18/1.18.1", "1.18-1.18.1");
+            put("1.19.1/2", "1.19.1-1.19.2");
+        }
+    };
+
     static {
         for (VersionListEnum version : VersionListEnum.values()) {
             if (version == UNKNOWN) continue;
@@ -235,7 +246,11 @@ public enum VersionListEnum {
     }
 
     public String getName() {
-        return this.protocolVersion.getName();
+        String name = this.protocolVersion.getName();
+        if (SPECIAL_NAMES.containsKey(name)) {
+            name = SPECIAL_NAMES.get(name);
+        }
+        return name;
     }
 
     public int getVersion() {
