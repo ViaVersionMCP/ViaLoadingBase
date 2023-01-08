@@ -88,6 +88,7 @@ public enum VersionListEnum {
     r1_19(ProtocolVersion.v1_19),
     r1_19_1tor1_19_2(ProtocolVersion.v1_19_1),
     r1_19_3(ProtocolVersion.v1_19_3),
+    rBedrock1_19_51(560, "Bedrock edition v1.19.51"),
 
     //
     UNKNOWN(ProtocolVersion.unknown), // Not in Registry
