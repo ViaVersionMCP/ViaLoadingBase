@@ -65,7 +65,7 @@ public enum VersionListEnum {
     r1_13(ProtocolVersion.v1_13),
     r1_13_1(ProtocolVersion.v1_13_1),
     r1_13_2(ProtocolVersion.v1_13_2),
-    s3d_shareware(1, "3D Shareware v1.34"),
+    s3d_shareware(1, "3D Shareware"),
     r1_14(ProtocolVersion.v1_14),
     r1_14_1(ProtocolVersion.v1_14_1),
     r1_14_2(ProtocolVersion.v1_14_2),
@@ -77,8 +77,7 @@ public enum VersionListEnum {
     s20w14infinite(709, "20w14infinite"),
     r1_16(ProtocolVersion.v1_16),
     r1_16_1(ProtocolVersion.v1_16_1),
-    sCombatTest7bc(802, "Combat Test7+b/c"),
-    sCombatTest8bc(803, "Combat Test 8+b/c"),
+    sCombatTest8c(803, "Combat Test 8c"),
     r1_16_2(ProtocolVersion.v1_16_2),
     r1_16_3(ProtocolVersion.v1_16_3),
     r1_16_4tor1_16_5(ProtocolVersion.v1_16_4),
@@ -100,7 +99,7 @@ public enum VersionListEnum {
     public static final List<VersionListEnum> LEGACY_VERSIONS = new ArrayList<>();
     public static final List<VersionListEnum> OFFICIAL_SUPPORTED_PROTOCOLS = new ArrayList<>();
 
-    private final static Map<String, String> SPECIAL_NAMES = new HashMap<>() {
+    private final static Map<String, String> SPECIAL_NAMES = new HashMap<String, String>() {
         {
             put("1.7-1.7.5", "1.7.2-1.7.5");
             put("1.9.3/4", "1.9.3-1.9.4");
@@ -122,7 +121,7 @@ public enum VersionListEnum {
             }
         }
         for (VersionListEnum version : VersionListEnum.getAllVersions()) {
-            if (version.isNewerThan(VersionListEnum.r1_6_4) && version != VersionListEnum.s3d_shareware && version != VersionListEnum.s20w14infinite && version != VersionListEnum.sCombatTest8bc) {
+            if (version.isNewerThan(VersionListEnum.r1_6_4) && version != VersionListEnum.s3d_shareware && version != VersionListEnum.s20w14infinite && version != VersionListEnum.sCombatTest8c) {
                 OFFICIAL_SUPPORTED_PROTOCOLS.add(version);
             }
         }
@@ -137,7 +136,7 @@ public enum VersionListEnum {
         RENDER_VERSIONS.add(r1_16_4tor1_16_5);
         RENDER_VERSIONS.add(r1_16_3);
         RENDER_VERSIONS.add(r1_16_2);
-        RENDER_VERSIONS.add(sCombatTest8bc);
+        RENDER_VERSIONS.add(sCombatTest8c);
         RENDER_VERSIONS.add(r1_16_1);
         RENDER_VERSIONS.add(r1_16);
         RENDER_VERSIONS.add(s20w14infinite);
