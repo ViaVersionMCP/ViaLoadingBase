@@ -1,12 +1,10 @@
 package de.florianmichael.vialoadingbase.platform;
 
-import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.ViaAPI;
 import com.viaversion.viaversion.api.command.ViaCommandSender;
 import com.viaversion.viaversion.api.configuration.ConfigurationProvider;
 import com.viaversion.viaversion.api.configuration.ViaVersionConfig;
 import com.viaversion.viaversion.api.connection.UserConnection;
-import com.viaversion.viaversion.api.platform.PlatformTask;
 import com.viaversion.viaversion.api.platform.UnsupportedSoftware;
 import com.viaversion.viaversion.api.platform.ViaPlatform;
 import com.viaversion.viaversion.libs.gson.JsonObject;
@@ -14,8 +12,6 @@ import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import de.florianmichael.vialoadingbase.platform.viaversion.CustomViaAPIWrapper;
 import de.florianmichael.vialoadingbase.platform.viaversion.CustomViaConfig;
 import de.florianmichael.vialoadingbase.util.FutureTaskId;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 
 import java.io.File;
 import java.util.Collection;
@@ -149,7 +145,7 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
     @Override
     public String getPlatformVersion() {
-        return "1.3.3.7";
+        return ViaLoadingBase.VERSION;
     }
 
     @Override
