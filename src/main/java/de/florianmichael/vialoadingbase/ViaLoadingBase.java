@@ -48,6 +48,10 @@ public class ViaLoadingBase {
     }
 
     public void init(final NativeProvider provider, final Runnable onLoadSubPlatforms) {
+        if (this.provider != null) {
+            this.logger.log(Level.SEVERE, "ViaLoadingBase was already loaded, you can't load it twice!");
+            return;
+        }
         this.provider = provider;
         this.directory = new File(this.provider.run(), "ViaLoadingBase");
 
@@ -63,13 +67,13 @@ public class ViaLoadingBase {
         viaManager.addEnableListener(() -> {
             loadSubPlatform("ViaBackwards", () -> {
                 final boolean isBackwardsLoaded = hasClass("com.viaversion.viabackwards.api.ViaBackwardsPlatform");
-                if (isBackwardsLoaded) new ViaBackwardsPlatformImpl();
+                if (isBackwardsLoaded) new ViaBackwardsPlatformImpl(provider.run());
                 return isBackwardsLoaded;
             });
 
             loadSubPlatform("ViaRewind", () -> {
                 final boolean isRewindLoaded = hasClass("de.gerrygames.viarewind.api.ViaRewindPlatform");
-                if (isRewindLoaded) new ViaRewindPlatformImpl();
+                if (isRewindLoaded) new ViaRewindPlatformImpl(provider.run());
                 return isRewindLoaded;
             });
 

@@ -7,9 +7,10 @@ import java.io.File;
 import java.util.logging.Logger;
 
 public class ViaBackwardsPlatformImpl implements ViaBackwardsPlatform {
+    private final File directory;
 
-    public ViaBackwardsPlatformImpl() {
-        this.init(ViaLoadingBase.instance().directory());
+    public ViaBackwardsPlatformImpl(final File directory) {
+        this.init(this.directory = directory);
     }
 
     @Override
@@ -23,11 +24,10 @@ public class ViaBackwardsPlatformImpl implements ViaBackwardsPlatform {
     }
 
     @Override
-    public void disable() {
-    }
+    public void disable() {}
 
     @Override
     public File getDataFolder() {
-        return new File(ViaLoadingBase.instance().directory(), "viabackwards.yml");
+        return directory;
     }
 }

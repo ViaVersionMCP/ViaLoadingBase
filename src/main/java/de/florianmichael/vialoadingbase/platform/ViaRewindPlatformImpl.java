@@ -9,8 +9,8 @@ import java.util.logging.Logger;
 
 public class ViaRewindPlatformImpl implements ViaRewindPlatform {
 
-    public ViaRewindPlatformImpl() {
-        final ViaRewindConfigImpl config = new ViaRewindConfigImpl(new File(ViaLoadingBase.instance().directory(), "viarewind.yml"));
+    public ViaRewindPlatformImpl(final File directory) {
+        final ViaRewindConfigImpl config = new ViaRewindConfigImpl(new File(directory, "viarewind.yml"));
         config.reloadConfig();
         this.init(config);
     }
