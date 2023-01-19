@@ -88,6 +88,7 @@ public enum VersionListEnum {
     r1_19(ProtocolVersion.v1_19),
     r1_19_1tor1_19_2(ProtocolVersion.v1_19_1),
     r1_19_3(ProtocolVersion.v1_19_3),
+    r1_19_4(ProtocolVersion.v1_19_4),
     rBedrock1_19_51(560 << 2, "Bedrock edition v1.19.51"),
 
     //
@@ -108,6 +109,7 @@ public enum VersionListEnum {
             put("1.16.4/5", "1.16.4-1.16.5");
             put("1.18/1.18.1", "1.18-1.18.1");
             put("1.19.1/2", "1.19.1-1.19.2");
+            put("1.19.4", "22w03a");
         }
     };
 
