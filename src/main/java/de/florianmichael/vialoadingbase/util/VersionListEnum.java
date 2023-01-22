@@ -96,7 +96,7 @@ public enum VersionListEnum {
     ;
 
 
-    private static final Map<ProtocolVersion, VersionListEnum> VERSION_REGISTRY = new HashMap<>();
+    private static final Map<ProtocolVersion, VersionListEnum> VERSION_REGISTRY = new LinkedHashMap<>();
     public static final List<VersionListEnum> RENDER_VERSIONS = new LinkedList<>();
     public static final List<VersionListEnum> LEGACY_VERSIONS = new LinkedList<>();
     public static final List<VersionListEnum> OFFICIAL_SUPPORTED_PROTOCOLS = new LinkedList<>();
