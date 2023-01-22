@@ -65,7 +65,7 @@ public enum VersionListEnum {
     r1_13(ProtocolVersion.v1_13),
     r1_13_1(ProtocolVersion.v1_13_1),
     r1_13_2(ProtocolVersion.v1_13_2),
-    s3d_shareware(1, "3D Shareware"),
+    s3d_shareware(1, "3D Shareware v1.34"),
     r1_14(ProtocolVersion.v1_14),
     r1_14_1(ProtocolVersion.v1_14_1),
     r1_14_2(ProtocolVersion.v1_14_2),
@@ -97,9 +97,9 @@ public enum VersionListEnum {
 
 
     private static final Map<ProtocolVersion, VersionListEnum> VERSION_REGISTRY = new HashMap<>();
-    public static final List<VersionListEnum> RENDER_VERSIONS = new ArrayList<>();
-    public static final List<VersionListEnum> LEGACY_VERSIONS = new ArrayList<>();
-    public static final List<VersionListEnum> OFFICIAL_SUPPORTED_PROTOCOLS = new ArrayList<>();
+    public static final List<VersionListEnum> RENDER_VERSIONS = new LinkedList<>();
+    public static final List<VersionListEnum> LEGACY_VERSIONS = new LinkedList<>();
+    public static final List<VersionListEnum> OFFICIAL_SUPPORTED_PROTOCOLS = new LinkedList<>();
 
     private final static Map<String, String> SPECIAL_NAMES = new HashMap<String, String>() {
         {
