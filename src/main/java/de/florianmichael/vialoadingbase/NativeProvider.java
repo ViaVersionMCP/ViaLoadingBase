@@ -38,13 +38,4 @@ public interface NativeProvider {
     }
     default void createViaPlatform(ViaManagerImpl.ViaManagerBuilder builder) {
     }
-
-    // These classes are in case you want to implement legacy versions or other protocol versions
-
-    default String getLegacyProtocolImplementationClass() {
-        return null;
-    }
-    default String getSnapshotProtocolImplementationClass() {
-        return null;
-    }
 }
