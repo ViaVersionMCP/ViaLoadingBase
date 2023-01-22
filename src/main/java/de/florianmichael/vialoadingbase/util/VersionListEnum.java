@@ -124,10 +124,11 @@ public enum VersionListEnum {
             }
         }
         for (VersionListEnum version : VersionListEnum.getAllVersions()) {
-            if (version.isNewerThan(VersionListEnum.r1_6_4) && version != VersionListEnum.s3d_shareware && version != VersionListEnum.s20w14infinite && version != VersionListEnum.sCombatTest8c) {
+            if (version.isNewerThan(VersionListEnum.r1_6_4) && version != VersionListEnum.s3d_shareware && version != VersionListEnum.s20w14infinite && version != VersionListEnum.sCombatTest8c && version != VersionListEnum.rBedrock1_19_51) {
                 OFFICIAL_SUPPORTED_PROTOCOLS.add(version);
             }
         }
+        Collections.reverse(OFFICIAL_SUPPORTED_PROTOCOLS);
 
         RENDER_VERSIONS.add(rBedrock1_19_51);
         RENDER_VERSIONS.add(r1_19_4);
