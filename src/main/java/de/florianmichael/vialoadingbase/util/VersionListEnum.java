@@ -6,6 +6,7 @@ package de.florianmichael.vialoadingbase.util;
 import com.viaversion.viaversion.api.connection.UserConnection;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import com.viaversion.viaversion.api.protocol.version.VersionRange;
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
 
 import java.util.*;
 
@@ -94,9 +95,6 @@ public enum VersionListEnum {
     //
     UNKNOWN(ProtocolVersion.unknown), // Not in Registry
     ;
-
-    public static String LEGACY_PROTOCOL_IMPLEMENTATION_CLASS = null;
-    public static String SNAPSHOT_PROTOCOL_IMPLEMENTATION_CLASS = null;
 
     private static final Map<ProtocolVersion, VersionListEnum> VERSION_REGISTRY = new LinkedHashMap<>();
     public static final List<VersionListEnum> RENDER_VERSIONS = new LinkedList<>();
@@ -239,7 +237,7 @@ public enum VersionListEnum {
 
     public static ProtocolVersion getLegacyProtocol(final String name) {
         try {
-            return (ProtocolVersion) Class.forName(LEGACY_PROTOCOL_IMPLEMENTATION_CLASS).getField(name).get(null);
+            return (ProtocolVersion) Class.forName(ViaLoadingBase.LEGACY_PROTOCOL_IMPLEMENTATION_CLASS).getField(name).get(null);
         } catch (NoSuchFieldException | ClassNotFoundException | IllegalAccessException e) {
             return ProtocolVersion.unknown;
         }
@@ -247,7 +245,7 @@ public enum VersionListEnum {
 
     public static ProtocolVersion getSnapshotProtocol(final String name) {
         try {
-            return (ProtocolVersion) Class.forName(SNAPSHOT_PROTOCOL_IMPLEMENTATION_CLASS).getField(name).get(null);
+            return (ProtocolVersion) Class.forName(ViaLoadingBase.SNAPSHOT_PROTOCOL_IMPLEMENTATION_CLASS).getField(name).get(null);
         } catch (NoSuchFieldException | ClassNotFoundException | IllegalAccessException e) {
             return ProtocolVersion.unknown;
         }
