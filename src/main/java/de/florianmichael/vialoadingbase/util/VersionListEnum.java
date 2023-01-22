@@ -6,49 +6,50 @@ package de.florianmichael.vialoadingbase.util;
 import com.viaversion.viaversion.api.connection.UserConnection;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import com.viaversion.viaversion.api.protocol.version.VersionRange;
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
 
 import java.util.*;
 
 public enum VersionListEnum {
 
-    c0_0_15a_1(-2 << 2 | 1, "c0.0.15a-1"), // this version has no id
-    c0_0_16a_02(-3 << 2 | 1, "c0.0.16a-02"),
-    c0_0_18a_02(-4 << 2 | 1, "c0.0.18a-02"),
-    c0_0_19a_06(-5 << 2 | 1, "c0.0.19a-06"),
-    c0_0_20ac0_27(-6 << 2 | 1, "c0.0.20a-c0.27"),
-    c0_30cpe(-7 << 2 | 2, "c0.30 CPE"),
-    c0_28toc0_30(-7 << 2 | 1, "c0.28-c0.30"),
-    a1_0_15(-13 << 2 | 1, "a1.0.15"),
-    a1_0_16toa1_0_16_2(-14 << 2 | 1, "a1.0.16-a1.0.16.2"),
-    a1_0_17toa1_0_17_4(-27 << 2, "a1.0.17-a1.0.17.4"),
-    a1_1_0toa1_1_2_1(-2 << 2, "a1.1.0-a1.1.2.1"),
-    a1_2_0toa1_2_1_1(-3 << 2, "a1.2.0-a1.2.1.1"),
-    a1_2_2(-4 << 2, "a1.2.2"),
-    a1_2_3toa1_2_3_4(-5 << 2, "a1.2.3-a1.2.3.4"),
-    a1_2_3_5toa1_2_6(-6 << 2, "a1.2.3.5-a1.2.6"),
-    b1_0tob1_1_1(-7 << 2, "b1.0-b1.1.1"),
-    b1_1_2(-8 << 2 | 1, "b1.1.2"), // yes its 100% id 8 and incompatible with b1.2-b1.2.2
-    b1_2_0tob1_2_2(-8 << 2, "b1.2-b1.2.2"),
-    b1_3tob1_3_1(-9 << 2, "b1.3-b1.3.1"),
-    b1_4tob1_4_1(-10 << 2, "b1.4-b1.4.1"),
-    b1_5tob1_5_2(-11 << 2, "b1.5-b1.5.2"),
-    b1_6tob1_6_6(-13 << 2, "b1.6-b1.6.6"),
-    b1_7tob1_7_3(-14 << 2, "b1.7-b1.7.3"),
-    b1_8tob1_8_1(-17 << 2, "b1.8-b1.8.1"),
-    r1_0_0tor1_0_1(-22 << 2, "1.0.0-1.0.1", new VersionRange("1.0", 0, 1)),
-    r1_1(-23 << 2, "1.1"),
-    r1_2_1tor1_2_3(-28 << 2, "1.2.1-1.2.3", new VersionRange("1.2", 1, 3)),
-    r1_2_4tor1_2_5(-29 << 2, "1.2.4-1.2.5", new VersionRange("1.2", 4, 5)),
-    r1_3_1tor1_3_2(-39 << 2, "1.3.1-1.3.2", new VersionRange("1.3", 1, 2)),
-    r1_4_2(-47 << 2, "1.4.2"),
-    r1_4_4tor1_4_5(-49 << 2, "1.4.4-1.4.5", new VersionRange("1.4", 4, 5)),
-    r1_4_6tor1_4_7(-51 << 2, "1.4.6-1.4.7", new VersionRange("1.4", 6, 7)),
-    r1_5tor1_5_1(-60 << 2, "1.5-1.5.1"),
-    r1_5_2(-61 << 2, "1.5.2"),
-    r1_6_1(-73 << 2, "1.6.1"),
-    r1_6_2(-74 << 2, "1.6.2"),
-    r1_6_3(-77 << 2, "1.6.3-pre"),
-    r1_6_4(-78 << 2, "1.6.4"),
+    c0_0_15a_1(getLegacyProtocol("c0_0_15a_1")),
+    c0_0_16a_02(getLegacyProtocol("c0_0_16a_02")),
+    c0_0_18a_02(getLegacyProtocol("c0_0_18a_02")),
+    c0_0_19a_06(getLegacyProtocol("c0_0_19a_06")),
+    c0_0_20ac0_27(getLegacyProtocol("c0_0_20ac0_27")),
+    c0_30cpe(getLegacyProtocol("c0_30cpe")),
+    c0_28toc0_30(getLegacyProtocol("c0_28toc0_30")),
+    a1_0_15(getLegacyProtocol("a1_0_15")),
+    a1_0_16toa1_0_16_2(getLegacyProtocol("a1_0_16toa1_0_16_2")),
+    a1_0_17toa1_0_17_4(getLegacyProtocol("a1_0_17toa1_0_17_4")),
+    a1_1_0toa1_1_2_1(getLegacyProtocol("a1_1_0toa1_1_2_1")),
+    a1_2_0toa1_2_1_1(getLegacyProtocol("a1_2_0toa1_2_1_1")),
+    a1_2_2(getLegacyProtocol("a1_2_2")),
+    a1_2_3toa1_2_3_4(getLegacyProtocol("a1_2_3toa1_2_3_4")),
+    a1_2_3_5toa1_2_6(getLegacyProtocol("a1_2_3_5toa1_2_6")),
+    b1_0tob1_1_1(getLegacyProtocol("b1_0tob1_1_1")),
+    b1_1_2(getLegacyProtocol("b1_1_2")),
+    b1_2_0tob1_2_2(getLegacyProtocol("b1_2_0tob1_2_2")),
+    b1_3tob1_3_1(getLegacyProtocol("b1_3tob1_3_1")),
+    b1_4tob1_4_1(getLegacyProtocol("b1_4tob1_4_1")),
+    b1_5tob1_5_2(getLegacyProtocol("b1_5tob1_5_2")),
+    b1_6tob1_6_6(getLegacyProtocol("b1_6tob1_6_6")),
+    b1_7tob1_7_3(getLegacyProtocol("b1_7tob1_7_3")),
+    b1_8tob1_8_1(getLegacyProtocol("b1_8tob1_8_1")),
+    r1_0_0tor1_0_1(getLegacyProtocol("r1_0_0tor1_0_1")),
+    r1_1(getLegacyProtocol("r1_1")),
+    r1_2_1tor1_2_3(getLegacyProtocol("r1_2_1tor1_2_3")),
+    r1_2_4tor1_2_5(getLegacyProtocol("r1_2_4tor1_2_5")),
+    r1_3_1tor1_3_2(getLegacyProtocol("r1_3_1tor1_3_2")),
+    r1_4_2(getLegacyProtocol("r1_4_2")),
+    r1_4_4tor1_4_5(getLegacyProtocol("r1_4_4tor1_4_5")),
+    r1_4_6tor1_4_7(getLegacyProtocol("r1_4_6tor1_4_7")),
+    r1_5tor1_5_1(getLegacyProtocol("r1_5tor1_5_1")),
+    r1_5_2(getLegacyProtocol("r1_5_2")),
+    r1_6_1(getLegacyProtocol("r1_6_1")),
+    r1_6_2(getLegacyProtocol("r1_6_2")),
+    r1_6_3_pre(getLegacyProtocol("r1_6_3_pre")),
+    r1_6_4(getLegacyProtocol("r1_6_4")),
     r1_7_2tor1_7_5(ProtocolVersion.v1_7_1),
     r1_7_6tor1_7_10(ProtocolVersion.v1_7_6),
     r1_8(ProtocolVersion.v1_8),
@@ -65,7 +66,7 @@ public enum VersionListEnum {
     r1_13(ProtocolVersion.v1_13),
     r1_13_1(ProtocolVersion.v1_13_1),
     r1_13_2(ProtocolVersion.v1_13_2),
-    s3d_shareware(1, "3D Shareware v1.34"),
+    s3d_shareware(getSnapshotProtocol("s3d_shareware")),
     r1_14(ProtocolVersion.v1_14),
     r1_14_1(ProtocolVersion.v1_14_1),
     r1_14_2(ProtocolVersion.v1_14_2),
@@ -74,10 +75,10 @@ public enum VersionListEnum {
     r1_15(ProtocolVersion.v1_15),
     r1_15_1(ProtocolVersion.v1_15_1),
     r1_15_2(ProtocolVersion.v1_15_2),
-    s20w14infinite(709, "20w14infinite"),
+    s20w14infinite(getSnapshotProtocol("s20w14infinite")),
     r1_16(ProtocolVersion.v1_16),
     r1_16_1(ProtocolVersion.v1_16_1),
-    sCombatTest8c(803, "Combat Test 8c"),
+    sCombatTest8c(getSnapshotProtocol("sCombatTest8C")),
     r1_16_2(ProtocolVersion.v1_16_2),
     r1_16_3(ProtocolVersion.v1_16_3),
     r1_16_4tor1_16_5(ProtocolVersion.v1_16_4),
@@ -89,7 +90,7 @@ public enum VersionListEnum {
     r1_19_1tor1_19_2(ProtocolVersion.v1_19_1),
     r1_19_3(ProtocolVersion.v1_19_3),
     r1_19_4(ProtocolVersion.v1_19_4),
-    rBedrock1_19_51(560 << 2, "Bedrock edition v1.19.51"),
+    rBedrock1_19_51(getSnapshotProtocol("rBedrock1_19_51")),
 
     //
     UNKNOWN(ProtocolVersion.unknown), // Not in Registry
@@ -118,11 +119,14 @@ public enum VersionListEnum {
             if (version == UNKNOWN) continue;
             VERSION_REGISTRY.put(version.getProtocol(), version);
         }
+
         for (VersionListEnum version : VersionListEnum.getAllVersions()) {
             if (version.isOlderThan(VersionListEnum.r1_7_2tor1_7_5)) {
                 LEGACY_VERSIONS.add(version);
             }
         }
+        Collections.reverse(LEGACY_VERSIONS);
+
         for (VersionListEnum version : VersionListEnum.getAllVersions()) {
             if (version.isNewerThan(VersionListEnum.r1_6_4) && version != VersionListEnum.s3d_shareware && version != VersionListEnum.s20w14infinite && version != VersionListEnum.sCombatTest8c && version != VersionListEnum.rBedrock1_19_51) {
                 OFFICIAL_SUPPORTED_PROTOCOLS.add(version);
@@ -172,7 +176,7 @@ public enum VersionListEnum {
         RENDER_VERSIONS.add(r1_7_6tor1_7_10);
         RENDER_VERSIONS.add(r1_7_2tor1_7_5);
         RENDER_VERSIONS.add(r1_6_4);
-        RENDER_VERSIONS.add(r1_6_3);
+        RENDER_VERSIONS.add(r1_6_3_pre);
         RENDER_VERSIONS.add(r1_6_2);
         RENDER_VERSIONS.add(r1_6_1);
         RENDER_VERSIONS.add(r1_5_2);
@@ -232,6 +236,21 @@ public enum VersionListEnum {
         return VERSION_REGISTRY.values();
     }
 
+    public static ProtocolVersion getLegacyProtocol(final String name) {
+        try {
+            return (ProtocolVersion) Class.forName(ViaLoadingBase.instance().provider().getLegacyProtocolImplementationClass()).getField(name).get(null);
+        } catch (NoSuchFieldException | ClassNotFoundException | IllegalAccessException e) {
+            return ProtocolVersion.unknown;
+        }
+    }
+
+    public static ProtocolVersion getSnapshotProtocol(final String name) {
+        try {
+            return (ProtocolVersion) Class.forName(ViaLoadingBase.instance().provider().getSnapshotProtocolImplementationClass()).getField(name).get(null);
+        } catch (NoSuchFieldException | ClassNotFoundException | IllegalAccessException e) {
+            return ProtocolVersion.unknown;
+        }
+    }
 
     private final ProtocolVersion protocolVersion;
 

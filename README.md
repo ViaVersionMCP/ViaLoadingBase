@@ -72,30 +72,12 @@ public class Test implements INativeProvider {
 
     @Override
     public int nativeVersion() {
-        return 47; // native Version of your Client
-    }
-
-    @Override
-    public int realClientsideVersion() {
-        return 47; // the target version you want to connect
-    }
-
-    @Override
-    public String[] nettyOrder() {
-        return new String[]{
-                "decompress",
-                "compress"
-        }; // namings of Minecraft's compressing and decompressing from the pipeline
+        return VersionListEnum.r1_8; // native Version of your Client
     }
 
     @Override
     public File run() {
         return Minecraft.getMinecraft().mcDataDir; // data dir for via
-    }
-
-    @Override
-    public JsonObject createDump() {
-        return new JsonObject(); // not important since commands aren't implemented by default
     }
 
     // #######################
@@ -108,20 +90,6 @@ public class Test implements INativeProvider {
 
         // For Netty older than 4.0.x (< Minecraft 1.12.2 && > Minecraft 1.6.4)
         return new LocalEventLoopGroup(1, threadFactory).next();
-    }
-
-    @Override // default: BasicVersionProvider and completely unlegit Movement Transmitter by Via TM 
-    public void createProviders(ViaProviders providers) {
-        super.createProviders(providers);
-    }
-
-    @Override // in case you want to implement custom stuff to your via platform
-    public void createViaPlatform(ViaManagerImpl.ViaManagerBuilder builder) {
-    }
-
-    @Override // default: null
-    public List<ProtocolVersion> getOptionalProtocols() {
-        return null; // in case you want custom protocols like 1.7
     }
 }
 ```
