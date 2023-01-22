@@ -237,7 +237,7 @@ public enum VersionListEnum {
 
     public static ProtocolVersion getLegacyProtocol(final String name) {
         try {
-            return (ProtocolVersion) Class.forName(ViaLoadingBase.LEGACY_PROTOCOL_IMPLEMENTATION_CLASS).getField(name).get(null);
+            return (ProtocolVersion) Class.forName(ProtocolClassPaths.LEGACY_PROTOCOL_IMPLEMENTATION_CLASS).getField(name).get(null);
         } catch (NoSuchFieldException | ClassNotFoundException | IllegalAccessException e) {
             return ProtocolVersion.unknown;
         }
@@ -245,7 +245,7 @@ public enum VersionListEnum {
 
     public static ProtocolVersion getSnapshotProtocol(final String name) {
         try {
-            return (ProtocolVersion) Class.forName(ViaLoadingBase.SNAPSHOT_PROTOCOL_IMPLEMENTATION_CLASS).getField(name).get(null);
+            return (ProtocolVersion) Class.forName(ProtocolClassPaths.SNAPSHOT_PROTOCOL_IMPLEMENTATION_CLASS).getField(name).get(null);
         } catch (NoSuchFieldException | ClassNotFoundException | IllegalAccessException e) {
             return ProtocolVersion.unknown;
         }

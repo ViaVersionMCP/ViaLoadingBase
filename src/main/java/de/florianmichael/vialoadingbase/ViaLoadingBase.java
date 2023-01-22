@@ -22,9 +22,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ViaLoadingBase {
-    public static String LEGACY_PROTOCOL_IMPLEMENTATION_CLASS = null;
-    public static String SNAPSHOT_PROTOCOL_IMPLEMENTATION_CLASS = null;
-
     public static final String VERSION = "${vialoadingbase_version}";
     private final static ViaLoadingBase instance = new ViaLoadingBase();
 
