@@ -46,7 +46,7 @@ public class SubPlatform {
         if (this.load.getAsBoolean()) {
             try {
                 this.executor.run();
-                ProtocolList.load(this.protocolVersions);
+                if (!this.protocolVersions.isEmpty()) ProtocolList.load(this.protocolVersions);
                 logger.info("Loaded sub Platform " + this.name);
                 return true;
             } catch (Throwable t) {

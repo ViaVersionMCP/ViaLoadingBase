@@ -94,6 +94,7 @@ public class ViaLoadingBase {
         Collections.reverse(protocols);
         protocols.removeIf(protocolVersion -> ProtocolVersion.getProtocols().indexOf(protocolVersion) < 7 || protocolVersion == ProtocolVersion.unknown);
         ProtocolList.load(protocols);
+        ViaLoadingBase.LOGGER.info("Loaded ViaVersion protocols...");
 
         this.targetVersion = ProtocolList.fromProtocolVersion(ProtocolVersion.getProtocol(this.nativeVersion));
 
