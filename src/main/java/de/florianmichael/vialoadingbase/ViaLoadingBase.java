@@ -89,6 +89,8 @@ public class ViaLoadingBase {
 
     public void initPlatform() {
         ProtocolList.load(ProtocolVersion.getProtocols());
+        this.targetVersion = ProtocolList.fromProtocolVersion(ProtocolVersion.getProtocol(this.nativeVersion));
+
         final ViaVersionPlatformImpl viaVersionPlatform = new ViaVersionPlatformImpl(ViaLoadingBase.LOGGER);
         final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new CustomViaInjector()).loader(new CustomViaProviders()).platform(viaVersionPlatform);
         if (this.viaManagerBuilderCreator != null) {
