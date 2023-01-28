@@ -18,4 +18,8 @@ public class ProtocolList {
     public static ComparableProtocolVersion fromProtocolVersion(final ProtocolVersion protocolVersion) {
         return PROTOCOLS.get(protocolVersion);
     }
+
+    public static List<ProtocolVersion> getProtocols() {
+        return PROTOCOLS.keySet().stream().toList();
+    }
 }
