@@ -21,6 +21,8 @@ import io.netty.channel.EventLoop;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -88,7 +90,11 @@ public class ViaLoadingBase {
     }
 
     public void initPlatform() {
-        ProtocolList.load(ProtocolVersion.getProtocols());
+        final List<ProtocolVersion> protocols = new ArrayList<>(ProtocolVersion.getProtocols());
+        Collections.reverse(protocols);
+        protocols.removeIf(protocolVersion -> ProtocolVersion.getProtocols().indexOf(protocolVersion) < 7);
+        ProtocolList.load(protocols);
+
         this.targetVersion = ProtocolList.fromProtocolVersion(ProtocolVersion.getProtocol(this.nativeVersion));
 
         final ViaVersionPlatformImpl viaVersionPlatform = new ViaVersionPlatformImpl(ViaLoadingBase.LOGGER);
