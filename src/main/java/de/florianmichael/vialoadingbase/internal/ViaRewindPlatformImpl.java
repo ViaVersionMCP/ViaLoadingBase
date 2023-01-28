@@ -1,4 +1,4 @@
-package de.florianmichael.vialoadingbase.platform;
+package de.florianmichael.vialoadingbase.internal;
 
 import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import de.gerrygames.viarewind.api.ViaRewindConfigImpl;
@@ -17,6 +17,6 @@ public class ViaRewindPlatformImpl implements ViaRewindPlatform {
 
     @Override
     public Logger getLogger() {
-        return ViaLoadingBase.instance().logger();
+        return ViaLoadingBase.LOGGER;
     }
 }

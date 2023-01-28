@@ -1,4 +1,4 @@
-package de.florianmichael.vialoadingbase.platform;
+package de.florianmichael.vialoadingbase.internal;
 
 import com.viaversion.viaversion.api.ViaAPI;
 import com.viaversion.viaversion.api.command.ViaCommandSender;
@@ -9,8 +9,8 @@ import com.viaversion.viaversion.api.platform.UnsupportedSoftware;
 import com.viaversion.viaversion.api.platform.ViaPlatform;
 import com.viaversion.viaversion.libs.gson.JsonObject;
 import de.florianmichael.vialoadingbase.ViaLoadingBase;
-import de.florianmichael.vialoadingbase.platform.viaversion.CustomViaAPIWrapper;
-import de.florianmichael.vialoadingbase.platform.viaversion.CustomViaConfig;
+import de.florianmichael.vialoadingbase.internal.viaversion.CustomViaAPIWrapper;
+import de.florianmichael.vialoadingbase.internal.viaversion.CustomViaConfig;
 import de.florianmichael.vialoadingbase.util.FutureTaskId;
 
 import java.io.File;
@@ -28,7 +28,7 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
     public ViaVersionPlatformImpl(final Logger logger) {
         this.logger = logger;
-        config = new CustomViaConfig(new File(ViaLoadingBase.instance().directory(), "viaversion.yml"));
+        config = new CustomViaConfig(new File(ViaLoadingBase.getClassWrapper().getRunDirectory(), "viaversion.yml"));
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
     @Override
     public FutureTaskId runAsync(Runnable runnable) {
         return new FutureTaskId(CompletableFuture
-                .runAsync(runnable, ViaLoadingBase.instance().executorService())
+                .runAsync(runnable, ViaLoadingBase.EXECUTOR_SERVICE)
                 .exceptionally(throwable -> {
                     if (!(throwable instanceof CancellationException)) {
                         throwable.printStackTrace();
@@ -70,7 +70,7 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
     @Override
     public FutureTaskId runSync(Runnable runnable) {
-        return new FutureTaskId(ViaLoadingBase.instance().getEventLoop()
+        return new FutureTaskId(ViaLoadingBase.getClassWrapper().getEventLoop()
                 .submit(runnable)
                 .addListener(future -> {
                     if (!future.isCancelled() && future.cause() != null) {
@@ -82,7 +82,7 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
     @Override
     public FutureTaskId runSync(Runnable runnable, long ticks) {
-        return new FutureTaskId(ViaLoadingBase.instance().getEventLoop()
+        return new FutureTaskId(ViaLoadingBase.getClassWrapper().getEventLoop()
                 .schedule(() -> runSync(runnable), ticks * 50, TimeUnit.MILLISECONDS)
                 .addListener(future -> {
                     if (!future.isCancelled() && future.cause() != null) {
@@ -94,7 +94,7 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
     @Override
     public FutureTaskId runRepeatingSync(Runnable runnable, long ticks) {
-        return new FutureTaskId(ViaLoadingBase.instance().getEventLoop()
+        return new FutureTaskId(ViaLoadingBase.getClassWrapper().getEventLoop()
                 .scheduleAtFixedRate(runnable, 0, ticks * 50, TimeUnit.MILLISECONDS)
                 .addListener(future -> {
                     if (!future.isCancelled() && future.cause() != null) {
@@ -130,7 +130,7 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
     @Override
     public File getDataFolder() {
-        return ViaLoadingBase.instance().directory();
+        return ViaLoadingBase.getClassWrapper().getRunDirectory();
     }
 
     @Override
@@ -175,6 +175,8 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
     @Override
     public JsonObject getDump() {
-        return ViaLoadingBase.instance().provider().createDump();
+        if (ViaLoadingBase.getClassWrapper().getDumpCreator() == null) return new JsonObject();
+
+        return ViaLoadingBase.getClassWrapper().getDumpCreator().get();
     }
 }

@@ -1,4 +1,4 @@
-package de.florianmichael.vialoadingbase.platform.viaversion;
+package de.florianmichael.vialoadingbase.internal.viaversion;
 
 import com.viaversion.viaversion.ViaAPIBase;
 

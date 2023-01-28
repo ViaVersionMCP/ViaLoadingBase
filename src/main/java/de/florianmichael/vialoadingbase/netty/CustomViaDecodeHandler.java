@@ -46,10 +46,8 @@ public class CustomViaDecodeHandler extends MessageToMessageDecoder<ByteBuf> {
         }
     }
 
-    private void reorder(ChannelHandlerContext ctx) {
-        final String[] order = ViaLoadingBase.instance().provider().nettyOrder();
-
-        final int decoderIndex = ctx.pipeline().names().indexOf(order[0]);
+    private void reorder(final ChannelHandlerContext ctx) {
+        final int decoderIndex = ctx.pipeline().names().indexOf(NettyConstants.COMPRESSION_HANDLER_NAMES[0]);
         if (decoderIndex == -1) return;
 
         if (decoderIndex > ctx.pipeline().names().indexOf(NettyConstants.HANDLER_DECODER_NAME)) {
@@ -59,8 +57,8 @@ public class CustomViaDecodeHandler extends MessageToMessageDecoder<ByteBuf> {
             ctx.pipeline().remove(encoder);
             ctx.pipeline().remove(decoder);
 
-            ctx.pipeline().addAfter(order[1], NettyConstants.HANDLER_ENCODER_NAME, encoder);
-            ctx.pipeline().addAfter(order[0], NettyConstants.HANDLER_DECODER_NAME, decoder);
+            ctx.pipeline().addAfter(NettyConstants.COMPRESSION_HANDLER_NAMES[1], NettyConstants.HANDLER_ENCODER_NAME, encoder);
+            ctx.pipeline().addAfter(NettyConstants.COMPRESSION_HANDLER_NAMES[0], NettyConstants.HANDLER_DECODER_NAME, decoder);
         }
     }
 

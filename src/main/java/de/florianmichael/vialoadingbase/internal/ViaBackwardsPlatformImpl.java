@@ -1,4 +1,4 @@
-package de.florianmichael.vialoadingbase.platform;
+package de.florianmichael.vialoadingbase.internal;
 
 import com.viaversion.viabackwards.api.ViaBackwardsPlatform;
 import de.florianmichael.vialoadingbase.ViaLoadingBase;
@@ -15,7 +15,7 @@ public class ViaBackwardsPlatformImpl implements ViaBackwardsPlatform {
 
     @Override
     public Logger getLogger() {
-        return ViaLoadingBase.instance().logger();
+        return ViaLoadingBase.LOGGER;
     }
 
     @Override

@@ -4,80 +4,87 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.viaversion.viaversion.ViaManagerImpl;
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.data.MappingDataLoader;
+import com.viaversion.viaversion.api.platform.providers.ViaProviders;
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import com.viaversion.viaversion.libs.gson.JsonObject;
 import com.viaversion.viaversion.protocol.ProtocolManagerImpl;
-import de.florianmichael.vialoadingbase.platform.ViaRewindPlatformImpl;
-import de.florianmichael.vialoadingbase.platform.viaversion.CustomViaProviders;
-import de.florianmichael.vialoadingbase.platform.ViaBackwardsPlatformImpl;
-import de.florianmichael.vialoadingbase.platform.ViaVersionPlatformImpl;
-import de.florianmichael.vialoadingbase.platform.viaversion.CustomViaInjector;
+import de.florianmichael.vialoadingbase.api.SubPlatform;
+import de.florianmichael.vialoadingbase.api.version.ComparableProtocolVersion;
+import de.florianmichael.vialoadingbase.api.version.ProtocolList;
+import de.florianmichael.vialoadingbase.internal.viaversion.CustomViaProviders;
+import de.florianmichael.vialoadingbase.internal.ViaVersionPlatformImpl;
+import de.florianmichael.vialoadingbase.internal.viaversion.CustomViaInjector;
 import de.florianmichael.vialoadingbase.util.JLoggerToLog4j;
-import de.florianmichael.vialoadingbase.util.VersionListEnum;
 import io.netty.channel.EventLoop;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.*;
 import java.util.function.BooleanSupplier;
-import java.util.logging.Level;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 public class ViaLoadingBase {
     public static final String VERSION = "${vialoadingbase_version}";
-    private final static ViaLoadingBase instance = new ViaLoadingBase();
 
-    private final ThreadFactory threadFactory = new ThreadFactoryBuilder().setDaemon(true).setNameFormat("ViaLoadingBase-%d").build();
-    private final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), threadFactory);
+    public static final ThreadFactory THREAD_FACTORY = new ThreadFactoryBuilder().setDaemon(true).setNameFormat("ViaLoadingBase-%d").build();
+    public static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), THREAD_FACTORY);
+    public static final Logger LOGGER = new JLoggerToLog4j(LogManager.getLogger("ViaLoadingBase"));
 
-    private final Logger logger = new JLoggerToLog4j(LogManager.getLogger("ViaLoadingBase"));
+    private static ViaLoadingBase classWrapper;
 
-    private NativeProvider provider;
-    private File directory;
+    private final List<SubPlatform> subPlatforms;
+    private final File runDirectory;
+    private final int nativeVersion;
+    private final BooleanSupplier singlePlayerProvider;
+    private final EventLoop eventLoop;
+    private final Supplier<JsonObject> dumpCreator;
+    private final Consumer<ViaProviders> viaProviderCreator;
+    private final Consumer<ViaManagerImpl.ViaManagerBuilder> viaManagerBuilderCreator;
+    private final Consumer<ComparableProtocolVersion> protocolReloader;
 
-    private VersionListEnum targetVersion = VersionListEnum.r1_19_3;
+    private ComparableProtocolVersion targetVersion;
 
-    public static VersionListEnum getTargetVersion() {
-        final NativeProvider provider = ViaLoadingBase.instance().provider();
-        if (provider.isSinglePlayer()) {
-            return provider.nativeVersion();
-        }
-        return ViaLoadingBase.instance().targetVersion;
+    public ViaLoadingBase(List<SubPlatform> subPlatforms, File runDirectory, int nativeVersion, BooleanSupplier singlePlayerProvider, EventLoop eventLoop, Supplier<JsonObject> dumpCreator, Consumer<ViaProviders> viaProviderCreator, Consumer<ViaManagerImpl.ViaManagerBuilder> viaManagerBuilderCreator, Consumer<ComparableProtocolVersion> protocolReloader) {
+        this.subPlatforms = subPlatforms;
+        this.runDirectory = new File(runDirectory, "ViaLoadingBase");
+        this.nativeVersion = nativeVersion;
+        this.singlePlayerProvider = singlePlayerProvider;
+        this.eventLoop = eventLoop;
+        this.dumpCreator = dumpCreator;
+        this.viaProviderCreator = viaProviderCreator;
+        this.viaManagerBuilderCreator = viaManagerBuilderCreator;
+        this.protocolReloader = protocolReloader;
+
+        classWrapper = this;
+        initPlatform();
     }
 
-    public EventLoop getEventLoop() {
-        return provider.eventLoop(threadFactory, executorService);
+    public static ComparableProtocolVersion getTargetVersion() {
+        return getClassWrapper().targetVersion;
     }
 
-    public void init(final NativeProvider provider, final Runnable onLoadSubPlatforms) {
-        if (this.provider != null) {
-            this.logger.log(Level.SEVERE, "ViaLoadingBase was already loaded, you can't load it twice!");
-            return;
+    public void reload(final ProtocolVersion protocolVersion) {
+        this.targetVersion = ProtocolList.fromProtocolVersion(protocolVersion);
+        if (this.protocolReloader != null) {
+            this.protocolReloader.accept(targetVersion);
         }
-        this.provider = provider;
-        this.directory = new File(this.provider.run(), "ViaLoadingBase");
+    }
 
-        final ViaVersionPlatformImpl platform = new ViaVersionPlatformImpl(this.logger());
-
-        final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new CustomViaInjector()).loader(new CustomViaProviders()).platform(platform);
-        provider.createViaPlatform(builder);
-
+    public void initPlatform() {
+        final ViaVersionPlatformImpl viaVersionPlatform = new ViaVersionPlatformImpl(ViaLoadingBase.LOGGER);
+        final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new CustomViaInjector()).loader(new CustomViaProviders()).platform(viaVersionPlatform);
+        if (this.viaManagerBuilderCreator != null) {
+            this.viaManagerBuilderCreator.accept(builder);
+        }
         Via.init(builder.build());
 
         final ViaManagerImpl viaManager = (ViaManagerImpl) Via.getManager();
-
         viaManager.addEnableListener(() -> {
-            loadSubPlatform("ViaBackwards", () -> {
-                final boolean isBackwardsLoaded = hasClass("com.viaversion.viabackwards.api.ViaBackwardsPlatform");
-                if (isBackwardsLoaded) new ViaBackwardsPlatformImpl(provider.run());
-                return isBackwardsLoaded;
-            });
-
-            loadSubPlatform("ViaRewind", () -> {
-                final boolean isRewindLoaded = hasClass("de.gerrygames.viarewind.api.ViaRewindPlatform");
-                if (isRewindLoaded) new ViaRewindPlatformImpl(provider.run());
-                return isRewindLoaded;
-            });
-
-            onLoadSubPlatforms.run();
+            for (SubPlatform subPlatform : this.subPlatforms) subPlatform.build(ViaLoadingBase.LOGGER);
         });
         MappingDataLoader.enableMappingsCache();
 
@@ -87,54 +94,113 @@ public class ViaLoadingBase {
         ((ProtocolManagerImpl) viaManager.getProtocolManager()).refreshVersions();
     }
 
-    public void switchVersionTo(final int protocolVersion) {
-        targetVersion = VersionListEnum.fromProtocolId(protocolVersion);
+    public List<SubPlatform> getSubPlatforms() {
+        return subPlatforms;
     }
 
-    public static boolean hasClass(final String classPath) {
-        try {
-            Class.forName(classPath);
-            return true;
-        } catch (Exception ignored) {
-            return false;
+    public File getRunDirectory() {
+        return runDirectory;
+    }
+
+    public int getNativeVersion() {
+        return nativeVersion;
+    }
+
+    public BooleanSupplier getSinglePlayerProvider() {
+        return singlePlayerProvider;
+    }
+
+    public EventLoop getEventLoop() {
+        return eventLoop;
+    }
+
+    public Supplier<JsonObject> getDumpCreator() {
+        return dumpCreator;
+    }
+
+    public Consumer<ViaProviders> getViaProviderCreator() {
+        return viaProviderCreator;
+    }
+
+    public Consumer<ViaManagerImpl.ViaManagerBuilder> getViaManagerBuilderCreator() {
+        return viaManagerBuilderCreator;
+    }
+
+    public static ViaLoadingBase getClassWrapper() {
+        return classWrapper;
+    }
+
+    public static class ViaLoadingBaseBuilder {
+        private final List<SubPlatform> subPlatforms = new LinkedList<>();
+
+        private File runDirectory;
+        private Integer nativeVersion;
+        private BooleanSupplier singlePlayerProvider;
+        private EventLoop eventLoop;
+        private Supplier<JsonObject> dumpCreator;
+        private Consumer<ViaProviders> viaProviderCreator;
+        private Consumer<ViaManagerImpl.ViaManagerBuilder> viaManagerBuilderCreator;
+        private Consumer<ComparableProtocolVersion> protocolReloader;
+
+        public static ViaLoadingBaseBuilder create() {
+            return new ViaLoadingBaseBuilder();
         }
-    }
 
-    public static void loadSubPlatform(final String name, final BooleanSupplier caller) {
-        final Logger logger = ViaLoadingBase.instance().logger();
-        try {
-            if (caller.getAsBoolean()) {
-                logger.log(Level.INFO, "Loaded " + name);
-            } else {
-                logger.log(Level.WARNING, name + " is not provided at all?");
+        public ViaLoadingBaseBuilder subPlatform(final SubPlatform subPlatform) {
+            this.subPlatforms.add(subPlatform);
+            return this;
+        }
+
+        public ViaLoadingBaseBuilder runDirectory(final File runDirectory) {
+            this.runDirectory = runDirectory;
+            return this;
+        }
+
+        public ViaLoadingBaseBuilder nativeVersion(final int nativeVersion) {
+            this.nativeVersion = nativeVersion;
+            return this;
+        }
+
+        public ViaLoadingBaseBuilder singlePlayerProvider(final BooleanSupplier singlePlayerProvider) {
+            this.singlePlayerProvider = singlePlayerProvider;
+            return this;
+        }
+
+        public ViaLoadingBaseBuilder eventLoop(final EventLoop eventLoop) {
+            this.eventLoop = eventLoop;
+            return this;
+        }
+
+        public ViaLoadingBaseBuilder dumpCreator(final Supplier<JsonObject> dumpCreator) {
+            this.dumpCreator = dumpCreator;
+            return this;
+        }
+
+        public ViaLoadingBaseBuilder viaProviderCreator(final Consumer<ViaProviders> viaProviderCreator) {
+            this.viaProviderCreator = viaProviderCreator;
+            return this;
+        }
+
+        public ViaLoadingBaseBuilder viaManagerBuilderCreator(final Consumer<ViaManagerImpl.ViaManagerBuilder> viaManagerBuilderCreator) {
+            this.viaManagerBuilderCreator = viaManagerBuilderCreator;
+            return this;
+        }
+
+        public ViaLoadingBaseBuilder protocolReloader(final Consumer<ComparableProtocolVersion> protocolReloader) {
+            this.protocolReloader = protocolReloader;
+            return this;
+        }
+
+        public void build() {
+            if (ViaLoadingBase.getClassWrapper() != null) {
+                ViaLoadingBase.LOGGER.severe("ViaLoadingBase has already started the platform!");
+                return;
             }
-        } catch (Exception e) {
-            logger.log(Level.WARNING, "Failed to load " + name + ":");
-            e.printStackTrace();
+            if (runDirectory == null || nativeVersion == null || singlePlayerProvider == null || eventLoop == null) {
+                ViaLoadingBase.LOGGER.severe("Please check your ViaLoadingBaseBuilder arguments!");
+                return;
+            }
+            new ViaLoadingBase(subPlatforms, runDirectory, nativeVersion, singlePlayerProvider, eventLoop, dumpCreator, viaProviderCreator, viaManagerBuilderCreator, protocolReloader);
         }
-    }
-
-    public NativeProvider provider() {
-        return provider;
-    }
-
-    public File directory() {
-        return directory;
-    }
-
-    public ThreadFactory threadFactory() {
-        return threadFactory;
-    }
-
-    public ExecutorService executorService() {
-        return executorService;
-    }
-
-    public Logger logger() {
-        return logger;
-    }
-
-    public static ViaLoadingBase instance() {
-        return instance;
     }
 }

@@ -7,5 +7,5 @@ public class NettyConstants {
     public static final String HANDLER_ENCODER_NAME = "via-encoder";
 
     // Minecraft constants
-    public static final String[] COMPRESSION_HANDLER_NAMES = new String[] { "decompress", "compress" };
+    public static String[] COMPRESSION_HANDLER_NAMES = new String[] { "decompress", "compress" };
 }

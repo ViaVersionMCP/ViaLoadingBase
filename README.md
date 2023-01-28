@@ -41,55 +41,22 @@ A `1.19.x` Minecraft client, for example, would need `ViaVersion`. <br>
 ## Example implementation:
 
 ```java
-import com.viaversion.viaversion.api.connection.UserConnection;
-import com.viaversion.viaversion.api.platform.providers.ViaProviders;
-import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
-import com.viaversion.viaversion.api.protocol.version.VersionProvider;
-import com.viaversion.viaversion.bungee.providers.BungeeMovementTransmitter;
-import com.viaversion.viaversion.commands.ViaCommandHandler;
-import com.viaversion.viaversion.libs.gson.JsonObject;
-import com.viaversion.viaversion.protocols.base.BaseVersionProvider;
-import com.viaversion.viaversion.protocols.protocol1_9to1_8.providers.MovementTransmitterProvider;
-import de.florianmichael.vialoadingbase.NativeProvider;
-import de.florianmichael.vialoadingbase.ViaLoadingBase;
+public class ExampleImplementation {
+    
+    public void main() {
+        ViaLoadingBase.ViaLoadingBaseBuilder.
+                create().
+                runDirectory(new File("ViaVersion")).
+                nativeVersion(47).
+                singlePlayerProvider(() -> Minecraft.getMinecraft().isInSingleplayer).
+                eventLoop(
+                        // For Netty above 4.1.x, (>= Minecraft 1.12.2)
+                        new DefaultEventLoop(ViaLoadingBase.EXECUTOR_SERVICE)
 
-import java.io.File;
-import java.util.List;
-import java.util.Optional;
-
-public class Test implements INativeProvider {
-
-    public void main() throws Exception {
-        ViaLoadingBase.instance().init(this, () -> {
-            System.out.println("ViaLoadingBase is finished");
-        });
-    }
-
-    @Override
-    public boolean isSinglePlayer() {
-        return Minecraft.getMinecraft().isInSingleplayer(); // for VersionList
-    }
-
-    @Override
-    public int nativeVersion() {
-        return VersionListEnum.r1_8; // native Version of your Client
-    }
-
-    @Override
-    public File run() {
-        return Minecraft.getMinecraft().mcDataDir; // data dir for via
-    }
-
-    // #######################
-    // # Netty Version based #
-    // #######################
-    @Override
-    public EventLoop eventLoop(final ThreadFactory threadFactory, final ExecutorService executorService) {
-        // For Netty above 4.1.x, (>= Minecraft 1.12.2)
-        return new DefaultEventLoop(executorService);
-
-        // For Netty older than 4.0.x (< Minecraft 1.12.2 && > Minecraft 1.6.4)
-        return new LocalEventLoopGroup(1, threadFactory).next();
+                        // For Netty older than 4.0.x (< Minecraft 1.12.2 && > Minecraft 1.6.4)
+                        // new LocalEventLoopGroup(1, threadFactory).next()
+                ).
+        build();
     }
 }
 ```
