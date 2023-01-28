@@ -3,6 +3,7 @@ package de.florianmichael.vialoadingbase.api;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.florianmichael.vialoadingbase.api.version.ProtocolList;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.logging.Logger;
@@ -12,6 +13,10 @@ public class SubPlatform {
     private final BooleanSupplier load;
     private final Runnable executor;
     private final List<ProtocolVersion> protocolVersions;
+
+    public SubPlatform(String name, BooleanSupplier load, Runnable executor) {
+        this(name, load, executor, Collections.emptyList());
+    }
 
     public SubPlatform(String name, BooleanSupplier load, Runnable executor, List<ProtocolVersion> protocolVersions) {
         this.name = name;

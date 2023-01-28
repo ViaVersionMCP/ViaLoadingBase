@@ -2,6 +2,7 @@ package de.florianmichael.vialoadingbase.internal;
 
 import com.viaversion.viabackwards.api.ViaBackwardsPlatform;
 import de.florianmichael.vialoadingbase.ViaLoadingBase;
+import de.florianmichael.vialoadingbase.api.SubPlatform;
 
 import java.io.File;
 import java.util.logging.Logger;

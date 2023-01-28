@@ -11,6 +11,8 @@ import com.viaversion.viaversion.protocol.ProtocolManagerImpl;
 import de.florianmichael.vialoadingbase.api.SubPlatform;
 import de.florianmichael.vialoadingbase.api.version.ComparableProtocolVersion;
 import de.florianmichael.vialoadingbase.api.version.ProtocolList;
+import de.florianmichael.vialoadingbase.internal.ViaBackwardsPlatformImpl;
+import de.florianmichael.vialoadingbase.internal.ViaRewindPlatformImpl;
 import de.florianmichael.vialoadingbase.internal.viaversion.CustomViaProviders;
 import de.florianmichael.vialoadingbase.internal.ViaVersionPlatformImpl;
 import de.florianmichael.vialoadingbase.internal.viaversion.CustomViaInjector;
@@ -34,9 +36,16 @@ public class ViaLoadingBase {
     public static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), THREAD_FACTORY);
     public static final Logger LOGGER = new JLoggerToLog4j(LogManager.getLogger("ViaLoadingBase"));
 
+    public static final SubPlatform SUB_PLATFORM_VIA_BACKWARDS = new SubPlatform("ViaBackwards", () -> SubPlatform.isClass("com.viaversion.viabackwards.api.ViaBackwardsPlatform"), () -> {
+        new ViaBackwardsPlatformImpl(Via.getManager().getPlatform().getDataFolder());
+    });
+    public static final SubPlatform SUB_PLATFORM_VIA_REWIND = new SubPlatform("ViaRewind", () -> SubPlatform.isClass("de.gerrygames.viarewind.api.ViaRewindPlatform"), () -> {
+        new ViaRewindPlatformImpl(Via.getManager().getPlatform().getDataFolder());
+    });
+
     private static ViaLoadingBase classWrapper;
 
-    private final List<SubPlatform> subPlatforms;
+    private final List<SubPlatform> subPlatforms = new LinkedList<>();
     private final File runDirectory;
     private final int nativeVersion;
     private final BooleanSupplier singlePlayerProvider;
@@ -49,7 +58,11 @@ public class ViaLoadingBase {
     private ComparableProtocolVersion targetVersion;
 
     public ViaLoadingBase(List<SubPlatform> subPlatforms, File runDirectory, int nativeVersion, BooleanSupplier singlePlayerProvider, EventLoop eventLoop, Supplier<JsonObject> dumpCreator, Consumer<ViaProviders> viaProviderCreator, Consumer<ViaManagerImpl.ViaManagerBuilder> viaManagerBuilderCreator, Consumer<ComparableProtocolVersion> protocolReloader) {
-        this.subPlatforms = subPlatforms;
+        this.subPlatforms.add(SUB_PLATFORM_VIA_BACKWARDS);
+        this.subPlatforms.add(SUB_PLATFORM_VIA_REWIND);
+
+        this.subPlatforms.addAll(subPlatforms);
+
         this.runDirectory = new File(runDirectory, "ViaLoadingBase");
         this.nativeVersion = nativeVersion;
         this.singlePlayerProvider = singlePlayerProvider;
