@@ -1,6 +1,7 @@
 package de.florianmichael.vialoadingbase.api.version;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
 
 import java.util.*;
 
@@ -11,6 +12,7 @@ public class ProtocolList {
         for (ProtocolVersion protocolVersion : protocolVersions) {
             PROTOCOLS.put(protocolVersion, new ComparableProtocolVersion(protocolVersion.getOriginalVersion(), protocolVersion.getName(), protocolVersions.indexOf(protocolVersion)));
         }
+        ViaLoadingBase.LOGGER.info("Loaded ViaVersion protocols...");
     }
 
     public static ComparableProtocolVersion fromProtocolVersion(final ProtocolVersion protocolVersion) {

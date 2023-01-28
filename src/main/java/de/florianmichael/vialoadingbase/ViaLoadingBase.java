@@ -47,7 +47,7 @@ public class ViaLoadingBase {
 
     private static ViaLoadingBase classWrapper;
 
-    private final List<SubPlatform> subPlatforms = new LinkedList<>();
+    private final LinkedList<SubPlatform> subPlatforms = new LinkedList<>();
     private final File runDirectory;
     private final int nativeVersion;
     private final BooleanSupplier singlePlayerProvider;
@@ -59,7 +59,7 @@ public class ViaLoadingBase {
 
     private ComparableProtocolVersion targetVersion;
 
-    public ViaLoadingBase(List<SubPlatform> subPlatforms, File runDirectory, int nativeVersion, BooleanSupplier singlePlayerProvider, EventLoop eventLoop, Supplier<JsonObject> dumpCreator, Consumer<ViaProviders> viaProviderCreator, Consumer<ViaManagerImpl.ViaManagerBuilder> viaManagerBuilderCreator, Consumer<ComparableProtocolVersion> protocolReloader) {
+    public ViaLoadingBase(LinkedList<SubPlatform> subPlatforms, File runDirectory, int nativeVersion, BooleanSupplier singlePlayerProvider, EventLoop eventLoop, Supplier<JsonObject> dumpCreator, Consumer<ViaProviders> viaProviderCreator, Consumer<ViaManagerImpl.ViaManagerBuilder> viaManagerBuilderCreator, Consumer<ComparableProtocolVersion> protocolReloader) {
         this.subPlatforms.add(SUB_PLATFORM_VIA_BACKWARDS);
         this.subPlatforms.add(SUB_PLATFORM_VIA_REWIND);
 
@@ -92,7 +92,7 @@ public class ViaLoadingBase {
     public void initPlatform() {
         final List<ProtocolVersion> protocols = new ArrayList<>(ProtocolVersion.getProtocols());
         Collections.reverse(protocols);
-        protocols.removeIf(protocolVersion -> ProtocolVersion.getProtocols().indexOf(protocolVersion) < 7);
+        protocols.removeIf(protocolVersion -> ProtocolVersion.getProtocols().indexOf(protocolVersion) < 7 || protocolVersion == ProtocolVersion.unknown);
         ProtocolList.load(protocols);
 
         this.targetVersion = ProtocolList.fromProtocolVersion(ProtocolVersion.getProtocol(this.nativeVersion));
@@ -106,7 +106,8 @@ public class ViaLoadingBase {
 
         final ViaManagerImpl viaManager = (ViaManagerImpl) Via.getManager();
         viaManager.addEnableListener(() -> {
-            for (SubPlatform subPlatform : this.subPlatforms) subPlatform.build(ViaLoadingBase.LOGGER);
+            for (SubPlatform subPlatform : this.subPlatforms)
+                if (subPlatform.build(ViaLoadingBase.LOGGER)) ViaMetrics.CLASS_WRAPPER.platformsLoaded++;
         });
         MappingDataLoader.enableMappingsCache();
 
@@ -114,6 +115,8 @@ public class ViaLoadingBase {
         viaManager.getProtocolManager().setMaxProtocolPathSize(Integer.MAX_VALUE);
         viaManager.getProtocolManager().setMaxPathDeltaIncrease(-1);
         ((ProtocolManagerImpl) viaManager.getProtocolManager()).refreshVersions();
+
+        ViaMetrics.CLASS_WRAPPER.print(this.subPlatforms);
     }
 
     public List<SubPlatform> getSubPlatforms() {
@@ -152,8 +155,23 @@ public class ViaLoadingBase {
         return classWrapper;
     }
 
+    public static class ViaMetrics {
+        public static final ViaMetrics CLASS_WRAPPER = new ViaMetrics();
+        public int platformsLoaded;
+
+        public void print(final LinkedList<SubPlatform> subPlatforms) {
+            ViaLoadingBase.LOGGER.info("ViaLoadingBase has loaded " + platformsLoaded + "/" + subPlatforms.size());
+            for (SubPlatform subPlatform : subPlatforms) {
+                if (!subPlatform.getProtocolVersions().isEmpty()) {
+                    final int size = subPlatform.getProtocolVersions().size();
+                    ViaLoadingBase.LOGGER.info("Sub platform " + subPlatform.getName() + " has loaded " + size + " custom protocol" + (size != 1 ? "s" : "") + "!");
+                }
+            }
+        }
+    }
+
     public static class ViaLoadingBaseBuilder {
-        private final List<SubPlatform> subPlatforms = new LinkedList<>();
+        private final LinkedList<SubPlatform> subPlatforms = new LinkedList<>();
 
         private File runDirectory;
         private Integer nativeVersion;

@@ -34,16 +34,26 @@ public class SubPlatform {
         }
     }
 
-    public void build(final Logger logger) {
+    public String getName() {
+        return name;
+    }
+
+    public List<ProtocolVersion> getProtocolVersions() {
+        return protocolVersions;
+    }
+
+    public boolean build(final Logger logger) {
         if (this.load.getAsBoolean()) {
             try {
                 this.executor.run();
                 ProtocolList.load(this.protocolVersions);
                 logger.info("Loaded sub Platform " + this.name);
+                return true;
             } catch (Throwable t) {
                 logger.severe("An error occurred while loading sub Platform " + this.name + ":");
                 t.printStackTrace();
             }
         }
+        return false;
     }
 }
