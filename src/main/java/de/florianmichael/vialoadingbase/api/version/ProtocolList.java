@@ -2,10 +2,7 @@ package de.florianmichael.vialoadingbase.api.version;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ProtocolList {
     private final static Map<ProtocolVersion, ComparableProtocolVersion> PROTOCOLS = new LinkedHashMap<>();
@@ -21,6 +18,6 @@ public class ProtocolList {
     }
 
     public static List<ProtocolVersion> getProtocols() {
-        return new ArrayList<>(PROTOCOLS.keySet());
+        return new LinkedList<>(PROTOCOLS.keySet());
     }
 }
