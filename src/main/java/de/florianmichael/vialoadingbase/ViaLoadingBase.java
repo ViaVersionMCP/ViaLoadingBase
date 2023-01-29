@@ -187,8 +187,8 @@ public class ViaLoadingBase {
             return new ViaLoadingBaseBuilder();
         }
 
-        public ViaLoadingBaseBuilder subPlatform(final SubPlatform subPlatform) {
-            this.subPlatforms.add(subPlatform);
+        public ViaLoadingBaseBuilder subPlatform(final SubPlatform subPlatform, final int position) {
+            this.subPlatforms.add(position, subPlatform);
             return this;
         }
 
