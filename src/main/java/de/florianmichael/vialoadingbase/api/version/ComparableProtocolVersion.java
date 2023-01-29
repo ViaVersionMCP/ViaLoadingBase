@@ -11,19 +11,19 @@ public class ComparableProtocolVersion extends ProtocolVersion {
     }
 
     public boolean isOlderThan(final ProtocolVersion other) {
-        return this.getIndex() < InternalProtocolList.fromProtocolVersion(other).getIndex();
-    }
-
-    public boolean isOlderThanOrEqualTo(final ProtocolVersion other) {
-        return this.getIndex() <= InternalProtocolList.fromProtocolVersion(other).getIndex();
-    }
-
-    public boolean isNewerThan(final ProtocolVersion other) {
         return this.getIndex() > InternalProtocolList.fromProtocolVersion(other).getIndex();
     }
 
-    public boolean isNewerThanOrEqualTo(final ProtocolVersion other) {
+    public boolean isOlderThanOrEqualTo(final ProtocolVersion other) {
         return this.getIndex() >= InternalProtocolList.fromProtocolVersion(other).getIndex();
+    }
+
+    public boolean isNewerThan(final ProtocolVersion other) {
+        return this.getIndex() < InternalProtocolList.fromProtocolVersion(other).getIndex();
+    }
+
+    public boolean isNewerThanOrEqualTo(final ProtocolVersion other) {
+        return this.getIndex() <= InternalProtocolList.fromProtocolVersion(other).getIndex();
     }
 
     public int getIndex() {
