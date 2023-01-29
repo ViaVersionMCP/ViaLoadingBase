@@ -3,26 +3,26 @@ package de.florianmichael.vialoadingbase.api;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.florianmichael.vialoadingbase.api.version.ProtocolList;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 public class SubPlatform {
     private final String name;
     private final BooleanSupplier load;
     private final Runnable executor;
-    private final List<ProtocolVersion> protocolVersions;
+    private final Consumer<List<ProtocolVersion>> versionCallback;
 
     public SubPlatform(String name, BooleanSupplier load, Runnable executor) {
-        this(name, load, executor, Collections.emptyList());
+        this(name, load, executor, null);
     }
 
-    public SubPlatform(String name, BooleanSupplier load, Runnable executor, List<ProtocolVersion> protocolVersions) {
+    public SubPlatform(String name, BooleanSupplier load, Runnable executor, Consumer<List<ProtocolVersion>> versionCallback) {
         this.name = name;
         this.load = load;
         this.executor = executor;
-        this.protocolVersions = protocolVersions;
+        this.versionCallback = versionCallback;
     }
 
     public static boolean isClass(final String name) {
@@ -38,15 +38,13 @@ public class SubPlatform {
         return name;
     }
 
-    public List<ProtocolVersion> getProtocolVersions() {
-        return protocolVersions;
-    }
-
     public boolean build(final Logger logger) {
         if (this.load.getAsBoolean()) {
             try {
                 this.executor.run();
-                if (!this.protocolVersions.isEmpty()) ProtocolList.load(this.protocolVersions);
+                if (this.versionCallback != null) {
+                    this.versionCallback.accept(ProtocolList.PRE_PROTOCOLS);
+                }
                 logger.info("Loaded sub Platform " + this.name);
                 return true;
             } catch (Throwable t) {

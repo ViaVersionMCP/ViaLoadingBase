@@ -40,7 +40,7 @@ public class ViaLoadingBase {
 
     public static final SubPlatform PSEUDO_VIA_VERSION = new SubPlatform("ViaVersion", () -> true, () -> {
         // Empty
-    }, new ArrayList<>(ProtocolList.getProtocols()).stream().filter(protocolVersion -> protocolVersion != ProtocolVersion.unknown && ProtocolVersion.getProtocols().indexOf(protocolVersion) >= 7).collect(Collectors.toList()));
+    }, protocolVersions -> protocolVersions.addAll(new ArrayList<>(ProtocolList.getProtocols()).stream().filter(protocolVersion -> protocolVersion != ProtocolVersion.unknown && ProtocolVersion.getProtocols().indexOf(protocolVersion) >= 7).collect(Collectors.toList())));
     public static final SubPlatform SUB_PLATFORM_VIA_BACKWARDS = new SubPlatform("ViaBackwards", () -> SubPlatform.isClass("com.viaversion.viabackwards.api.ViaBackwardsPlatform"), () -> {
         new ViaBackwardsPlatformImpl(Via.getManager().getPlatform().getDataFolder());
     });
@@ -111,6 +111,7 @@ public class ViaLoadingBase {
         viaManager.getProtocolManager().setMaxPathDeltaIncrease(-1);
         ((ProtocolManagerImpl) viaManager.getProtocolManager()).refreshVersions();
 
+        ProtocolList.finish();
         ViaMetrics.CLASS_WRAPPER.print(this.subPlatforms);
     }
 
@@ -156,12 +157,6 @@ public class ViaLoadingBase {
 
         public void print(final LinkedList<SubPlatform> subPlatforms) {
             ViaLoadingBase.LOGGER.info("ViaLoadingBase has loaded " + platformsLoaded + "/" + subPlatforms.size());
-            for (SubPlatform subPlatform : subPlatforms) {
-                if (!subPlatform.getProtocolVersions().isEmpty()) {
-                    final int size = subPlatform.getProtocolVersions().size();
-                    ViaLoadingBase.LOGGER.info("Sub platform " + subPlatform.getName() + " has loaded " + size + " custom protocol" + (size != 1 ? "s" : "") + "!");
-                }
-            }
         }
     }
 

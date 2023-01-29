@@ -6,10 +6,11 @@ import java.util.*;
 
 public class ProtocolList {
     private final static Map<ProtocolVersion, ComparableProtocolVersion> PROTOCOLS = new LinkedHashMap<>();
+    public final static List<ProtocolVersion> PRE_PROTOCOLS = new ArrayList<>();
 
-    public static void load(final List<ProtocolVersion> protocolVersions) {
-        for (ProtocolVersion protocolVersion : protocolVersions) {
-            PROTOCOLS.put(protocolVersion, new ComparableProtocolVersion(protocolVersion.getOriginalVersion(), protocolVersion.getName(), protocolVersions.indexOf(protocolVersion)));
+    public static void finish() {
+        for (ProtocolVersion preProtocol : PRE_PROTOCOLS) {
+            PROTOCOLS.put(preProtocol, new ComparableProtocolVersion(preProtocol.getOriginalVersion(), preProtocol.getName(), PRE_PROTOCOLS.indexOf(preProtocol)));
         }
     }
 
