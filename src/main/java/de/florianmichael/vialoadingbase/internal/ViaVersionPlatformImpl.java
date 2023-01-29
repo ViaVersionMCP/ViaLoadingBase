@@ -7,6 +7,7 @@ import com.viaversion.viaversion.api.configuration.ViaVersionConfig;
 import com.viaversion.viaversion.api.connection.UserConnection;
 import com.viaversion.viaversion.api.platform.UnsupportedSoftware;
 import com.viaversion.viaversion.api.platform.ViaPlatform;
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import com.viaversion.viaversion.libs.gson.JsonObject;
 import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import de.florianmichael.vialoadingbase.internal.viaversion.CustomViaAPIWrapper;
@@ -14,10 +15,10 @@ import de.florianmichael.vialoadingbase.internal.viaversion.CustomViaConfig;
 import de.florianmichael.vialoadingbase.util.FutureTaskId;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
@@ -29,6 +30,12 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
     public ViaVersionPlatformImpl(final Logger logger) {
         this.logger = logger;
         config = new CustomViaConfig(new File(ViaLoadingBase.getClassWrapper().getRunDirectory(), "viaversion.yml"));
+    }
+
+    public static List<ProtocolVersion> createVersionList() {
+        final List<ProtocolVersion> versions = new ArrayList<>(ProtocolVersion.getProtocols()).stream().filter(protocolVersion -> protocolVersion != ProtocolVersion.unknown && ProtocolVersion.getProtocols().indexOf(protocolVersion) >= 7).collect(Collectors.toList());
+        Collections.reverse(versions);
+        return versions;
     }
 
     @Override

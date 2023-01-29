@@ -21,7 +21,6 @@ import io.netty.channel.EventLoop;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -29,7 +28,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class ViaLoadingBase {
     public static final String VERSION = "${vialoadingbase_version}";
@@ -40,7 +38,7 @@ public class ViaLoadingBase {
 
     public static final SubPlatform PSEUDO_VIA_VERSION = new SubPlatform("ViaVersion", () -> true, () -> {
         // Empty
-    }, protocolVersions -> protocolVersions.addAll(new ArrayList<>(ProtocolList.getProtocols()).stream().filter(protocolVersion -> protocolVersion != ProtocolVersion.unknown && ProtocolVersion.getProtocols().indexOf(protocolVersion) >= 7).collect(Collectors.toList())));
+    }, protocolVersions -> protocolVersions.addAll(ViaVersionPlatformImpl.createVersionList()));
     public static final SubPlatform SUB_PLATFORM_VIA_BACKWARDS = new SubPlatform("ViaBackwards", () -> SubPlatform.isClass("com.viaversion.viabackwards.api.ViaBackwardsPlatform"), () -> {
         new ViaBackwardsPlatformImpl(Via.getManager().getPlatform().getDataFolder());
     });
