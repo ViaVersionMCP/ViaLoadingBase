@@ -22,7 +22,6 @@ import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -30,6 +29,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class ViaLoadingBase {
     public static final String VERSION = "${vialoadingbase_version}";
@@ -38,6 +38,9 @@ public class ViaLoadingBase {
     public static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), THREAD_FACTORY);
     public static final Logger LOGGER = new JLoggerToLog4j(LogManager.getLogger("ViaLoadingBase"));
 
+    public static final SubPlatform PSEUDO_VIA_VERSION = new SubPlatform("ViaVersion", () -> true, () -> {
+        // Empty
+    }, new ArrayList<>(ProtocolList.getProtocols()).stream().filter(protocolVersion -> protocolVersion != ProtocolVersion.unknown && ProtocolVersion.getProtocols().indexOf(protocolVersion) >= 7).collect(Collectors.toList()));
     public static final SubPlatform SUB_PLATFORM_VIA_BACKWARDS = new SubPlatform("ViaBackwards", () -> SubPlatform.isClass("com.viaversion.viabackwards.api.ViaBackwardsPlatform"), () -> {
         new ViaBackwardsPlatformImpl(Via.getManager().getPlatform().getDataFolder());
     });
@@ -47,7 +50,7 @@ public class ViaLoadingBase {
 
     private static ViaLoadingBase classWrapper;
 
-    private final LinkedList<SubPlatform> subPlatforms = new LinkedList<>();
+    private final LinkedList<SubPlatform> subPlatforms;
     private final File runDirectory;
     private final int nativeVersion;
     private final BooleanSupplier singlePlayerProvider;
@@ -60,10 +63,7 @@ public class ViaLoadingBase {
     private ComparableProtocolVersion targetVersion;
 
     public ViaLoadingBase(LinkedList<SubPlatform> subPlatforms, File runDirectory, int nativeVersion, BooleanSupplier singlePlayerProvider, EventLoop eventLoop, Supplier<JsonObject> dumpCreator, Consumer<ViaProviders> viaProviderCreator, Consumer<ViaManagerImpl.ViaManagerBuilder> viaManagerBuilderCreator, Consumer<ComparableProtocolVersion> protocolReloader) {
-        this.subPlatforms.add(SUB_PLATFORM_VIA_BACKWARDS);
-        this.subPlatforms.add(SUB_PLATFORM_VIA_REWIND);
-
-        this.subPlatforms.addAll(subPlatforms);
+        this.subPlatforms = subPlatforms;
 
         this.runDirectory = new File(runDirectory, "ViaLoadingBase");
         this.nativeVersion = nativeVersion;
@@ -90,12 +90,6 @@ public class ViaLoadingBase {
     }
 
     public void initPlatform() {
-        final List<ProtocolVersion> protocols = new ArrayList<>(ProtocolVersion.getProtocols());
-        Collections.reverse(protocols);
-        protocols.removeIf(protocolVersion -> ProtocolVersion.getProtocols().indexOf(protocolVersion) < 7 || protocolVersion == ProtocolVersion.unknown);
-        ProtocolList.load(protocols);
-        ViaLoadingBase.LOGGER.info("Loaded ViaVersion protocols...");
-
         this.targetVersion = ProtocolList.fromProtocolVersion(ProtocolVersion.getProtocol(this.nativeVersion));
 
         final ViaVersionPlatformImpl viaVersionPlatform = new ViaVersionPlatformImpl(ViaLoadingBase.LOGGER);
@@ -183,8 +177,24 @@ public class ViaLoadingBase {
         private Consumer<ViaManagerImpl.ViaManagerBuilder> viaManagerBuilderCreator;
         private Consumer<ComparableProtocolVersion> protocolReloader;
 
+        public ViaLoadingBaseBuilder() {
+            subPlatforms.add(PSEUDO_VIA_VERSION);
+
+            subPlatforms.add(SUB_PLATFORM_VIA_BACKWARDS);
+            subPlatforms.add(SUB_PLATFORM_VIA_REWIND);
+        }
+
         public static ViaLoadingBaseBuilder create() {
             return new ViaLoadingBaseBuilder();
+        }
+
+        public ViaLoadingBaseBuilder subPlatformFirst(final SubPlatform subPlatform) {
+            return subPlatform(subPlatform, 0);
+        }
+
+        public ViaLoadingBaseBuilder subPlatform(final SubPlatform subPlatform) {
+            this.subPlatforms.add(subPlatform);
+            return this;
         }
 
         public ViaLoadingBaseBuilder subPlatform(final SubPlatform subPlatform, final int position) {
