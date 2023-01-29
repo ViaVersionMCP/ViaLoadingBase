@@ -90,6 +90,10 @@ public class ViaLoadingBase {
     }
 
     public void initPlatform() {
+        for (SubPlatform subPlatform : subPlatforms) {
+            subPlatform.createProtocolPath();
+            ViaLoadingBase.LOGGER.info("Created protocol path for: " + subPlatform.getName());
+        }
         this.targetVersion = ProtocolList.fromProtocolVersion(ProtocolVersion.getProtocol(this.nativeVersion));
 
         final ViaVersionPlatformImpl viaVersionPlatform = new ViaVersionPlatformImpl(ViaLoadingBase.LOGGER);

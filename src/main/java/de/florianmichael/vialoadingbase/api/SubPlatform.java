@@ -38,13 +38,16 @@ public class SubPlatform {
         return name;
     }
 
+    public void createProtocolPath() {
+        if (this.versionCallback != null) {
+            this.versionCallback.accept(ProtocolList.PRE_PROTOCOLS);
+        }
+    }
+
     public boolean build(final Logger logger) {
         if (this.load.getAsBoolean()) {
             try {
                 this.executor.run();
-                if (this.versionCallback != null) {
-                    this.versionCallback.accept(ProtocolList.PRE_PROTOCOLS);
-                }
                 logger.info("Loaded sub Platform " + this.name);
                 return true;
             } catch (Throwable t) {
