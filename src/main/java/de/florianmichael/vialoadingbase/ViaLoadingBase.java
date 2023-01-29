@@ -10,7 +10,7 @@ import com.viaversion.viaversion.libs.gson.JsonObject;
 import com.viaversion.viaversion.protocol.ProtocolManagerImpl;
 import de.florianmichael.vialoadingbase.api.SubPlatform;
 import de.florianmichael.vialoadingbase.api.version.ComparableProtocolVersion;
-import de.florianmichael.vialoadingbase.api.version.ProtocolList;
+import de.florianmichael.vialoadingbase.api.version.InternalProtocolList;
 import de.florianmichael.vialoadingbase.internal.ViaBackwardsPlatformImpl;
 import de.florianmichael.vialoadingbase.internal.ViaRewindPlatformImpl;
 import de.florianmichael.vialoadingbase.internal.viaversion.CustomViaProviders;
@@ -81,7 +81,7 @@ public class ViaLoadingBase {
     }
 
     public void reload(final ProtocolVersion protocolVersion) {
-        this.targetVersion = ProtocolList.fromProtocolVersion(protocolVersion);
+        this.targetVersion = InternalProtocolList.fromProtocolVersion(protocolVersion);
         if (this.protocolReloader != null) {
             this.protocolReloader.accept(targetVersion);
         }
@@ -92,8 +92,8 @@ public class ViaLoadingBase {
             subPlatform.createProtocolPath();
             ViaLoadingBase.LOGGER.info("Created protocol path for: " + subPlatform.getName());
         }
-        ProtocolList.createComparableTable();
-        this.targetVersion = ProtocolList.fromProtocolVersion(ProtocolVersion.getProtocol(this.nativeVersion));
+        InternalProtocolList.createComparableTable();
+        this.targetVersion = InternalProtocolList.fromProtocolVersion(ProtocolVersion.getProtocol(this.nativeVersion));
 
         final ViaVersionPlatformImpl viaVersionPlatform = new ViaVersionPlatformImpl(ViaLoadingBase.LOGGER);
         final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new CustomViaInjector()).loader(new CustomViaProviders()).platform(viaVersionPlatform);

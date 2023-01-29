@@ -4,7 +4,7 @@ import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 
 import java.util.*;
 
-public class ProtocolList {
+public class InternalProtocolList {
     private final static Map<ProtocolVersion, ComparableProtocolVersion> PROTOCOLS = new LinkedHashMap<>();
     public final static List<ProtocolVersion> PRE_PROTOCOLS = new ArrayList<>();
 
@@ -16,6 +16,10 @@ public class ProtocolList {
 
     public static ComparableProtocolVersion fromProtocolVersion(final ProtocolVersion protocolVersion) {
         return PROTOCOLS.get(protocolVersion);
+    }
+
+    public static ProtocolVersion fromProtocolId(final int protocolId) {
+        return getProtocols().stream().filter(protocol -> protocol.getOriginalVersion() == protocolId).findFirst().orElse(null);
     }
 
     public static List<ProtocolVersion> getProtocols() {

@@ -1,7 +1,7 @@
 package de.florianmichael.vialoadingbase.api;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
-import de.florianmichael.vialoadingbase.api.version.ProtocolList;
+import de.florianmichael.vialoadingbase.api.version.InternalProtocolList;
 
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -40,7 +40,7 @@ public class SubPlatform {
 
     public void createProtocolPath() {
         if (this.versionCallback != null) {
-            this.versionCallback.accept(ProtocolList.PRE_PROTOCOLS);
+            this.versionCallback.accept(InternalProtocolList.PRE_PROTOCOLS);
         }
     }
 
