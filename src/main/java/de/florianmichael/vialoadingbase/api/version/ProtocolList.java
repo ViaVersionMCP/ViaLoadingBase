@@ -8,7 +8,7 @@ public class ProtocolList {
     private final static Map<ProtocolVersion, ComparableProtocolVersion> PROTOCOLS = new LinkedHashMap<>();
     public final static List<ProtocolVersion> PRE_PROTOCOLS = new ArrayList<>();
 
-    public static void finish() {
+    public static void createComparableTable() {
         for (ProtocolVersion preProtocol : PRE_PROTOCOLS) {
             PROTOCOLS.put(preProtocol, new ComparableProtocolVersion(preProtocol.getOriginalVersion(), preProtocol.getName(), PRE_PROTOCOLS.indexOf(preProtocol)));
         }

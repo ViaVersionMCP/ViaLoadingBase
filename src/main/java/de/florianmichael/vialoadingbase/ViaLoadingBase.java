@@ -92,6 +92,7 @@ public class ViaLoadingBase {
             subPlatform.createProtocolPath();
             ViaLoadingBase.LOGGER.info("Created protocol path for: " + subPlatform.getName());
         }
+        ProtocolList.createComparableTable();
         this.targetVersion = ProtocolList.fromProtocolVersion(ProtocolVersion.getProtocol(this.nativeVersion));
 
         final ViaVersionPlatformImpl viaVersionPlatform = new ViaVersionPlatformImpl(ViaLoadingBase.LOGGER);
@@ -113,7 +114,6 @@ public class ViaLoadingBase {
         viaManager.getProtocolManager().setMaxPathDeltaIncrease(-1);
         ((ProtocolManagerImpl) viaManager.getProtocolManager()).refreshVersions();
 
-        ProtocolList.finish();
         ViaMetrics.CLASS_WRAPPER.print(this.subPlatforms);
     }
 
