@@ -10,7 +10,7 @@ public class InternalProtocolList {
 
     public static void createComparableTable() {
         for (ProtocolVersion preProtocol : PRE_PROTOCOLS) {
-            PROTOCOLS.put(preProtocol, new ComparableProtocolVersion(preProtocol.getOriginalVersion(), preProtocol.getName(), PRE_PROTOCOLS.indexOf(preProtocol)));
+            PROTOCOLS.put(preProtocol, new ComparableProtocolVersion(preProtocol.getVersion(), preProtocol.getName(), PRE_PROTOCOLS.indexOf(preProtocol)));
         }
     }
 
@@ -19,7 +19,7 @@ public class InternalProtocolList {
     }
 
     public static ProtocolVersion fromProtocolId(final int protocolId) {
-        return getProtocols().stream().filter(protocol -> protocol.getOriginalVersion() == protocolId).findFirst().orElse(null);
+        return getProtocols().stream().filter(protocol -> protocol.getVersion() == protocolId).findFirst().orElse(null);
     }
 
     public static List<ProtocolVersion> getProtocols() {

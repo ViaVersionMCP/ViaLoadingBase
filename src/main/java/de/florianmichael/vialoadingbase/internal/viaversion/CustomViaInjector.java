@@ -33,8 +33,8 @@ public class CustomViaInjector implements ViaInjector {
     public IntSortedSet getServerProtocolVersions() {
         final IntSortedSet versions = new IntLinkedOpenHashSet();
         for (ProtocolVersion value : ProtocolVersion.getProtocols()) {
-            if (value.getOriginalVersion() >= ProtocolVersion.v1_7_1.getOriginalVersion()) {
-                versions.add(value.getOriginalVersion());
+            if (value.getVersion() >= ProtocolVersion.v1_7_1.getVersion()) {
+                versions.add(value.getVersion());
             }
         }
 

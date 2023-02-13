@@ -21,7 +21,7 @@ public class CustomViaProviders implements ViaPlatformLoader {
             @Override
             public int getClosestServerProtocol(UserConnection connection) throws Exception {
                 if (connection.isClientSide()) {
-                    return ViaLoadingBase.getTargetVersion().getOriginalVersion();
+                    return ViaLoadingBase.getTargetVersion().getVersion();
                 }
                 return super.getClosestServerProtocol(connection);
             }
