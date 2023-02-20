@@ -77,6 +77,7 @@ public class ViaLoadingBase {
     }
 
     public static ComparableProtocolVersion getTargetVersion() {
+        if (classWrapper == null) return InternalProtocolList.fromProtocolVersion(InternalProtocolList.fromProtocolId(getClassWrapper().nativeVersion));
         return getClassWrapper().targetVersion;
     }
 
