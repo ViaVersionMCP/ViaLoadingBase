@@ -2,7 +2,8 @@
 Universal ViaVersion standalone implementation
 
 ## Projects where this is used:
-1. ViaForge: Clientside ViaVersion for Forge
+1. [ViaForge](https://github.com/FlorianMichael/ViaForge): Clientside ViaVersion for Forge
+2. [ViaFabricPlus](https://github.com/FlorianMichael/ViaFabricPlus): Clientside ViaVersion, ViaLegacy and ViaAprilFools implementation with clientside fixes for Fabric
 
 ## Add this to your own project
 build.gradle
