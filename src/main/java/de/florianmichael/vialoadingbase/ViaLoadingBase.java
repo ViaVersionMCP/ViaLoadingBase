@@ -58,7 +58,8 @@ public class ViaLoadingBase {
     private final Consumer<ViaManagerImpl.ViaManagerBuilder> viaManagerBuilderCreator;
     private final Consumer<ComparableProtocolVersion> protocolReloader;
 
-    private ComparableProtocolVersion targetVersion;
+    private ComparableProtocolVersion nativeProtocolVersion;
+    private ComparableProtocolVersion targetProtocolVersion;
 
     public ViaLoadingBase(LinkedList<SubPlatform> subPlatforms, File runDirectory, int nativeVersion, BooleanSupplier singlePlayerProvider, EventLoop eventLoop, Supplier<JsonObject> dumpCreator, Consumer<ViaProviders> viaProviderCreator, Consumer<ViaManagerImpl.ViaManagerBuilder> viaManagerBuilderCreator, Consumer<ComparableProtocolVersion> protocolReloader) {
         this.subPlatforms = subPlatforms;
@@ -78,13 +79,14 @@ public class ViaLoadingBase {
 
     public static ComparableProtocolVersion getTargetVersion() {
         if (classWrapper == null) return new ComparableProtocolVersion(ProtocolVersion.unknown.getVersion(), ProtocolVersion.unknown.getName(), 0);
-        return getClassWrapper().targetVersion;
+        if (classWrapper.singlePlayerProvider.getAsBoolean()) return classWrapper.nativeProtocolVersion;
+        return classWrapper.targetProtocolVersion;
     }
 
     public void reload(final ProtocolVersion protocolVersion) {
-        this.targetVersion = InternalProtocolList.fromProtocolVersion(protocolVersion);
+        this.targetProtocolVersion = InternalProtocolList.fromProtocolVersion(protocolVersion);
         if (this.protocolReloader != null) {
-            this.protocolReloader.accept(targetVersion);
+            this.protocolReloader.accept(targetProtocolVersion);
         }
     }
 
@@ -94,7 +96,8 @@ public class ViaLoadingBase {
             ViaLoadingBase.LOGGER.info("Created protocol path for: " + subPlatform.getName());
         }
         InternalProtocolList.createComparableTable();
-        this.targetVersion = InternalProtocolList.fromProtocolVersion(ProtocolVersion.getProtocol(this.nativeVersion));
+        this.nativeProtocolVersion = InternalProtocolList.fromProtocolVersion(ProtocolVersion.getProtocol(this.nativeVersion));
+        this.targetProtocolVersion = this.nativeProtocolVersion;
 
         final ViaVersionPlatformImpl viaVersionPlatform = new ViaVersionPlatformImpl(ViaLoadingBase.LOGGER);
         final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new CustomViaInjector()).loader(new CustomViaProviders()).platform(viaVersionPlatform);
