@@ -1,5 +1,5 @@
 # ViaLoadingBase
-Universal ViaVersion standalone implementation
+Universal ViaVersion, ViaBackwards and ViaRewind standalone implementation
 
 ## Contact
 If you encounter any issues, please report them on the
