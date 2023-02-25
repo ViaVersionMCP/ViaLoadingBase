@@ -128,3 +128,5 @@ public class ExampleImplementation {
     }
 }
 ```
+
+For some example implementations and applications you can have a look at the code in [ViaFabricPlus](https://github.com/FlorianMichael/ViaFabricPlus) 
