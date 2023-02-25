@@ -1,5 +1,5 @@
 # ViaLoadingBase
-Universal ViaVersion standalone implementation
+Universal ViaVersion, ViaBackwards and ViaRewind standalone implementation
 
 ## Projects where this is used:
 1. [ViaForge](https://github.com/FlorianMichael/ViaForge): Clientside ViaVersion for Forge
