@@ -1,4 +1,4 @@
-package de.florianmichael.vialoadingbase.internal.viaversion;
+package de.florianmichael.vialoadingbase.defaults.viaversion;
 
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.connection.UserConnection;
@@ -28,7 +28,7 @@ public class CustomViaProviders implements ViaPlatformLoader {
         });
         providers.use(MovementTransmitterProvider.class, new BungeeMovementTransmitter());
 
-        if (ViaLoadingBase.getClassWrapper().getViaProviderCreator() != null) ViaLoadingBase.getClassWrapper().getViaProviderCreator().accept(providers);
+        if (ViaLoadingBase.getClassWrapper().getProviders() != null) ViaLoadingBase.getClassWrapper().getProviders().accept(providers);
     }
 
     @Override

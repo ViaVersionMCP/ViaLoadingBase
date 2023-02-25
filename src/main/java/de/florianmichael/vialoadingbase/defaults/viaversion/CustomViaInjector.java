@@ -1,4 +1,4 @@
-package de.florianmichael.vialoadingbase.internal.viaversion;
+package de.florianmichael.vialoadingbase.defaults.viaversion;
 
 import com.viaversion.viaversion.api.platform.ViaInjector;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;

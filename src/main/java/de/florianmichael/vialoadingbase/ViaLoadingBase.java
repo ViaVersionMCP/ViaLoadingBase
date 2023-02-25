@@ -8,14 +8,14 @@ import com.viaversion.viaversion.api.platform.providers.ViaProviders;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import com.viaversion.viaversion.libs.gson.JsonObject;
 import com.viaversion.viaversion.protocol.ProtocolManagerImpl;
-import de.florianmichael.vialoadingbase.api.SubPlatform;
-import de.florianmichael.vialoadingbase.api.version.ComparableProtocolVersion;
-import de.florianmichael.vialoadingbase.api.version.InternalProtocolList;
-import de.florianmichael.vialoadingbase.internal.ViaBackwardsPlatformImpl;
-import de.florianmichael.vialoadingbase.internal.ViaRewindPlatformImpl;
-import de.florianmichael.vialoadingbase.internal.viaversion.CustomViaProviders;
-import de.florianmichael.vialoadingbase.internal.ViaVersionPlatformImpl;
-import de.florianmichael.vialoadingbase.internal.viaversion.CustomViaInjector;
+import de.florianmichael.vialoadingbase.platform.SubPlatform;
+import de.florianmichael.vialoadingbase.platform.ComparableProtocolVersion;
+import de.florianmichael.vialoadingbase.platform.InternalProtocolList;
+import de.florianmichael.vialoadingbase.defaults.ViaBackwardsPlatformImpl;
+import de.florianmichael.vialoadingbase.defaults.ViaRewindPlatformImpl;
+import de.florianmichael.vialoadingbase.defaults.viaversion.CustomViaProviders;
+import de.florianmichael.vialoadingbase.defaults.ViaVersionPlatformImpl;
+import de.florianmichael.vialoadingbase.defaults.viaversion.CustomViaInjector;
 import de.florianmichael.vialoadingbase.util.JLoggerToLog4j;
 import io.netty.channel.EventLoop;
 import org.apache.logging.log4j.LogManager;
@@ -51,27 +51,27 @@ public class ViaLoadingBase {
     private final LinkedList<SubPlatform> subPlatforms;
     private final File runDirectory;
     private final int nativeVersion;
-    private final BooleanSupplier singlePlayerProvider;
+    private final BooleanSupplier forceNativeVersionCondition;
     private final EventLoop eventLoop;
-    private final Supplier<JsonObject> dumpCreator;
-    private final Consumer<ViaProviders> viaProviderCreator;
-    private final Consumer<ViaManagerImpl.ViaManagerBuilder> viaManagerBuilderCreator;
-    private final Consumer<ComparableProtocolVersion> protocolReloader;
+    private final Supplier<JsonObject> dumpSupplier;
+    private final Consumer<ViaProviders> providers;
+    private final Consumer<ViaManagerImpl.ViaManagerBuilder> managerBuilderConsumer;
+    private final Consumer<ComparableProtocolVersion> onProtocolReload;
 
     private ComparableProtocolVersion nativeProtocolVersion;
     private ComparableProtocolVersion targetProtocolVersion;
 
-    public ViaLoadingBase(LinkedList<SubPlatform> subPlatforms, File runDirectory, int nativeVersion, BooleanSupplier singlePlayerProvider, EventLoop eventLoop, Supplier<JsonObject> dumpCreator, Consumer<ViaProviders> viaProviderCreator, Consumer<ViaManagerImpl.ViaManagerBuilder> viaManagerBuilderCreator, Consumer<ComparableProtocolVersion> protocolReloader) {
+    public ViaLoadingBase(LinkedList<SubPlatform> subPlatforms, File runDirectory, int nativeVersion, BooleanSupplier forceNativeVersionCondition, EventLoop eventLoop, Supplier<JsonObject> dumpSupplier, Consumer<ViaProviders> providers, Consumer<ViaManagerImpl.ViaManagerBuilder> managerBuilderConsumer, Consumer<ComparableProtocolVersion> onProtocolReload) {
         this.subPlatforms = subPlatforms;
 
         this.runDirectory = new File(runDirectory, "ViaLoadingBase");
         this.nativeVersion = nativeVersion;
-        this.singlePlayerProvider = singlePlayerProvider;
+        this.forceNativeVersionCondition = forceNativeVersionCondition;
         this.eventLoop = eventLoop;
-        this.dumpCreator = dumpCreator;
-        this.viaProviderCreator = viaProviderCreator;
-        this.viaManagerBuilderCreator = viaManagerBuilderCreator;
-        this.protocolReloader = protocolReloader;
+        this.dumpSupplier = dumpSupplier;
+        this.providers = providers;
+        this.managerBuilderConsumer = managerBuilderConsumer;
+        this.onProtocolReload = onProtocolReload;
 
         classWrapper = this;
         initPlatform();
@@ -79,30 +79,27 @@ public class ViaLoadingBase {
 
     public static ComparableProtocolVersion getTargetVersion() {
         if (classWrapper == null) return new ComparableProtocolVersion(ProtocolVersion.unknown.getVersion(), ProtocolVersion.unknown.getName(), 0);
-        if (classWrapper.singlePlayerProvider.getAsBoolean()) return classWrapper.nativeProtocolVersion;
+        if (classWrapper.forceNativeVersionCondition.getAsBoolean()) return classWrapper.nativeProtocolVersion;
         return classWrapper.targetProtocolVersion;
     }
 
     public void reload(final ProtocolVersion protocolVersion) {
         this.targetProtocolVersion = InternalProtocolList.fromProtocolVersion(protocolVersion);
-        if (this.protocolReloader != null) {
-            this.protocolReloader.accept(targetProtocolVersion);
+        if (this.onProtocolReload != null) {
+            this.onProtocolReload.accept(targetProtocolVersion);
         }
     }
 
     public void initPlatform() {
-        for (SubPlatform subPlatform : subPlatforms) {
-            subPlatform.createProtocolPath();
-            ViaLoadingBase.LOGGER.info("Created protocol path for: " + subPlatform.getName());
-        }
+        for (SubPlatform subPlatform : subPlatforms) subPlatform.createProtocolPath();
         InternalProtocolList.createComparableTable();
         this.nativeProtocolVersion = InternalProtocolList.fromProtocolVersion(ProtocolVersion.getProtocol(this.nativeVersion));
         this.targetProtocolVersion = this.nativeProtocolVersion;
 
         final ViaVersionPlatformImpl viaVersionPlatform = new ViaVersionPlatformImpl(ViaLoadingBase.LOGGER);
         final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new CustomViaInjector()).loader(new CustomViaProviders()).platform(viaVersionPlatform);
-        if (this.viaManagerBuilderCreator != null) {
-            this.viaManagerBuilderCreator.accept(builder);
+        if (this.managerBuilderConsumer != null) {
+            this.managerBuilderConsumer.accept(builder);
         }
         Via.init(builder.build());
 
@@ -133,24 +130,24 @@ public class ViaLoadingBase {
         return nativeVersion;
     }
 
-    public BooleanSupplier getSinglePlayerProvider() {
-        return singlePlayerProvider;
+    public BooleanSupplier getForceNativeVersionCondition() {
+        return forceNativeVersionCondition;
     }
 
     public EventLoop getEventLoop() {
         return eventLoop;
     }
 
-    public Supplier<JsonObject> getDumpCreator() {
-        return dumpCreator;
+    public Supplier<JsonObject> getDumpSupplier() {
+        return dumpSupplier;
     }
 
-    public Consumer<ViaProviders> getViaProviderCreator() {
-        return viaProviderCreator;
+    public Consumer<ViaProviders> getProviders() {
+        return providers;
     }
 
-    public Consumer<ViaManagerImpl.ViaManagerBuilder> getViaManagerBuilderCreator() {
-        return viaManagerBuilderCreator;
+    public Consumer<ViaManagerImpl.ViaManagerBuilder> getManagerBuilderConsumer() {
+        return managerBuilderConsumer;
     }
 
     public static ViaLoadingBase getClassWrapper() {
@@ -162,7 +159,7 @@ public class ViaLoadingBase {
         public int platformsLoaded;
 
         public void print(final LinkedList<SubPlatform> subPlatforms) {
-            ViaLoadingBase.LOGGER.info("ViaLoadingBase has loaded " + platformsLoaded + "/" + subPlatforms.size());
+            ViaLoadingBase.LOGGER.info("ViaLoadingBase has loaded " + platformsLoaded + "/" + subPlatforms.size() + " sub platforms");
         }
     }
 
@@ -171,12 +168,12 @@ public class ViaLoadingBase {
 
         private File runDirectory;
         private Integer nativeVersion;
-        private BooleanSupplier singlePlayerProvider;
+        private BooleanSupplier forceNativeVersionCondition;
         private EventLoop eventLoop;
-        private Supplier<JsonObject> dumpCreator;
-        private Consumer<ViaProviders> viaProviderCreator;
-        private Consumer<ViaManagerImpl.ViaManagerBuilder> viaManagerBuilderCreator;
-        private Consumer<ComparableProtocolVersion> protocolReloader;
+        private Supplier<JsonObject> dumpSupplier;
+        private Consumer<ViaProviders> providers;
+        private Consumer<ViaManagerImpl.ViaManagerBuilder> managerBuilderConsumer;
+        private Consumer<ComparableProtocolVersion> onProtocolReload;
 
         public ViaLoadingBaseBuilder() {
             subPlatforms.add(PSEUDO_VIA_VERSION);
@@ -187,10 +184,6 @@ public class ViaLoadingBase {
 
         public static ViaLoadingBaseBuilder create() {
             return new ViaLoadingBaseBuilder();
-        }
-
-        public ViaLoadingBaseBuilder subPlatformFirst(final SubPlatform subPlatform) {
-            return subPlatform(subPlatform, 0);
         }
 
         public ViaLoadingBaseBuilder subPlatform(final SubPlatform subPlatform) {
@@ -213,8 +206,8 @@ public class ViaLoadingBase {
             return this;
         }
 
-        public ViaLoadingBaseBuilder singlePlayerProvider(final BooleanSupplier singlePlayerProvider) {
-            this.singlePlayerProvider = singlePlayerProvider;
+        public ViaLoadingBaseBuilder forceNativeVersionCondition(final BooleanSupplier forceNativeVersionCondition) {
+            this.forceNativeVersionCondition = forceNativeVersionCondition;
             return this;
         }
 
@@ -223,23 +216,23 @@ public class ViaLoadingBase {
             return this;
         }
 
-        public ViaLoadingBaseBuilder dumpCreator(final Supplier<JsonObject> dumpCreator) {
-            this.dumpCreator = dumpCreator;
+        public ViaLoadingBaseBuilder dumpSupplier(final Supplier<JsonObject> dumpSupplier) {
+            this.dumpSupplier = dumpSupplier;
             return this;
         }
 
-        public ViaLoadingBaseBuilder viaProviderCreator(final Consumer<ViaProviders> viaProviderCreator) {
-            this.viaProviderCreator = viaProviderCreator;
+        public ViaLoadingBaseBuilder providers(final Consumer<ViaProviders> providers) {
+            this.providers = providers;
             return this;
         }
 
-        public ViaLoadingBaseBuilder viaManagerBuilderCreator(final Consumer<ViaManagerImpl.ViaManagerBuilder> viaManagerBuilderCreator) {
-            this.viaManagerBuilderCreator = viaManagerBuilderCreator;
+        public ViaLoadingBaseBuilder managerBuilderConsumer(final Consumer<ViaManagerImpl.ViaManagerBuilder> managerBuilderConsumer) {
+            this.managerBuilderConsumer = managerBuilderConsumer;
             return this;
         }
 
-        public ViaLoadingBaseBuilder protocolReloader(final Consumer<ComparableProtocolVersion> protocolReloader) {
-            this.protocolReloader = protocolReloader;
+        public ViaLoadingBaseBuilder onProtocolReload(final Consumer<ComparableProtocolVersion> onProtocolReload) {
+            this.onProtocolReload = onProtocolReload;
             return this;
         }
 
@@ -248,11 +241,11 @@ public class ViaLoadingBase {
                 ViaLoadingBase.LOGGER.severe("ViaLoadingBase has already started the platform!");
                 return;
             }
-            if (runDirectory == null || nativeVersion == null || singlePlayerProvider == null || eventLoop == null) {
+            if (runDirectory == null || nativeVersion == null || forceNativeVersionCondition == null || eventLoop == null) {
                 ViaLoadingBase.LOGGER.severe("Please check your ViaLoadingBaseBuilder arguments!");
                 return;
             }
-            new ViaLoadingBase(subPlatforms, runDirectory, nativeVersion, singlePlayerProvider, eventLoop, dumpCreator, viaProviderCreator, viaManagerBuilderCreator, protocolReloader);
+            new ViaLoadingBase(subPlatforms, runDirectory, nativeVersion, forceNativeVersionCondition, eventLoop, dumpSupplier, providers, managerBuilderConsumer, onProtocolReload);
         }
     }
 }

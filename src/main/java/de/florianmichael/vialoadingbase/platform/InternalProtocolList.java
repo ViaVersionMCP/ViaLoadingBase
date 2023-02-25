@@ -1,4 +1,4 @@
-package de.florianmichael.vialoadingbase.api.version;
+package de.florianmichael.vialoadingbase.platform;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 

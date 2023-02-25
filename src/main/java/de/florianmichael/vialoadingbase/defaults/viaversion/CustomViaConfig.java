@@ -1,4 +1,4 @@
-package de.florianmichael.vialoadingbase.internal.viaversion;
+package de.florianmichael.vialoadingbase.defaults.viaversion;
 
 import com.viaversion.viaversion.configuration.AbstractViaConfig;
 

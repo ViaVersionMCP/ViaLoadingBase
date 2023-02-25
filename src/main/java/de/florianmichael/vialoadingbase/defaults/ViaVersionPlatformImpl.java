@@ -1,4 +1,4 @@
-package de.florianmichael.vialoadingbase.internal;
+package de.florianmichael.vialoadingbase.defaults;
 
 import com.viaversion.viaversion.api.ViaAPI;
 import com.viaversion.viaversion.api.command.ViaCommandSender;
@@ -10,8 +10,8 @@ import com.viaversion.viaversion.api.platform.ViaPlatform;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import com.viaversion.viaversion.libs.gson.JsonObject;
 import de.florianmichael.vialoadingbase.ViaLoadingBase;
-import de.florianmichael.vialoadingbase.internal.viaversion.CustomViaAPIWrapper;
-import de.florianmichael.vialoadingbase.internal.viaversion.CustomViaConfig;
+import de.florianmichael.vialoadingbase.defaults.viaversion.CustomViaAPIWrapper;
+import de.florianmichael.vialoadingbase.defaults.viaversion.CustomViaConfig;
 import de.florianmichael.vialoadingbase.util.FutureTaskId;
 
 import java.io.File;
@@ -182,8 +182,8 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
     @Override
     public JsonObject getDump() {
-        if (ViaLoadingBase.getClassWrapper().getDumpCreator() == null) return new JsonObject();
+        if (ViaLoadingBase.getClassWrapper().getDumpSupplier() == null) return new JsonObject();
 
-        return ViaLoadingBase.getClassWrapper().getDumpCreator().get();
+        return ViaLoadingBase.getClassWrapper().getDumpSupplier().get();
     }
 }

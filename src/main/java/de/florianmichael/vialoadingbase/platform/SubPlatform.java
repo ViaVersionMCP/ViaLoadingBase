@@ -1,7 +1,6 @@
-package de.florianmichael.vialoadingbase.api;
+package de.florianmichael.vialoadingbase.platform;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
-import de.florianmichael.vialoadingbase.api.version.InternalProtocolList;
 
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -53,8 +52,10 @@ public class SubPlatform {
             } catch (Throwable t) {
                 logger.severe("An error occurred while loading sub Platform " + this.name + ":");
                 t.printStackTrace();
+                return false;
             }
         }
+        logger.severe("Sub platform " + this.name + " is not present");
         return false;
     }
 }

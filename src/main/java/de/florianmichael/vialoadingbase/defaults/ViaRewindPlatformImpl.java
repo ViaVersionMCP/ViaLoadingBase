@@ -1,4 +1,4 @@
-package de.florianmichael.vialoadingbase.internal;
+package de.florianmichael.vialoadingbase.defaults;
 
 import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import de.gerrygames.viarewind.api.ViaRewindConfigImpl;
