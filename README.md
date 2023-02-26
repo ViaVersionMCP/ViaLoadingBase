@@ -95,7 +95,24 @@ public class APIExample {
 ```
 The versions are compared according to the order in which they are loaded, each protocol version that is loaded gets an <br>
 index that is then used for comparison, so if a platform is loaded last, its protocols are treated as oldest. <br>
-Below is explained how to determine the pure sequence
+Below is explained how to determine the pure sequence<br>
+<br>
+To define a range of versions you can use the *ProtocolRange* class:
+```java
+public class APIExample {
+    
+    static {
+        final ProtocolRange allVersionsAbove1_8 = ProtocolRange.andNewer(ProtocolVersion.v1_8);
+        final ProtocolRange allVersionsUnder1_12_2 = ProtocolRange.andOlder(ProtocolVersion.v1_12_2);
+        final ProtocolRange only1_18_2 = ProtocolRange.singleton(ProtocolRange.v1_18_2);
+        
+        // Check if a version is in the range
+        if (allVersionsAbove1_8.contains(ProtocolVersion.v1_10)) {
+        }
+    }
+}
+```
+The class also has a toString() method that automatically formats the range
 
 ## How to load sub platforms:
 To load a sub platform, you simply create a SubPlatform Field, in which you first specify the name of the platform, <br>
