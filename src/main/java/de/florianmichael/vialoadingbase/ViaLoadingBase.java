@@ -80,6 +80,7 @@ public class ViaLoadingBase {
     public static ComparableProtocolVersion getTargetVersion() {
         if (classWrapper == null) return new ComparableProtocolVersion(ProtocolVersion.unknown.getVersion(), ProtocolVersion.unknown.getName(), 0);
         if (classWrapper.forceNativeVersionCondition.getAsBoolean()) return classWrapper.nativeProtocolVersion;
+
         return classWrapper.targetProtocolVersion;
     }
 

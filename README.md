@@ -72,9 +72,9 @@ public class ExampleImplementation {
 ## API examples:
 ViaLoadingBase also offers a system to compare the target version with other versions:
 ```java
-public class APIExample {
+public class Example {
     
-    public void versionDiffTests() {
+    static {
         if (ViaLoadingBase.getTargetVersion().isOlderThan(ProtocolVersion.v1_8)) {
             // Code is executed when the target version is < than 1.8
         }
@@ -99,7 +99,7 @@ Below is explained how to determine the pure sequence<br>
 <br>
 To define a range of versions you can use the *ProtocolRange* class:
 ```java
-public class APIExample {
+public class Example {
     
     static {
         final ProtocolRange allVersionsAbove1_8 = ProtocolRange.andNewer(ProtocolVersion.v1_8);
