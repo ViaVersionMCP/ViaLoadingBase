@@ -77,11 +77,10 @@ public class ViaLoadingBase {
         initPlatform();
     }
 
-    public static ComparableProtocolVersion getTargetVersion() {
-        if (classWrapper == null) return new ComparableProtocolVersion(ProtocolVersion.unknown.getVersion(), ProtocolVersion.unknown.getName(), 0);
-        if (classWrapper.forceNativeVersionCondition.getAsBoolean()) return classWrapper.nativeProtocolVersion;
+    public ComparableProtocolVersion getTargetVersion() {
+        if (forceNativeVersionCondition.getAsBoolean()) return nativeProtocolVersion;
 
-        return classWrapper.targetProtocolVersion;
+        return targetProtocolVersion;
     }
 
     public void reload(final ProtocolVersion protocolVersion) {
