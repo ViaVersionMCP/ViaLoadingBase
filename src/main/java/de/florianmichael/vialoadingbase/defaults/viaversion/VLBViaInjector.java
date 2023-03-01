@@ -7,7 +7,7 @@ import com.viaversion.viaversion.libs.fastutil.ints.IntSortedSet;
 import com.viaversion.viaversion.libs.gson.JsonObject;
 import de.florianmichael.vialoadingbase.netty.NettyConstants;
 
-public class CustomViaInjector implements ViaInjector {
+public class VLBViaInjector implements ViaInjector {
 
     @Override
     public void inject() {

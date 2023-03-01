@@ -12,10 +12,10 @@ import io.netty.handler.codec.MessageToMessageEncoder;
 import java.util.List;
 
 @ChannelHandler.Sharable
-public class CustomViaEncodeHandler extends MessageToMessageEncoder<ByteBuf> {
+public class VLBViaEncodeHandler extends MessageToMessageEncoder<ByteBuf> {
     private final UserConnection info;
 
-    public CustomViaEncodeHandler(UserConnection info) {
+    public VLBViaEncodeHandler(UserConnection info) {
         this.info = info;
     }
 

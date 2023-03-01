@@ -9,9 +9,10 @@ import com.viaversion.viaversion.api.platform.UnsupportedSoftware;
 import com.viaversion.viaversion.api.platform.ViaPlatform;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import com.viaversion.viaversion.libs.gson.JsonObject;
+import com.viaversion.viaversion.util.VersionInfo;
 import de.florianmichael.vialoadingbase.ViaLoadingBase;
-import de.florianmichael.vialoadingbase.defaults.viaversion.CustomViaAPIWrapper;
-import de.florianmichael.vialoadingbase.defaults.viaversion.CustomViaConfig;
+import de.florianmichael.vialoadingbase.defaults.viaversion.VLBViaAPIWrapper;
+import de.florianmichael.vialoadingbase.defaults.viaversion.VLBViaConfig;
 import de.florianmichael.vialoadingbase.util.FutureTaskId;
 
 import java.io.File;
@@ -22,14 +23,14 @@ import java.util.stream.Collectors;
 
 public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
-    private final ViaAPI<UUID> api = new CustomViaAPIWrapper();
+    private final ViaAPI<UUID> api = new VLBViaAPIWrapper();
 
     private final Logger logger;
-    private final CustomViaConfig config;
+    private final VLBViaConfig config;
 
     public ViaVersionPlatformImpl(final Logger logger) {
         this.logger = logger;
-        config = new CustomViaConfig(new File(ViaLoadingBase.getClassWrapper().getRunDirectory(), "viaversion.yml"));
+        config = new VLBViaConfig(new File(ViaLoadingBase.getClassWrapper().getRunDirectory(), "viaversion.yml"));
     }
 
     public static List<ProtocolVersion> createVersionList() {
@@ -142,7 +143,7 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
     @Override
     public String getPluginVersion() {
-        return "4.5.2-SNAPSHOT";
+        return VersionInfo.VERSION;
     }
 
     @Override

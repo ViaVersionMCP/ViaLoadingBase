@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class CustomViaConfig extends AbstractViaConfig {
+public class VLBViaConfig extends AbstractViaConfig {
 
     // Stolen from Sponge
     private static final List<String> UNSUPPORTED = Arrays.asList("anti-xray-patch", "bungee-ping-interval",
@@ -18,7 +18,7 @@ public class CustomViaConfig extends AbstractViaConfig {
             "show-shield-when-sword-in-hand", "left-handed-handling");
 
 
-    public CustomViaConfig(File configFile) {
+    public VLBViaConfig(File configFile) {
         super(configFile);
 
         this.reloadConfig();

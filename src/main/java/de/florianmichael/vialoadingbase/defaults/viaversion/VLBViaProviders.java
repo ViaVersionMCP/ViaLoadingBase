@@ -10,7 +10,7 @@ import com.viaversion.viaversion.protocols.base.BaseVersionProvider;
 import com.viaversion.viaversion.protocols.protocol1_9to1_8.providers.MovementTransmitterProvider;
 import de.florianmichael.vialoadingbase.ViaLoadingBase;
 
-public class CustomViaProviders implements ViaPlatformLoader {
+public class VLBViaProviders implements ViaPlatformLoader {
 
     @Override
     public void load() {

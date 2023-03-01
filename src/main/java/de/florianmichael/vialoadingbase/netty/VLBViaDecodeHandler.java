@@ -7,7 +7,6 @@ import com.viaversion.viaversion.exception.CancelCodecException;
 import com.viaversion.viaversion.exception.CancelDecoderException;
 import com.viaversion.viaversion.exception.InformativeException;
 import com.viaversion.viaversion.util.PipelineUtil;
-import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import de.florianmichael.vialoadingbase.event.PipelineReorderEvent;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
@@ -17,10 +16,10 @@ import io.netty.handler.codec.MessageToMessageDecoder;
 import java.util.List;
 
 @ChannelHandler.Sharable
-public class CustomViaDecodeHandler extends MessageToMessageDecoder<ByteBuf> {
+public class VLBViaDecodeHandler extends MessageToMessageDecoder<ByteBuf> {
     private final UserConnection info;
 
-    public CustomViaDecodeHandler(UserConnection info) {
+    public VLBViaDecodeHandler(UserConnection info) {
         this.info = info;
     }
 

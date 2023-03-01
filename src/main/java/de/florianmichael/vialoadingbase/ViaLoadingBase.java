@@ -13,9 +13,9 @@ import de.florianmichael.vialoadingbase.platform.ComparableProtocolVersion;
 import de.florianmichael.vialoadingbase.platform.InternalProtocolList;
 import de.florianmichael.vialoadingbase.defaults.ViaBackwardsPlatformImpl;
 import de.florianmichael.vialoadingbase.defaults.ViaRewindPlatformImpl;
-import de.florianmichael.vialoadingbase.defaults.viaversion.CustomViaProviders;
+import de.florianmichael.vialoadingbase.defaults.viaversion.VLBViaProviders;
 import de.florianmichael.vialoadingbase.defaults.ViaVersionPlatformImpl;
-import de.florianmichael.vialoadingbase.defaults.viaversion.CustomViaInjector;
+import de.florianmichael.vialoadingbase.defaults.viaversion.VLBViaInjector;
 import de.florianmichael.vialoadingbase.util.JLoggerToLog4j;
 import io.netty.channel.EventLoop;
 import org.apache.logging.log4j.LogManager;
@@ -97,7 +97,7 @@ public class ViaLoadingBase {
         this.targetProtocolVersion = this.nativeProtocolVersion;
 
         final ViaVersionPlatformImpl viaVersionPlatform = new ViaVersionPlatformImpl(ViaLoadingBase.LOGGER);
-        final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new CustomViaInjector()).loader(new CustomViaProviders()).platform(viaVersionPlatform);
+        final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new VLBViaInjector()).loader(new VLBViaProviders()).platform(viaVersionPlatform);
         if (this.managerBuilderConsumer != null) {
             this.managerBuilderConsumer.accept(builder);
         }

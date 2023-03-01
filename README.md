@@ -1,5 +1,8 @@
 # ViaLoadingBase
-Universal ViaVersion, ViaBackwards and ViaRewind standalone implementation
+Universal ViaVersion, ViaBackwards and ViaRewind standalone implementation <br>
+<br>
+This library is mainly designed for clientside implementations, it is also very abstract and doesn't give the <br>
+implementors much room to change ViaVersion, for a platform with less abstraction you can look at [ViaProtocolHack](https://github.com/RaphiMC/ViaProtocolHack).
 
 ## Contact
 If you encounter any issues, please report them on the
@@ -23,19 +26,12 @@ repositories {
     }
 }
 
-var viaLibs = [
-        "com.viaversion:viaversion:latest.integration",
-        "com.viaversion:viabackwards-common:latest.integration",
-        "com.viaversion:viarewind-core:latest.integration",
-        "org.yaml:snakeyaml:1.29",
-        
-        "com.github.FlorianMichael:ViaLoadingBase:<newest version (checkout jitpack.io for that)>"
-]
-
 dependencies {
-    for (final def via in viaLibs) {
-        implementation(via)
-    }
+    implementation "com.viaversion:viaversion:4.6.0-1.19.4-pre2-SNAPSHOT"
+    implementation "com.viaversion:viabackwards:4.6.0-1.19.4-pre1-SNAPSHOT"
+    implementation "com.viaversion:viarewind-core:2.0.3-SNAPSHOT"
+    
+    implementation "com.github.FlorianMichael:ViaLoadingBase:1b035c653e" // https://jitpack.io/#FlorianMichael/ViaLoadingBase
 }
 ```
 
@@ -106,8 +102,8 @@ public class Example {
         final ProtocolRange allVersionsUnder1_12_2 = ProtocolRange.andOlder(ProtocolVersion.v1_12_2);
         final ProtocolRange only1_18_2 = ProtocolRange.singleton(ProtocolRange.v1_18_2);
         
-        // Check if a version is in the range
         if (allVersionsAbove1_8.contains(ProtocolVersion.v1_10)) {
+            // Check if a version is in the range
         }
     }
 }
@@ -115,22 +111,24 @@ public class Example {
 The class also has a toString() method that automatically formats the range
 
 ## How to load sub platforms:
-To load a sub platform, you simply create a SubPlatform Field, in which you first specify the name of the platform, <br>
-the Boolean Supplier indicates whether the sub platform has been loaded in the classpath (you can use *SubPlatform.isClass()*), <br>
-in the Runnable you then have to create and load the PlatformImpl as a class, as last you can add via the Consumer <br>
-the protocols that the platform will add
 ```java
 public class ExampleImplementation {
     
-    private final SubPlatform examplePlatform = new SubPlatform("Example", () -> SubPlatform.isClass("net.exampledev.exampleplatform.ExamplePlatform"), ExamplePlatformImpl::new, protocolVersions -> {
+    private final SubPlatform examplePlatform = new SubPlatform(
+            "Example", 
+            () -> SubPlatform.isClass("net.exampledev.exampleplatform.ExamplePlatform"), // Checks if the platform class is in the class path
+            ExamplePlatformImpl::new, 
+            protocolVersions -> {
         protocolVersions.addAll(ExamplePlatformVersions.PROTOCOLS);
     });
     
     public void main() {
         ViaLoadingBase.ViaLoadingBaseBuilder.
                 create().
-                subPlatform(examplePlatform). // The ViaLoadingBaseBuilder has a sub platform method which can be used to register the sub platforms.
+
+                subPlatform(examplePlatform). // will set the sub platform as last 
                 subPlatform(examplePlatform, 0). // will set the sub platform as first 
+
                 runDirectory(new File("ViaVersion")).
                 nativeVersion(47).
                 singlePlayerProvider(() -> Minecraft.getMinecraft().isInSingleplayer).
