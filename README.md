@@ -75,19 +75,19 @@ ViaLoadingBase also offers a system to compare the target version with other ver
 public class Example {
     
     static {
-        if (ViaLoadingBase.getTargetVersion().isOlderThan(ProtocolVersion.v1_8)) {
+        if (ViaLoadingBase.getClassWrapper().getTargetVersion().isOlderThan(ProtocolVersion.v1_8)) {
             // Code is executed when the target version is < than 1.8
         }
-        if (ViaLoadingBase.getTargetVersion().isOlderThanOrEqualTo(ProtocolVersion.v1_16_4)) {
+        if (ViaLoadingBase.getClassWrapper().getTargetVersion().isOlderThanOrEqualTo(ProtocolVersion.v1_16_4)) {
             // Code is executed when the target version is < = than 1.16.4
         }
-        if (ViaLoadingBase.getTargetVersion().isNewerThan(ProtocolVersion.v1_12_2)) {
+        if (ViaLoadingBase.getClassWrapper().getTargetVersion().isNewerThan(ProtocolVersion.v1_12_2)) {
             // Code is executed when the target version is > than 1.12.2
         }
-        if (ViaLoadingBase.getTargetVersion().isNewerThanOrEqualTo(ProtocolVersion.v1_14_4)) {
+        if (ViaLoadingBase.getClassWrapper().getTargetVersion().isNewerThanOrEqualTo(ProtocolVersion.v1_14_4)) {
             // Code is executed when the target version is > = than 1.14.4
         }
-        if (ViaLoadingBase.getTargetVersion() == ProtocolVersion.v1_10) {
+        if (ViaLoadingBase.getClassWrapper().getTargetVersion() == ProtocolVersion.v1_10) {
             // Code is executed when the target version is equal to 1.10
         }
     }
