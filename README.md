@@ -68,25 +68,20 @@ public class ExampleImplementation {
 ## API examples:
 ViaLoadingBase also offers a system to compare the target version with other versions:
 ```java
-public class Example {
-    
-    static {
-        if (ViaLoadingBase.getClassWrapper().getTargetVersion().isOlderThan(ProtocolVersion.v1_8)) {
-            // Code is executed when the target version is < than 1.8
-        }
-        if (ViaLoadingBase.getClassWrapper().getTargetVersion().isOlderThanOrEqualTo(ProtocolVersion.v1_16_4)) {
-            // Code is executed when the target version is < = than 1.16.4
-        }
-        if (ViaLoadingBase.getClassWrapper().getTargetVersion().isNewerThan(ProtocolVersion.v1_12_2)) {
-            // Code is executed when the target version is > than 1.12.2
-        }
-        if (ViaLoadingBase.getClassWrapper().getTargetVersion().isNewerThanOrEqualTo(ProtocolVersion.v1_14_4)) {
-            // Code is executed when the target version is > = than 1.14.4
-        }
-        if (ViaLoadingBase.getClassWrapper().getTargetVersion() == ProtocolVersion.v1_10) {
-            // Code is executed when the target version is equal to 1.10
-        }
-    }
+if (ViaLoadingBase.getClassWrapper().getTargetVersion().isOlderThan(ProtocolVersion.v1_8)) {
+    // Code is executed when the target version is < than 1.8
+}
+if (ViaLoadingBase.getClassWrapper().getTargetVersion().isOlderThanOrEqualTo(ProtocolVersion.v1_16_4)) {
+    // Code is executed when the target version is < = than 1.16.4
+}
+if (ViaLoadingBase.getClassWrapper().getTargetVersion().isNewerThan(ProtocolVersion.v1_12_2)) {
+    // Code is executed when the target version is > than 1.12.2
+}
+if (ViaLoadingBase.getClassWrapper().getTargetVersion().isNewerThanOrEqualTo(ProtocolVersion.v1_14_4)) {
+    // Code is executed when the target version is > = than 1.14.4
+}
+if (ViaLoadingBase.getClassWrapper().getTargetVersion() == ProtocolVersion.v1_10) {
+    // Code is executed when the target version is equal to 1.10
 }
 ```
 The versions are compared according to the order in which they are loaded, each protocol version that is loaded gets an <br>
@@ -95,17 +90,12 @@ Below is explained how to determine the pure sequence<br>
 <br>
 To define a range of versions you can use the *ProtocolRange* class:
 ```java
-public class Example {
-    
-    static {
-        final ProtocolRange allVersionsAbove1_8 = ProtocolRange.andNewer(ProtocolVersion.v1_8);
-        final ProtocolRange allVersionsUnder1_12_2 = ProtocolRange.andOlder(ProtocolVersion.v1_12_2);
-        final ProtocolRange only1_18_2 = ProtocolRange.singleton(ProtocolRange.v1_18_2);
-        
-        if (allVersionsAbove1_8.contains(ProtocolVersion.v1_10)) {
-            // Check if a version is in the range
-        }
-    }
+final ProtocolRange allVersionsAbove1_8 = ProtocolRange.andNewer(ProtocolVersion.v1_8);
+final ProtocolRange allVersionsUnder1_12_2 = ProtocolRange.andOlder(ProtocolVersion.v1_12_2);
+final ProtocolRange only1_18_2 = ProtocolRange.singleton(ProtocolRange.v1_18_2);
+
+if (allVersionsAbove1_8.contains(ProtocolVersion.v1_10)) {
+    // Check if a version is in the range
 }
 ```
 The class also has a toString() method that automatically formats the range
