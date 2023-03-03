@@ -26,6 +26,10 @@ public class ComparableProtocolVersion extends ProtocolVersion {
         return this.getIndex() <= InternalProtocolList.fromProtocolVersion(other).getIndex();
     }
 
+    public boolean isEqualTo(final ProtocolVersion other) {
+        return this.getIndex() == InternalProtocolList.fromProtocolVersion(other).getIndex();
+    }
+
     public int getIndex() {
         return index;
     }

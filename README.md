@@ -80,7 +80,7 @@ if (ViaLoadingBase.getClassWrapper().getTargetVersion().isNewerThan(ProtocolVers
 if (ViaLoadingBase.getClassWrapper().getTargetVersion().isNewerThanOrEqualTo(ProtocolVersion.v1_14_4)) {
     // Code is executed when the target version is > = than 1.14.4
 }
-if (ViaLoadingBase.getClassWrapper().getTargetVersion() == ProtocolVersion.v1_10) {
+if (ViaLoadingBase.getClassWrapper().getTargetVersion().isEqualTo(ProtocolVersion.v1_10)) {
     // Code is executed when the target version is equal to 1.10
 }
 ```
