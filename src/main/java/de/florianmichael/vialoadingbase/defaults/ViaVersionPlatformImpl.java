@@ -17,11 +17,13 @@
  */
 package de.florianmichael.vialoadingbase.defaults;
 
+import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.ViaAPI;
 import com.viaversion.viaversion.api.command.ViaCommandSender;
 import com.viaversion.viaversion.api.configuration.ConfigurationProvider;
 import com.viaversion.viaversion.api.configuration.ViaVersionConfig;
 import com.viaversion.viaversion.api.connection.UserConnection;
+import com.viaversion.viaversion.api.platform.PlatformTask;
 import com.viaversion.viaversion.api.platform.UnsupportedSoftware;
 import com.viaversion.viaversion.api.platform.ViaPlatform;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
@@ -30,7 +32,7 @@ import com.viaversion.viaversion.util.VersionInfo;
 import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import de.florianmichael.vialoadingbase.defaults.viaversion.VLBViaAPIWrapper;
 import de.florianmichael.vialoadingbase.defaults.viaversion.VLBViaConfig;
-import de.florianmichael.vialoadingbase.util.FutureTaskId;
+import de.florianmichael.vialoadingbase.util.VLBTask;
 
 import java.io.File;
 import java.util.*;
@@ -81,52 +83,28 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
     }
 
     @Override
-    public FutureTaskId runAsync(Runnable runnable) {
-        return new FutureTaskId(CompletableFuture
-                .runAsync(runnable, ViaLoadingBase.EXECUTOR_SERVICE)
-                .exceptionally(throwable -> {
-                    if (!(throwable instanceof CancellationException)) {
-                        throwable.printStackTrace();
-                    }
-                    return null;
-                })
-        );
+    public VLBTask runAsync(Runnable runnable) {
+        return new VLBTask(Via.getManager().getScheduler().execute(runnable));
     }
 
     @Override
-    public FutureTaskId runSync(Runnable runnable) {
-        return new FutureTaskId(ViaLoadingBase.getClassWrapper().getEventLoop()
-                .submit(runnable)
-                .addListener(future -> {
-                    if (!future.isCancelled() && future.cause() != null) {
-                        future.cause().printStackTrace();
-                    }
-                })
-        );
+    public VLBTask runRepeatingAsync(Runnable runnable, long ticks) {
+        return new VLBTask(Via.getManager().getScheduler().scheduleRepeating(runnable, 0, ticks * 50, TimeUnit.MILLISECONDS));
     }
 
     @Override
-    public FutureTaskId runSync(Runnable runnable, long ticks) {
-        return new FutureTaskId(ViaLoadingBase.getClassWrapper().getEventLoop()
-                .schedule(() -> runSync(runnable), ticks * 50, TimeUnit.MILLISECONDS)
-                .addListener(future -> {
-                    if (!future.isCancelled() && future.cause() != null) {
-                        future.cause().printStackTrace();
-                    }
-                })
-        );
+    public VLBTask runSync(Runnable runnable) {
+        return this.runAsync(runnable);
     }
 
     @Override
-    public FutureTaskId runRepeatingSync(Runnable runnable, long ticks) {
-        return new FutureTaskId(ViaLoadingBase.getClassWrapper().getEventLoop()
-                .scheduleAtFixedRate(runnable, 0, ticks * 50, TimeUnit.MILLISECONDS)
-                .addListener(future -> {
-                    if (!future.isCancelled() && future.cause() != null) {
-                        future.cause().printStackTrace();
-                    }
-                })
-        );
+    public VLBTask runSync(Runnable runnable, long ticks) {
+        return new VLBTask(Via.getManager().getScheduler().schedule(runnable, ticks * 50, TimeUnit.MILLISECONDS));
+    }
+
+    @Override
+    public VLBTask runRepeatingSync(Runnable runnable, long ticks) {
+        return this.runRepeatingAsync(runnable, ticks);
     }
 
     @Override

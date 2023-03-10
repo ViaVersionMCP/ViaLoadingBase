@@ -27,8 +27,8 @@ repositories {
 }
 
 dependencies {
-    implementation "com.viaversion:viaversion:4.6.0-1.19.4-pre2-SNAPSHOT"
-    implementation "com.viaversion:viabackwards:4.6.0-1.19.4-pre1-SNAPSHOT"
+    implementation "com.viaversion:viaversion:4.6.0-1.19.4-rc2-SNAPSHOT"
+    implementation "com.viaversion:viabackwards:4.6.0-1.19.4-pre4-SNAPSHOT"
     implementation "com.viaversion:viarewind-core:2.0.3-SNAPSHOT"
     
     implementation "com.github.FlorianMichael:ViaLoadingBase:1b035c653e" // https://jitpack.io/#FlorianMichael/ViaLoadingBase
@@ -45,23 +45,12 @@ A `1.19.x` Minecraft client, for example, would need `ViaVersion`. <br>
 
 ## Example implementation:
 ```java
-public class ExampleImplementation {
-    
-    public void main() {
-        ViaLoadingBase.ViaLoadingBaseBuilder.
-                create().
-                runDirectory(new File("ViaVersion")).
-                nativeVersion(47).
-                singlePlayerProvider(() -> Minecraft.getMinecraft().isInSingleplayer).
-                eventLoop(
-                        // For Netty above 4.1.x, (>= Minecraft 1.12.2)
-                        new DefaultEventLoop(ViaLoadingBase.EXECUTOR_SERVICE)
-
-                        // For Netty older than 4.0.x (< Minecraft 1.12.2 && > Minecraft 1.6.4)
-                        // new LocalEventLoopGroup(1, threadFactory).next()
-                ).
+public void init() {
+    ViaLoadingBase.ViaLoadingBaseBuilder.
+        create().
+        runDirectory(new File("ViaVersion")).
+        nativeVersion(47).
         build();
-    }
 }
 ```
 
@@ -121,14 +110,6 @@ public class ExampleImplementation {
 
                 runDirectory(new File("ViaVersion")).
                 nativeVersion(47).
-                singlePlayerProvider(() -> Minecraft.getMinecraft().isInSingleplayer).
-                eventLoop(
-                        // For Netty above 4.1.x, (>= Minecraft 1.12.2)
-                        new DefaultEventLoop(ViaLoadingBase.EXECUTOR_SERVICE)
-
-                        // For Netty older than 4.0.x (< Minecraft 1.12.2 && > Minecraft 1.6.4)
-                        // new LocalEventLoopGroup(1, threadFactory).next()
-                ).
                 build();
     }
 }

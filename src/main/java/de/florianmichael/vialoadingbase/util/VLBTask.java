@@ -19,25 +19,30 @@
 package de.florianmichael.vialoadingbase.util;
 
 import com.viaversion.viaversion.api.platform.PlatformTask;
+import com.viaversion.viaversion.api.scheduler.Task;
+import com.viaversion.viaversion.api.scheduler.TaskStatus;
 
 import java.util.concurrent.Future;
 
-public class FutureTaskId implements PlatformTask<Future<?>> {
+public class VLBTask implements PlatformTask<Task> {
 
-    private final Future<?> object;
+    private final Task object;
 
-    public FutureTaskId(Future<?> object) {
+    public VLBTask(Task object) {
         this.object = object;
     }
 
     @Override
-    public Future<?> getObject() {
+    public Task getObject() {
         return object;
     }
 
     @Override
     public void cancel() {
-        object.cancel(false);
+        object.cancel();
     }
 
+    public TaskStatus getStatus() {
+        return this.getObject().status();
+    }
 }

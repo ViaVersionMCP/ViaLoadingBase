@@ -3,7 +3,7 @@ plugins {
     id "net.kyori.blossom" version "1.2.0"
 }
 
-version = "3.2.3"
+version = "4.2.3"
 
 repositories {
     maven {
@@ -25,9 +25,9 @@ blossom {
 
 dependencies {
     // Via Version
-    compileOnly("com.viaversion:viaversion-api:latest.integration")
-    compileOnly("com.viaversion:viabackwards-common:latest.integration")
-    compileOnly("com.viaversion:viarewind-core:latest.integration")
+    compileOnly("com.viaversion:viaversion:4.6.0-1.19.4-rc2-SNAPSHOT")
+    compileOnly("com.viaversion:viabackwards-common:4.6.0-1.19.4-pre4-SNAPSHOT")
+    compileOnly("com.viaversion:viarewind-core:2.0.3-SNAPSHOT")
 
     compileOnly("org.yaml:snakeyaml:2.0")
     compileOnly("com.google.guava:guava:31.1-jre")

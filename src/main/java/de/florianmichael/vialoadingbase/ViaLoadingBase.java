@@ -17,7 +17,6 @@
  */
 package de.florianmichael.vialoadingbase;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.viaversion.viaversion.ViaManagerImpl;
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.data.MappingDataLoader;
@@ -34,13 +33,11 @@ import de.florianmichael.vialoadingbase.defaults.viaversion.VLBViaProviders;
 import de.florianmichael.vialoadingbase.defaults.ViaVersionPlatformImpl;
 import de.florianmichael.vialoadingbase.defaults.viaversion.VLBViaInjector;
 import de.florianmichael.vialoadingbase.util.JLoggerToLog4j;
-import io.netty.channel.EventLoop;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.*;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -49,8 +46,6 @@ import java.util.logging.Logger;
 public class ViaLoadingBase {
     public static final String VERSION = "${vialoadingbase_version}";
 
-    public static final ThreadFactory THREAD_FACTORY = new ThreadFactoryBuilder().setDaemon(true).setNameFormat("ViaLoadingBase-%d").build();
-    public static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), THREAD_FACTORY);
     public static final Logger LOGGER = new JLoggerToLog4j(LogManager.getLogger("ViaLoadingBase"));
 
     public static final SubPlatform PSEUDO_VIA_VERSION = new SubPlatform("ViaVersion", () -> true, () -> {
@@ -69,7 +64,6 @@ public class ViaLoadingBase {
     private final File runDirectory;
     private final int nativeVersion;
     private final BooleanSupplier forceNativeVersionCondition;
-    private final EventLoop eventLoop;
     private final Supplier<JsonObject> dumpSupplier;
     private final Consumer<ViaProviders> providers;
     private final Consumer<ViaManagerImpl.ViaManagerBuilder> managerBuilderConsumer;
@@ -78,13 +72,12 @@ public class ViaLoadingBase {
     private ComparableProtocolVersion nativeProtocolVersion;
     private ComparableProtocolVersion targetProtocolVersion;
 
-    public ViaLoadingBase(LinkedList<SubPlatform> subPlatforms, File runDirectory, int nativeVersion, BooleanSupplier forceNativeVersionCondition, EventLoop eventLoop, Supplier<JsonObject> dumpSupplier, Consumer<ViaProviders> providers, Consumer<ViaManagerImpl.ViaManagerBuilder> managerBuilderConsumer, Consumer<ComparableProtocolVersion> onProtocolReload) {
+    public ViaLoadingBase(LinkedList<SubPlatform> subPlatforms, File runDirectory, int nativeVersion, BooleanSupplier forceNativeVersionCondition, Supplier<JsonObject> dumpSupplier, Consumer<ViaProviders> providers, Consumer<ViaManagerImpl.ViaManagerBuilder> managerBuilderConsumer, Consumer<ComparableProtocolVersion> onProtocolReload) {
         this.subPlatforms = subPlatforms;
 
         this.runDirectory = new File(runDirectory, "ViaLoadingBase");
         this.nativeVersion = nativeVersion;
         this.forceNativeVersionCondition = forceNativeVersionCondition;
-        this.eventLoop = eventLoop;
         this.dumpSupplier = dumpSupplier;
         this.providers = providers;
         this.managerBuilderConsumer = managerBuilderConsumer;
@@ -95,7 +88,7 @@ public class ViaLoadingBase {
     }
 
     public ComparableProtocolVersion getTargetVersion() {
-        if (forceNativeVersionCondition.getAsBoolean()) return nativeProtocolVersion;
+        if (forceNativeVersionCondition != null && forceNativeVersionCondition.getAsBoolean()) return nativeProtocolVersion;
 
         return targetProtocolVersion;
     }
@@ -150,10 +143,6 @@ public class ViaLoadingBase {
         return forceNativeVersionCondition;
     }
 
-    public EventLoop getEventLoop() {
-        return eventLoop;
-    }
-
     public Supplier<JsonObject> getDumpSupplier() {
         return dumpSupplier;
     }
@@ -185,7 +174,6 @@ public class ViaLoadingBase {
         private File runDirectory;
         private Integer nativeVersion;
         private BooleanSupplier forceNativeVersionCondition;
-        private EventLoop eventLoop;
         private Supplier<JsonObject> dumpSupplier;
         private Consumer<ViaProviders> providers;
         private Consumer<ViaManagerImpl.ViaManagerBuilder> managerBuilderConsumer;
@@ -227,11 +215,6 @@ public class ViaLoadingBase {
             return this;
         }
 
-        public ViaLoadingBaseBuilder eventLoop(final EventLoop eventLoop) {
-            this.eventLoop = eventLoop;
-            return this;
-        }
-
         public ViaLoadingBaseBuilder dumpSupplier(final Supplier<JsonObject> dumpSupplier) {
             this.dumpSupplier = dumpSupplier;
             return this;
@@ -257,11 +240,11 @@ public class ViaLoadingBase {
                 ViaLoadingBase.LOGGER.severe("ViaLoadingBase has already started the platform!");
                 return;
             }
-            if (runDirectory == null || nativeVersion == null || forceNativeVersionCondition == null || eventLoop == null) {
+            if (runDirectory == null || nativeVersion == null) {
                 ViaLoadingBase.LOGGER.severe("Please check your ViaLoadingBaseBuilder arguments!");
                 return;
             }
-            new ViaLoadingBase(subPlatforms, runDirectory, nativeVersion, forceNativeVersionCondition, eventLoop, dumpSupplier, providers, managerBuilderConsumer, onProtocolReload);
+            new ViaLoadingBase(subPlatforms, runDirectory, nativeVersion, forceNativeVersionCondition, dumpSupplier, providers, managerBuilderConsumer, onProtocolReload);
         }
     }
 }
