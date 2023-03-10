@@ -31,7 +31,7 @@ dependencies {
     implementation "com.viaversion:viabackwards:4.6.0-1.19.4-pre4-SNAPSHOT"
     implementation "com.viaversion:viarewind-core:2.0.3-SNAPSHOT"
     
-    implementation "com.github.FlorianMichael:ViaLoadingBase:34d25cdbe1" // https://jitpack.io/#FlorianMichael/ViaLoadingBase
+    implementation "com.github.FlorianMichael:ViaLoadingBase:fb55fe2ff7" // https://jitpack.io/#FlorianMichael/ViaLoadingBase
 }
 ```
 
