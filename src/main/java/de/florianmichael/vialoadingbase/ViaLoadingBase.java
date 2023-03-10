@@ -117,9 +117,9 @@ public class ViaLoadingBase {
             for (SubPlatform subPlatform : this.subPlatforms)
                 if (subPlatform.build(ViaLoadingBase.LOGGER)) ViaMetrics.CLASS_WRAPPER.platformsLoaded++;
         });
-        MappingDataLoader.enableMappingsCache();
 
         viaManager.init();
+        viaManager.onServerLoaded();
         viaManager.getProtocolManager().setMaxProtocolPathSize(Integer.MAX_VALUE);
         viaManager.getProtocolManager().setMaxPathDeltaIncrease(-1);
         ((ProtocolManagerImpl) viaManager.getProtocolManager()).refreshVersions();
