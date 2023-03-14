@@ -12,7 +12,7 @@ If you just want to talk or need help with ViaLoadingBase feel free to join my
 
 ## Projects where this is used:
 1. [ViaForge](https://github.com/FlorianMichael/ViaForge): Clientside ViaVersion for Forge
-2. [ViaFabricPlus](https://github.com/FlorianMichael/ViaFabricPlus): Clientside ViaVersion, ViaLegacy and ViaAprilFools implementation with clientside fixes for Fabric
+2. [ViaFabricPlus](https://github.com/FlorianMichael/ViaFabricPlus): Clientside ViaVersion, ViaLegacy, ViaBedrock and ViaAprilFools implementation with clientside fixes for Fabric
 
 ## Add this to your own project
 build.gradle
@@ -27,11 +27,11 @@ repositories {
 }
 
 dependencies {
-    implementation "com.viaversion:viaversion:4.6.0-1.19.4-rc2-SNAPSHOT"
-    implementation "com.viaversion:viabackwards:4.6.0-1.19.4-pre4-SNAPSHOT"
-    implementation "com.viaversion:viarewind-core:2.0.3-SNAPSHOT"
+    implementation "com.viaversion:viaversion:4.6.0"
+    implementation "com.viaversion:viabackwards:4.6.1-SNAPSHOT"
+    implementation "com.viaversion:viarewind-core:2.0.3"
     
-    implementation "com.github.FlorianMichael:ViaLoadingBase:fb55fe2ff7" // https://jitpack.io/#FlorianMichael/ViaLoadingBase
+    implementation "com.github.FlorianMichael:ViaLoadingBase:6dad0a2561" // https://jitpack.io/#FlorianMichael/ViaLoadingBase
 }
 ```
 
