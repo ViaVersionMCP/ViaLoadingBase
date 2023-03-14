@@ -25,9 +25,9 @@ blossom {
 
 dependencies {
     // Via Version
-    compileOnly("com.viaversion:viaversion:4.6.0-1.19.4-rc2-SNAPSHOT")
-    compileOnly("com.viaversion:viabackwards-common:4.6.0-1.19.4-pre4-SNAPSHOT")
-    compileOnly("com.viaversion:viarewind-core:2.0.3-SNAPSHOT")
+    compileOnly("com.viaversion:viaversion:4.6.0")
+    compileOnly("com.viaversion:viabackwards-common:4.6.1-SNAPSHOT")
+    compileOnly("com.viaversion:viarewind-core:2.0.3")
 
     compileOnly("org.yaml:snakeyaml:2.0")
     compileOnly("com.google.guava:guava:31.1-jre")
