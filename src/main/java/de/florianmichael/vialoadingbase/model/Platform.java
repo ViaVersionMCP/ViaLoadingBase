@@ -66,6 +66,7 @@ public class Platform {
                 logger.severe("An error occurred while loading Platform " + this.name + ":");
                 t.printStackTrace();
             }
+            return;
         }
         logger.severe("Platform " + this.name + " is not present");
     }
