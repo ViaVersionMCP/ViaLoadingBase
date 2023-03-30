@@ -15,39 +15,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.florianmichael.vialoadingbase.platform;
+package de.florianmichael.vialoadingbase.model;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
-public class SubPlatform {
+public class Platform {
+    public static int COUNT = 0;
+    public final static List<ProtocolVersion> TEMP_INPUT_PROTOCOLS = new ArrayList<>(); // List of all Platform's protocol versions
+
     private final String name;
     private final BooleanSupplier load;
     private final Runnable executor;
     private final Consumer<List<ProtocolVersion>> versionCallback;
 
-    public SubPlatform(String name, BooleanSupplier load, Runnable executor) {
+    public Platform(String name, BooleanSupplier load, Runnable executor) {
         this(name, load, executor, null);
     }
 
-    public SubPlatform(String name, BooleanSupplier load, Runnable executor, Consumer<List<ProtocolVersion>> versionCallback) {
+    public Platform(String name, BooleanSupplier load, Runnable executor, Consumer<List<ProtocolVersion>> versionCallback) {
         this.name = name;
         this.load = load;
         this.executor = executor;
         this.versionCallback = versionCallback;
-    }
-
-    public static boolean isClass(final String name) {
-        try {
-            Class.forName(name);
-            return true;
-        } catch (Exception ignored) {
-            return false;
-        }
     }
 
     public String getName() {
@@ -56,23 +52,21 @@ public class SubPlatform {
 
     public void createProtocolPath() {
         if (this.versionCallback != null) {
-            this.versionCallback.accept(InternalProtocolList.PRE_PROTOCOLS);
+            this.versionCallback.accept(TEMP_INPUT_PROTOCOLS);
         }
     }
 
-    public boolean build(final Logger logger) {
+    public void build(final Logger logger) {
         if (this.load.getAsBoolean()) {
             try {
                 this.executor.run();
                 logger.info("Loaded sub Platform " + this.name);
-                return true;
+                COUNT++;
             } catch (Throwable t) {
                 logger.severe("An error occurred while loading sub Platform " + this.name + ":");
                 t.printStackTrace();
-                return false;
             }
         }
         logger.severe("Sub platform " + this.name + " is not present");
-        return false;
     }
 }

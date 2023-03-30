@@ -19,48 +19,42 @@ package de.florianmichael.vialoadingbase;
 
 import com.viaversion.viaversion.ViaManagerImpl;
 import com.viaversion.viaversion.api.Via;
-import com.viaversion.viaversion.api.data.MappingDataLoader;
 import com.viaversion.viaversion.api.platform.providers.ViaProviders;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import com.viaversion.viaversion.libs.gson.JsonObject;
 import com.viaversion.viaversion.protocol.ProtocolManagerImpl;
-import de.florianmichael.vialoadingbase.platform.SubPlatform;
-import de.florianmichael.vialoadingbase.platform.ComparableProtocolVersion;
-import de.florianmichael.vialoadingbase.platform.InternalProtocolList;
-import de.florianmichael.vialoadingbase.defaults.ViaBackwardsPlatformImpl;
-import de.florianmichael.vialoadingbase.defaults.ViaRewindPlatformImpl;
-import de.florianmichael.vialoadingbase.defaults.viaversion.VLBViaProviders;
-import de.florianmichael.vialoadingbase.defaults.ViaVersionPlatformImpl;
-import de.florianmichael.vialoadingbase.defaults.viaversion.VLBViaInjector;
+import de.florianmichael.vialoadingbase.model.Platform;
+import de.florianmichael.vialoadingbase.model.ComparableProtocolVersion;
+import de.florianmichael.vialoadingbase.platform.ViaBackwardsPlatformImpl;
+import de.florianmichael.vialoadingbase.platform.ViaRewindPlatformImpl;
+import de.florianmichael.vialoadingbase.platform.viaversion.VLBViaProviders;
+import de.florianmichael.vialoadingbase.platform.ViaVersionPlatformImpl;
+import de.florianmichael.vialoadingbase.platform.viaversion.VLBViaInjector;
 import de.florianmichael.vialoadingbase.util.JLoggerToLog4j;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 public class ViaLoadingBase {
-    public static final String VERSION = "${vialoadingbase_version}";
+    public final static String VERSION = "${vialoadingbase_version}";
+    public final static Logger LOGGER = new JLoggerToLog4j(LogManager.getLogger("ViaLoadingBase"));
 
-    public static final Logger LOGGER = new JLoggerToLog4j(LogManager.getLogger("ViaLoadingBase"));
-
-    public static final SubPlatform PSEUDO_VIA_VERSION = new SubPlatform("ViaVersion", () -> true, () -> {
+    public final static Platform PSEUDO_VIA_VERSION = new Platform("ViaVersion", () -> true, () -> {
         // Empty
     }, protocolVersions -> protocolVersions.addAll(ViaVersionPlatformImpl.createVersionList()));
-    public static final SubPlatform SUB_PLATFORM_VIA_BACKWARDS = new SubPlatform("ViaBackwards", () -> SubPlatform.isClass("com.viaversion.viabackwards.api.ViaBackwardsPlatform"), () -> {
-        new ViaBackwardsPlatformImpl(Via.getManager().getPlatform().getDataFolder());
-    });
-    public static final SubPlatform SUB_PLATFORM_VIA_REWIND = new SubPlatform("ViaRewind", () -> SubPlatform.isClass("de.gerrygames.viarewind.api.ViaRewindPlatform"), () -> {
-        new ViaRewindPlatformImpl(Via.getManager().getPlatform().getDataFolder());
-    });
+    public final static Platform PLATFORM_VIA_BACKWARDS = new Platform("ViaBackwards", () -> inClassPath("com.viaversion.viabackwards.api.ViaBackwardsPlatform"), () -> new ViaBackwardsPlatformImpl(Via.getManager().getPlatform().getDataFolder()));
+    public final static Platform PLATFORM_VIA_REWIND = new Platform("ViaRewind", () -> inClassPath("de.gerrygames.viarewind.api.ViaRewindPlatform"), () -> new ViaRewindPlatformImpl(Via.getManager().getPlatform().getDataFolder()));
 
-    private static ViaLoadingBase classWrapper;
+    public final static Map<ProtocolVersion, ComparableProtocolVersion> PROTOCOLS = new LinkedHashMap<>();
 
-    private final LinkedList<SubPlatform> subPlatforms;
+    private static ViaLoadingBase instance;
+
+    private final LinkedList<Platform> platforms;
     private final File runDirectory;
     private final int nativeVersion;
     private final BooleanSupplier forceNativeVersionCondition;
@@ -72,8 +66,8 @@ public class ViaLoadingBase {
     private ComparableProtocolVersion nativeProtocolVersion;
     private ComparableProtocolVersion targetProtocolVersion;
 
-    public ViaLoadingBase(LinkedList<SubPlatform> subPlatforms, File runDirectory, int nativeVersion, BooleanSupplier forceNativeVersionCondition, Supplier<JsonObject> dumpSupplier, Consumer<ViaProviders> providers, Consumer<ViaManagerImpl.ViaManagerBuilder> managerBuilderConsumer, Consumer<ComparableProtocolVersion> onProtocolReload) {
-        this.subPlatforms = subPlatforms;
+    public ViaLoadingBase(LinkedList<Platform> platforms, File runDirectory, int nativeVersion, BooleanSupplier forceNativeVersionCondition, Supplier<JsonObject> dumpSupplier, Consumer<ViaProviders> providers, Consumer<ViaManagerImpl.ViaManagerBuilder> managerBuilderConsumer, Consumer<ComparableProtocolVersion> onProtocolReload) {
+        this.platforms = platforms;
 
         this.runDirectory = new File(runDirectory, "ViaLoadingBase");
         this.nativeVersion = nativeVersion;
@@ -83,7 +77,7 @@ public class ViaLoadingBase {
         this.managerBuilderConsumer = managerBuilderConsumer;
         this.onProtocolReload = onProtocolReload;
 
-        classWrapper = this;
+        instance = this;
         initPlatform();
     }
 
@@ -94,41 +88,44 @@ public class ViaLoadingBase {
     }
 
     public void reload(final ProtocolVersion protocolVersion) {
-        this.targetProtocolVersion = InternalProtocolList.fromProtocolVersion(protocolVersion);
+        this.targetProtocolVersion = fromProtocolVersion(protocolVersion);
 
         if (this.onProtocolReload != null) this.onProtocolReload.accept(targetProtocolVersion);
     }
 
     public void initPlatform() {
-        for (SubPlatform subPlatform : subPlatforms) subPlatform.createProtocolPath();
-        InternalProtocolList.createComparableTable();
-        this.nativeProtocolVersion = InternalProtocolList.fromProtocolVersion(ProtocolVersion.getProtocol(this.nativeVersion));
+        for (Platform platform : platforms) platform.createProtocolPath();
+        for (ProtocolVersion preProtocol : Platform.TEMP_INPUT_PROTOCOLS) PROTOCOLS.put(preProtocol, new ComparableProtocolVersion(preProtocol.getVersion(), preProtocol.getName(), Platform.TEMP_INPUT_PROTOCOLS.indexOf(preProtocol)));
+
+        this.nativeProtocolVersion = fromProtocolVersion(ProtocolVersion.getProtocol(this.nativeVersion));
         this.targetProtocolVersion = this.nativeProtocolVersion;
 
         final ViaVersionPlatformImpl viaVersionPlatform = new ViaVersionPlatformImpl(ViaLoadingBase.LOGGER);
         final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new VLBViaInjector()).loader(new VLBViaProviders()).platform(viaVersionPlatform);
-        if (this.managerBuilderConsumer != null) {
-            this.managerBuilderConsumer.accept(builder);
-        }
+        if (this.managerBuilderConsumer != null) this.managerBuilderConsumer.accept(builder);
+
         Via.init(builder.build());
 
-        final ViaManagerImpl viaManager = (ViaManagerImpl) Via.getManager();
-        viaManager.addEnableListener(() -> {
-            for (SubPlatform subPlatform : this.subPlatforms)
-                if (subPlatform.build(ViaLoadingBase.LOGGER)) ViaMetrics.CLASS_WRAPPER.platformsLoaded++;
+        final ViaManagerImpl manager = (ViaManagerImpl) Via.getManager();
+        manager.addEnableListener(() -> {
+            for (Platform platform : this.platforms) platform.build(ViaLoadingBase.LOGGER);
         });
 
-        viaManager.init();
-        viaManager.onServerLoaded();
-        viaManager.getProtocolManager().setMaxProtocolPathSize(Integer.MAX_VALUE);
-        viaManager.getProtocolManager().setMaxPathDeltaIncrease(-1);
-        ((ProtocolManagerImpl) viaManager.getProtocolManager()).refreshVersions();
+        manager.init();
+        manager.onServerLoaded();
+        manager.getProtocolManager().setMaxProtocolPathSize(Integer.MAX_VALUE);
+        manager.getProtocolManager().setMaxPathDeltaIncrease(-1);
+        ((ProtocolManagerImpl) manager.getProtocolManager()).refreshVersions();
 
-        ViaMetrics.CLASS_WRAPPER.print(this.subPlatforms);
+        ViaLoadingBase.LOGGER.info("ViaLoadingBase has loaded " + Platform.COUNT + "/" + platforms.size() + " platforms");
     }
 
-    public List<SubPlatform> getSubPlatforms() {
-        return subPlatforms;
+    public static ViaLoadingBase getInstance() {
+        return instance;
+    }
+
+    public List<Platform> getSubPlatforms() {
+        return platforms;
     }
 
     public File getRunDirectory() {
@@ -139,10 +136,6 @@ public class ViaLoadingBase {
         return nativeVersion;
     }
 
-    public BooleanSupplier getForceNativeVersionCondition() {
-        return forceNativeVersionCondition;
-    }
-
     public Supplier<JsonObject> getDumpSupplier() {
         return dumpSupplier;
     }
@@ -151,25 +144,29 @@ public class ViaLoadingBase {
         return providers;
     }
 
-    public Consumer<ViaManagerImpl.ViaManagerBuilder> getManagerBuilderConsumer() {
-        return managerBuilderConsumer;
-    }
-
-    public static ViaLoadingBase getClassWrapper() {
-        return classWrapper;
-    }
-
-    public static class ViaMetrics {
-        public static final ViaMetrics CLASS_WRAPPER = new ViaMetrics();
-        public int platformsLoaded;
-
-        public void print(final LinkedList<SubPlatform> subPlatforms) {
-            ViaLoadingBase.LOGGER.info("ViaLoadingBase has loaded " + platformsLoaded + "/" + subPlatforms.size() + " sub platforms");
+    public static boolean inClassPath(final String name) {
+        try {
+            Class.forName(name);
+            return true;
+        } catch (Exception ignored) {
+            return false;
         }
     }
 
+    public static ComparableProtocolVersion fromProtocolVersion(final ProtocolVersion protocolVersion) {
+        return PROTOCOLS.get(protocolVersion);
+    }
+
+    public static ComparableProtocolVersion fromProtocolId(final int protocolId) {
+        return PROTOCOLS.values().stream().filter(protocol -> protocol.getVersion() == protocolId).findFirst().orElse(null);
+    }
+
+    public static List<ProtocolVersion> getProtocols() {
+        return new LinkedList<>(PROTOCOLS.keySet());
+    }
+
     public static class ViaLoadingBaseBuilder {
-        private final LinkedList<SubPlatform> subPlatforms = new LinkedList<>();
+        private final LinkedList<Platform> platforms = new LinkedList<>();
 
         private File runDirectory;
         private Integer nativeVersion;
@@ -180,23 +177,23 @@ public class ViaLoadingBase {
         private Consumer<ComparableProtocolVersion> onProtocolReload;
 
         public ViaLoadingBaseBuilder() {
-            subPlatforms.add(PSEUDO_VIA_VERSION);
+            platforms.add(PSEUDO_VIA_VERSION);
 
-            subPlatforms.add(SUB_PLATFORM_VIA_BACKWARDS);
-            subPlatforms.add(SUB_PLATFORM_VIA_REWIND);
+            platforms.add(PLATFORM_VIA_BACKWARDS);
+            platforms.add(PLATFORM_VIA_REWIND);
         }
 
         public static ViaLoadingBaseBuilder create() {
             return new ViaLoadingBaseBuilder();
         }
 
-        public ViaLoadingBaseBuilder subPlatform(final SubPlatform subPlatform) {
-            this.subPlatforms.add(subPlatform);
+        public ViaLoadingBaseBuilder subPlatform(final Platform platform) {
+            this.platforms.add(platform);
             return this;
         }
 
-        public ViaLoadingBaseBuilder subPlatform(final SubPlatform subPlatform, final int position) {
-            this.subPlatforms.add(position, subPlatform);
+        public ViaLoadingBaseBuilder subPlatform(final Platform platform, final int position) {
+            this.platforms.add(position, platform);
             return this;
         }
 
@@ -236,7 +233,7 @@ public class ViaLoadingBase {
         }
 
         public void build() {
-            if (ViaLoadingBase.getClassWrapper() != null) {
+            if (ViaLoadingBase.getInstance() != null) {
                 ViaLoadingBase.LOGGER.severe("ViaLoadingBase has already started the platform!");
                 return;
             }
@@ -244,7 +241,7 @@ public class ViaLoadingBase {
                 ViaLoadingBase.LOGGER.severe("Please check your ViaLoadingBaseBuilder arguments!");
                 return;
             }
-            new ViaLoadingBase(subPlatforms, runDirectory, nativeVersion, forceNativeVersionCondition, dumpSupplier, providers, managerBuilderConsumer, onProtocolReload);
+            new ViaLoadingBase(platforms, runDirectory, nativeVersion, forceNativeVersionCondition, dumpSupplier, providers, managerBuilderConsumer, onProtocolReload);
         }
     }
 }

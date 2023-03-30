@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.florianmichael.vialoadingbase.defaults.viaversion;
+package de.florianmichael.vialoadingbase.platform.viaversion;
 
 import com.viaversion.viaversion.api.platform.ViaInjector;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
@@ -28,12 +28,10 @@ public class VLBViaInjector implements ViaInjector {
 
     @Override
     public void inject() {
-        // Implemented by Mixins
     }
 
     @Override
     public void uninject() {
-        // ICM
     }
 
     @Override

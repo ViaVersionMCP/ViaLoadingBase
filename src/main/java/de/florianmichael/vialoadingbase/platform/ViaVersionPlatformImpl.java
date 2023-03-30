@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.florianmichael.vialoadingbase.defaults;
+package de.florianmichael.vialoadingbase.platform;
 
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.ViaAPI;
@@ -23,15 +23,14 @@ import com.viaversion.viaversion.api.command.ViaCommandSender;
 import com.viaversion.viaversion.api.configuration.ConfigurationProvider;
 import com.viaversion.viaversion.api.configuration.ViaVersionConfig;
 import com.viaversion.viaversion.api.connection.UserConnection;
-import com.viaversion.viaversion.api.platform.PlatformTask;
 import com.viaversion.viaversion.api.platform.UnsupportedSoftware;
 import com.viaversion.viaversion.api.platform.ViaPlatform;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import com.viaversion.viaversion.libs.gson.JsonObject;
 import com.viaversion.viaversion.util.VersionInfo;
 import de.florianmichael.vialoadingbase.ViaLoadingBase;
-import de.florianmichael.vialoadingbase.defaults.viaversion.VLBViaAPIWrapper;
-import de.florianmichael.vialoadingbase.defaults.viaversion.VLBViaConfig;
+import de.florianmichael.vialoadingbase.platform.viaversion.VLBViaAPIWrapper;
+import de.florianmichael.vialoadingbase.platform.viaversion.VLBViaConfig;
 import de.florianmichael.vialoadingbase.util.VLBTask;
 
 import java.io.File;
@@ -49,7 +48,7 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
     public ViaVersionPlatformImpl(final Logger logger) {
         this.logger = logger;
-        config = new VLBViaConfig(new File(ViaLoadingBase.getClassWrapper().getRunDirectory(), "viaversion.yml"));
+        config = new VLBViaConfig(new File(ViaLoadingBase.getInstance().getRunDirectory(), "viaversion.yml"));
     }
 
     public static List<ProtocolVersion> createVersionList() {
@@ -133,7 +132,7 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
     @Override
     public File getDataFolder() {
-        return ViaLoadingBase.getClassWrapper().getRunDirectory();
+        return ViaLoadingBase.getInstance().getRunDirectory();
     }
 
     @Override
@@ -178,8 +177,8 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UUID> {
 
     @Override
     public JsonObject getDump() {
-        if (ViaLoadingBase.getClassWrapper().getDumpSupplier() == null) return new JsonObject();
+        if (ViaLoadingBase.getInstance().getDumpSupplier() == null) return new JsonObject();
 
-        return ViaLoadingBase.getClassWrapper().getDumpSupplier().get();
+        return ViaLoadingBase.getInstance().getDumpSupplier().get();
     }
 }

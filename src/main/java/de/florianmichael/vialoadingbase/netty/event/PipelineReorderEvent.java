@@ -15,11 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.florianmichael.vialoadingbase.defaults.viaversion;
+package de.florianmichael.vialoadingbase.netty.event;
 
-import com.viaversion.viaversion.ViaAPIBase;
-
-import java.util.UUID;
-
-public class VLBViaAPIWrapper extends ViaAPIBase<UUID> {
+public class PipelineReorderEvent {
 }

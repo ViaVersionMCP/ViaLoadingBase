@@ -15,9 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.florianmichael.vialoadingbase.platform;
+package de.florianmichael.vialoadingbase.model;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
 
 public class ComparableProtocolVersion extends ProtocolVersion {
     private final int index;
@@ -28,23 +29,23 @@ public class ComparableProtocolVersion extends ProtocolVersion {
     }
 
     public boolean isOlderThan(final ProtocolVersion other) {
-        return this.getIndex() > InternalProtocolList.fromProtocolVersion(other).getIndex();
+        return this.getIndex() > ViaLoadingBase.fromProtocolVersion(other).getIndex();
     }
 
     public boolean isOlderThanOrEqualTo(final ProtocolVersion other) {
-        return this.getIndex() >= InternalProtocolList.fromProtocolVersion(other).getIndex();
+        return this.getIndex() >= ViaLoadingBase.fromProtocolVersion(other).getIndex();
     }
 
     public boolean isNewerThan(final ProtocolVersion other) {
-        return this.getIndex() < InternalProtocolList.fromProtocolVersion(other).getIndex();
+        return this.getIndex() < ViaLoadingBase.fromProtocolVersion(other).getIndex();
     }
 
     public boolean isNewerThanOrEqualTo(final ProtocolVersion other) {
-        return this.getIndex() <= InternalProtocolList.fromProtocolVersion(other).getIndex();
+        return this.getIndex() <= ViaLoadingBase.fromProtocolVersion(other).getIndex();
     }
 
     public boolean isEqualTo(final ProtocolVersion other) {
-        return this.getIndex() == InternalProtocolList.fromProtocolVersion(other).getIndex();
+        return this.getIndex() == ViaLoadingBase.fromProtocolVersion(other).getIndex();
     }
 
     public int getIndex() {

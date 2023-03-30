@@ -15,7 +15,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.florianmichael.vialoadingbase.event;
+package de.florianmichael.vialoadingbase.platform;
 
-public class PipelineReorderEvent {
+import com.viaversion.viabackwards.api.ViaBackwardsPlatform;
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
+
+import java.io.File;
+import java.util.logging.Logger;
+
+public class ViaBackwardsPlatformImpl implements ViaBackwardsPlatform {
+    private final File directory;
+
+    public ViaBackwardsPlatformImpl(final File directory) {
+        this.init(this.directory = directory);
+    }
+
+    @Override
+    public Logger getLogger() {
+        return ViaLoadingBase.LOGGER;
+    }
+
+    @Override
+    public boolean isOutdated() {
+        return false;
+    }
+
+    @Override
+    public void disable() {}
+
+    @Override
+    public File getDataFolder() {
+        return directory;
+    }
 }

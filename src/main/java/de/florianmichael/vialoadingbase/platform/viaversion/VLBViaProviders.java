@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.florianmichael.vialoadingbase.defaults.viaversion;
+package de.florianmichael.vialoadingbase.platform.viaversion;
 
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.platform.ViaPlatformLoader;
@@ -35,7 +35,7 @@ public class VLBViaProviders implements ViaPlatformLoader {
         providers.use(VersionProvider.class, new VLBBaseVersionProvider());
         providers.use(MovementTransmitterProvider.class, new BungeeMovementTransmitter());
 
-        if (ViaLoadingBase.getClassWrapper().getProviders() != null) ViaLoadingBase.getClassWrapper().getProviders().accept(providers);
+        if (ViaLoadingBase.getInstance().getProviders() != null) ViaLoadingBase.getInstance().getProviders().accept(providers);
     }
 
     @Override

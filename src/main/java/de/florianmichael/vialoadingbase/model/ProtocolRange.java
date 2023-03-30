@@ -15,22 +15,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.florianmichael.vialoadingbase.platform;
+package de.florianmichael.vialoadingbase.model;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
-import de.florianmichael.vialoadingbase.platform.ComparableProtocolVersion;
-import de.florianmichael.vialoadingbase.platform.InternalProtocolList;
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
 
 public class ProtocolRange {
     private final ComparableProtocolVersion lowerBound;
     private final ComparableProtocolVersion upperBound;
 
     public ProtocolRange(ProtocolVersion lowerBound, ProtocolVersion upperBound) {
+        this(ViaLoadingBase.fromProtocolVersion(lowerBound), ViaLoadingBase.fromProtocolVersion(upperBound));
+    }
+
+    public ProtocolRange(ComparableProtocolVersion lowerBound, ComparableProtocolVersion upperBound) {
         if (lowerBound == null && upperBound == null) {
             throw new RuntimeException("Invalid protocol range");
         }
-        this.lowerBound = InternalProtocolList.fromProtocolVersion(lowerBound);
-        this.upperBound = InternalProtocolList.fromProtocolVersion(upperBound);
+        this.lowerBound = lowerBound;
+        this.upperBound = upperBound;
     }
 
     public static ProtocolRange andNewer(final ProtocolVersion version) {
@@ -46,11 +49,9 @@ public class ProtocolRange {
     }
 
     public boolean contains(final ComparableProtocolVersion protocolVersion) {
-        if (this.lowerBound != null && protocolVersion.getIndex() < lowerBound.getIndex())
-            return false;
-        if (this.upperBound != null && protocolVersion.getIndex() > upperBound.getIndex())
-            return false;
-        return true;
+        if (this.lowerBound != null && protocolVersion.getIndex() < lowerBound.getIndex()) return false;
+
+        return this.upperBound == null || protocolVersion.getIndex() <= upperBound.getIndex();
     }
 
     @Override

@@ -27,9 +27,9 @@ repositories {
 }
 
 dependencies {
-    implementation "com.viaversion:viaversion:4.6.0"
-    implementation "com.viaversion:viabackwards:4.6.1-SNAPSHOT"
-    implementation "com.viaversion:viarewind-core:2.0.3"
+    implementation "com.viaversion:viaversion:4.7.0-23w13a-SNAPSHOT"
+    implementation "com.viaversion:viabackwards:4.7.0-23w13a-SNAPSHOT"
+    implementation "com.viaversion:viarewind-core:2.0.4-SNAPSHOT"
     
     implementation "com.github.FlorianMichael:ViaLoadingBase:6dad0a2561" // https://jitpack.io/#FlorianMichael/ViaLoadingBase
 }
@@ -45,7 +45,7 @@ A `1.19.x` Minecraft client, for example, would need `ViaVersion`. <br>
 
 ## Example implementation:
 ```java
-public void init() {
+public void init() { // Basic code to load all platforms which are in the class path
     ViaLoadingBase.ViaLoadingBaseBuilder.
         create().
         runDirectory(new File("ViaVersion")).
@@ -53,6 +53,23 @@ public void init() {
         build();
 }
 ```
+
+The most important part is the modification of your netty pipeline. This is needed for **ViaVersion** to translate the packets in both ways.
+```java
+final UserConnection user = new UserConnectionImpl(channel, true);
+
+new ProtocolPipelineImpl(user);
+
+channel.pipeline().addBefore("encoder", NettyConstants.HANDLER_ENCODER_NAME, new VLBViaEncodeHandler(user));
+channel.pipeline().addBefore("decoder", NettyConstants.HANDLER_DECODER_NAME, new VLBViaDecodeHandler(user));
+```
+In case your platform has compression, you can call the **PipelineReorderEvent** at the end of the compression code to correct the compression.
+```java
+channel.pipeline().fireUserEventTriggered(new PipelineReorderEvent());
+```
+In order for ViaLoadingBase to find the compression handler in the pipeline, there is a String[] in the **NettyConstants** class that has **decompress, compress** by default. you can modify this field
+
+### For a mcp based implementation you can have a look at the code in [ViaForge](https://github.com/FlorianMichael/ViaForge)
 
 ## API examples:
 ViaLoadingBase also offers a system to compare the target version with other versions:
@@ -89,24 +106,23 @@ if (allVersionsAbove1_8.contains(ProtocolVersion.v1_10)) {
 ```
 The class also has a toString() method that automatically formats the range
 
-## How to load sub platforms:
+## How to load platforms:
+
 ```java
 public class ExampleImplementation {
-    
-    private final SubPlatform examplePlatform = new SubPlatform(
-            "Example", 
-            () -> SubPlatform.isClass("net.exampledev.exampleplatform.ExamplePlatform"), // Checks if the platform class is in the class path
-            ExamplePlatformImpl::new, 
-            protocolVersions -> {
-        protocolVersions.addAll(ExamplePlatformVersions.PROTOCOLS);
-    });
-    
+
+    private final Platform examplePlatform = new Platform(
+            "Example",
+            () -> ViaLoadingBase.inClassPath("net.exampledev.exampleplatform.ExamplePlatform"), // Checks if the platform class is in the class path
+            ExamplePlatformImpl::new,
+            protocolVersions -> protocolVersions.addAll(ExamplePlatformVersions.PROTOCOLS));
+
     public void main() {
         ViaLoadingBase.ViaLoadingBaseBuilder.
                 create().
 
-                subPlatform(examplePlatform). // will set the sub platform as last 
-                subPlatform(examplePlatform, 0). // will set the sub platform as first 
+                platform(examplePlatform). // will set the platform as last 
+                platform(examplePlatform, 0). // will set the platform as first 
 
                 runDirectory(new File("ViaVersion")).
                 nativeVersion(47).

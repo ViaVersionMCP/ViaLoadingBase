@@ -15,36 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.florianmichael.vialoadingbase.defaults;
+package de.florianmichael.vialoadingbase.platform.viaversion;
 
-import com.viaversion.viabackwards.api.ViaBackwardsPlatform;
-import de.florianmichael.vialoadingbase.ViaLoadingBase;
+import com.viaversion.viaversion.ViaAPIBase;
 
-import java.io.File;
-import java.util.logging.Logger;
+import java.util.UUID;
 
-public class ViaBackwardsPlatformImpl implements ViaBackwardsPlatform {
-    private final File directory;
-
-    public ViaBackwardsPlatformImpl(final File directory) {
-        this.init(this.directory = directory);
-    }
-
-    @Override
-    public Logger getLogger() {
-        return ViaLoadingBase.LOGGER;
-    }
-
-    @Override
-    public boolean isOutdated() {
-        return false;
-    }
-
-    @Override
-    public void disable() {}
-
-    @Override
-    public File getDataFolder() {
-        return directory;
-    }
+public class VLBViaAPIWrapper extends ViaAPIBase<UUID> {
 }
