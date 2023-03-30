@@ -187,12 +187,12 @@ public class ViaLoadingBase {
             return new ViaLoadingBaseBuilder();
         }
 
-        public ViaLoadingBaseBuilder subPlatform(final Platform platform) {
+        public ViaLoadingBaseBuilder platform(final Platform platform) {
             this.platforms.add(platform);
             return this;
         }
 
-        public ViaLoadingBaseBuilder subPlatform(final Platform platform, final int position) {
+        public ViaLoadingBaseBuilder platform(final Platform platform, final int position) {
             this.platforms.add(position, platform);
             return this;
         }

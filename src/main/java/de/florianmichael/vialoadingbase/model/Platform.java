@@ -60,13 +60,13 @@ public class Platform {
         if (this.load.getAsBoolean()) {
             try {
                 this.executor.run();
-                logger.info("Loaded sub Platform " + this.name);
+                logger.info("Loaded Platform " + this.name);
                 COUNT++;
             } catch (Throwable t) {
-                logger.severe("An error occurred while loading sub Platform " + this.name + ":");
+                logger.severe("An error occurred while loading Platform " + this.name + ":");
                 t.printStackTrace();
             }
         }
-        logger.severe("Sub platform " + this.name + " is not present");
+        logger.severe("Platform " + this.name + " is not present");
     }
 }
