@@ -88,7 +88,11 @@ public class ViaLoadingBase {
     }
 
     public void reload(final ProtocolVersion protocolVersion) {
-        this.targetProtocolVersion = fromProtocolVersion(protocolVersion);
+        reload(fromProtocolVersion(protocolVersion));
+    }
+
+    public void reload(final ComparableProtocolVersion protocolVersion) {
+        this.targetProtocolVersion = protocolVersion;
 
         if (this.onProtocolReload != null) this.onProtocolReload.accept(targetProtocolVersion);
     }
