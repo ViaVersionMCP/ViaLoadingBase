@@ -22,7 +22,6 @@ import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import com.viaversion.viaversion.libs.fastutil.ints.IntLinkedOpenHashSet;
 import com.viaversion.viaversion.libs.fastutil.ints.IntSortedSet;
 import com.viaversion.viaversion.libs.gson.JsonObject;
-import de.florianmichael.vialoadingbase.netty.NettyConstants;
 
 public class VLBViaInjector implements ViaInjector {
 

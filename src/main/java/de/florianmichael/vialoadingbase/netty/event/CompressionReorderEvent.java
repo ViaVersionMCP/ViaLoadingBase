@@ -15,14 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.florianmichael.vialoadingbase.netty;
+package de.florianmichael.vialoadingbase.netty.event;
 
-public class NettyConstants {
-
-    // Via Version input constants
-    public static final String HANDLER_DECODER_NAME = "via-decoder";
-    public static final String HANDLER_ENCODER_NAME = "via-encoder";
-
-    // Minecraft constants
-    public static String[] COMPRESSION_HANDLER_NAMES = new String[] { "decompress", "compress" };
+public class CompressionReorderEvent {
+    public final static CompressionReorderEvent INSTANCE = new CompressionReorderEvent();
 }
