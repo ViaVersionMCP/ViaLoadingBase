@@ -22,8 +22,10 @@ import com.viaversion.viaversion.exception.CancelCodecException;
 import com.viaversion.viaversion.exception.CancelDecoderException;
 import com.viaversion.viaversion.exception.CancelEncoderException;
 import com.viaversion.viaversion.util.PipelineUtil;
+import de.florianmichael.vialoadingbase.netty.event.CompressionReorderEvent;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.ByteToMessageCodec;
 
@@ -31,30 +33,30 @@ import java.util.List;
 
 public class VLBViaCodec extends ByteToMessageCodec<ByteBuf> {
 
-    protected final UserConnection user;
+    private final UserConnection info;
 
-    public VLBViaCodec(final UserConnection user) {
-        this.user = user;
+    public VLBViaCodec(final UserConnection info) {
+        this.info = info;
     }
 
     @Override
     protected void encode(ChannelHandlerContext ctx, ByteBuf in, ByteBuf out) throws Exception {
-        if (!this.user.checkOutgoingPacket()) throw CancelEncoderException.generate(null);
+        if (!this.info.checkOutgoingPacket()) throw CancelEncoderException.generate(null);
 
         out.writeBytes(in);
-        if (this.user.shouldTransformPacket()) {
-            this.user.transformOutgoing(out, CancelEncoderException::generate);
+        if (this.info.shouldTransformPacket()) {
+            this.info.transformOutgoing(out, CancelEncoderException::generate);
         }
     }
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        if (!this.user.checkIncomingPacket()) throw CancelDecoderException.generate(null);
+        if (!this.info.checkIncomingPacket()) throw CancelDecoderException.generate(null);
 
         final ByteBuf transformedBuf = ctx.alloc().buffer().writeBytes(in);
         try {
-            if (this.user.shouldTransformPacket()) {
-                this.user.transformIncoming(transformedBuf, CancelDecoderException::generate);
+            if (this.info.shouldTransformPacket()) {
+                this.info.transformIncoming(transformedBuf, CancelDecoderException::generate);
             }
             out.add(transformedBuf.retain());
         } finally {
@@ -84,5 +86,17 @@ public class VLBViaCodec extends ByteToMessageCodec<ByteBuf> {
                 throw e;
             }
         }
+    }
+
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if (evt.equals(CompressionReorderEvent.INSTANCE)) {
+            final ChannelPipeline pipeline = ctx.pipeline();
+
+            if (pipeline.names().indexOf(NettyConstants.MINECRAFT_DECOMPRESSION_NAME) > pipeline.names().indexOf(NettyConstants.VIA_CODEC_NAME)) {
+                pipeline.addAfter(NettyConstants.MINECRAFT_DECOMPRESSION_NAME, NettyConstants.VIA_CODEC_NAME, pipeline.remove(NettyConstants.VIA_CODEC_NAME));
+            }
+        }
+        super.userEventTriggered(ctx, evt);
     }
 }
