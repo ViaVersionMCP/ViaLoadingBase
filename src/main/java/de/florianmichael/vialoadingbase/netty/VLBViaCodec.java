@@ -1,6 +1,6 @@
 /*
- * This file is part of ViaLoadingBase - https://github.com/FlorianMichael/ViaLoadingBase
- * Copyright (C) 2023 FlorianMichael/EnZaXD and contributors
+ * This file is part of ViaProtocolHack - https://github.com/RaphiMC/ViaProtocolHack
+ * Copyright (C) 2023 RK_01/RaphiMC and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,6 +86,11 @@ public class VLBViaCodec extends ByteToMessageCodec<ByteBuf> {
                 throw e;
             }
         }
+    }
+
+    @Override
+    public boolean isSharable() {
+        return this.info != null;
     }
 
     @Override

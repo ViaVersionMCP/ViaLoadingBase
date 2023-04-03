@@ -60,12 +60,11 @@ final UserConnection user = new UserConnectionImpl(channel, true);
 
 new ProtocolPipelineImpl(user);
 
-channel.pipeline().addBefore("encoder", NettyConstants.HANDLER_ENCODER_NAME, new VLBViaEncodeHandler(user));
-channel.pipeline().addBefore("decoder", NettyConstants.HANDLER_DECODER_NAME, new VLBViaDecodeHandler(user));
+channel.pipeline().addBefore("decoder", NettyConstants.VIA_CODEC_NAME, new VLBViaCodec(user));
 ```
-In case your platform has compression, you can call the **PipelineReorderEvent** at the end of the compression code to correct the compression.
+In case your platform has compression, you can call the **CompressionReorderEvent** at the end of the compression code to correct the compression.
 ```java
-channel.pipeline().fireUserEventTriggered(new PipelineReorderEvent());
+channel.pipeline().fireUserEventTriggered(new CompressionReorderEvent());
 ```
 In order for ViaLoadingBase to find the compression handler in the pipeline, there is a String[] in the **NettyConstants** class that has **decompress, compress** by default. you can modify this field
 
