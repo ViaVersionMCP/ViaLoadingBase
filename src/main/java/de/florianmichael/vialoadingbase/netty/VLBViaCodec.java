@@ -90,7 +90,7 @@ public class VLBViaCodec extends ByteToMessageCodec<ByteBuf> {
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt.equals(CompressionReorderEvent.INSTANCE)) {
+        if (evt instanceof CompressionReorderEvent) {
             final ChannelPipeline pipeline = ctx.pipeline();
 
             if (pipeline.names().indexOf(NettyConstants.MINECRAFT_DECOMPRESSION_NAME) > pipeline.names().indexOf(NettyConstants.VIA_CODEC_NAME)) {

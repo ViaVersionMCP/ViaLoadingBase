@@ -18,5 +18,4 @@
 package de.florianmichael.vialoadingbase.netty.event;
 
 public class CompressionReorderEvent {
-    public final static CompressionReorderEvent INSTANCE = new CompressionReorderEvent();
 }
