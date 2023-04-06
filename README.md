@@ -60,7 +60,28 @@ final UserConnection user = new UserConnectionImpl(channel, true);
 
 new ProtocolPipelineImpl(user);
 
-channel.pipeline().addLast(new VLBPipeline(user));
+channel.pipeline().addLast(new VLBPipeline(user) {
+
+    @Override
+    public String getDecoderHandlerName() {
+        return "decoder";
+    }
+
+    @Override
+    public String getEncoderHandlerName() {
+        return "encoder";
+    }
+
+    @Override
+    public String getDecompressionHandlerName() {
+        return "decompress";
+    }
+
+    @Override
+    public String getCompressionHandlerName() {
+        return "compress";
+    }
+});
 ```
 In case your platform has compression, you can call the **CompressionReorderEvent** at the end of the compression code to correct the compression.
 ```java

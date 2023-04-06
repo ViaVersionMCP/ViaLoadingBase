@@ -70,8 +70,14 @@ public abstract class VLBPipeline extends ChannelInboundHandlerAdapter {
     }
 
     public abstract String getDecoderHandlerName();
+
     public abstract String getEncoderHandlerName();
 
     public abstract String getDecompressionHandlerName();
+
     public abstract String getCompressionHandlerName();
+
+    public UserConnection getInfo() {
+        return info;
+    }
 }
