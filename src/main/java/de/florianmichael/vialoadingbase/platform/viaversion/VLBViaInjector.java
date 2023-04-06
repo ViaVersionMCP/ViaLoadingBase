@@ -22,7 +22,7 @@ import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import com.viaversion.viaversion.libs.fastutil.ints.IntLinkedOpenHashSet;
 import com.viaversion.viaversion.libs.fastutil.ints.IntSortedSet;
 import com.viaversion.viaversion.libs.gson.JsonObject;
-import de.florianmichael.vialoadingbase.netty.NettyConstants;
+import de.florianmichael.vialoadingbase.netty.VLBPipeline;
 
 public class VLBViaInjector implements ViaInjector {
 
@@ -35,13 +35,13 @@ public class VLBViaInjector implements ViaInjector {
     }
 
     @Override
-    public String getEncoderName() {
-        return NettyConstants.VIA_CODEC_NAME;
+    public String getDecoderName() {
+        return VLBPipeline.HANDLER_DECODER_NAME;
     }
 
     @Override
-    public String getDecoderName() {
-        return NettyConstants.VIA_CODEC_NAME;
+    public String getEncoderName() {
+        return VLBPipeline.HANDLER_ENCODER_NAME;
     }
 
     @Override

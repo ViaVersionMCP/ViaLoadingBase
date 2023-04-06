@@ -60,7 +60,7 @@ final UserConnection user = new UserConnectionImpl(channel, true);
 
 new ProtocolPipelineImpl(user);
 
-channel.pipeline().addBefore("decoder", NettyConstants.VIA_CODEC_NAME, new VLBViaCodec(user));
+channel.pipeline().addLast(new VLBPipeline(user));
 ```
 In case your platform has compression, you can call the **CompressionReorderEvent** at the end of the compression code to correct the compression.
 ```java
