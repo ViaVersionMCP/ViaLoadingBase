@@ -36,12 +36,12 @@ public class VLBViaInjector implements ViaInjector {
 
     @Override
     public String getDecoderName() {
-        return VLBPipeline.HANDLER_DECODER_NAME;
+        return VLBPipeline.VIA_DECODER_HANDLER_NAME;
     }
 
     @Override
     public String getEncoderName() {
-        return VLBPipeline.HANDLER_ENCODER_NAME;
+        return VLBPipeline.VIA_ENCODER_HANDLER_NAME;
     }
 
     @Override

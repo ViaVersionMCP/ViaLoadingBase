@@ -25,8 +25,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 public abstract class VLBPipeline extends ChannelInboundHandlerAdapter {
-    public static final String HANDLER_DECODER_NAME = "via-decoder";
-    public static final String HANDLER_ENCODER_NAME = "via-encoder";
+    public static final String VIA_DECODER_HANDLER_NAME = "via-decoder";
+    public static final String VIA_ENCODER_HANDLER_NAME = "via-encoder";
 
     private final UserConnection info;
 
@@ -38,8 +38,8 @@ public abstract class VLBPipeline extends ChannelInboundHandlerAdapter {
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
         super.handlerAdded(ctx);
 
-        ctx.pipeline().addBefore(getDecoderHandlerName(), HANDLER_DECODER_NAME, this.createVLBViaDecodeHandler());
-        ctx.pipeline().addBefore(getEncoderHandlerName(), HANDLER_ENCODER_NAME, this.createVLBViaEncodeHandler());
+        ctx.pipeline().addBefore(getDecoderHandlerName(), VIA_DECODER_HANDLER_NAME, this.createVLBViaDecodeHandler());
+        ctx.pipeline().addBefore(getEncoderHandlerName(), VIA_ENCODER_HANDLER_NAME, this.createVLBViaEncodeHandler());
     }
 
     @Override
@@ -49,15 +49,15 @@ public abstract class VLBPipeline extends ChannelInboundHandlerAdapter {
         final int decoderIndex = ctx.pipeline().names().indexOf(getDecompressionHandlerName());
         if (decoderIndex == -1) return;
 
-        if (decoderIndex > ctx.pipeline().names().indexOf(HANDLER_DECODER_NAME)) {
-            final ChannelHandler decoder = ctx.pipeline().get(HANDLER_DECODER_NAME);
-            final ChannelHandler encoder = ctx.pipeline().get(HANDLER_ENCODER_NAME);
+        if (decoderIndex > ctx.pipeline().names().indexOf(VIA_DECODER_HANDLER_NAME)) {
+            final ChannelHandler decoder = ctx.pipeline().get(VIA_DECODER_HANDLER_NAME);
+            final ChannelHandler encoder = ctx.pipeline().get(VIA_ENCODER_HANDLER_NAME);
 
-            ctx.pipeline().remove(encoder);
             ctx.pipeline().remove(decoder);
+            ctx.pipeline().remove(encoder);
 
-            ctx.pipeline().addAfter(getDecompressionHandlerName(), HANDLER_DECODER_NAME, decoder);
-            ctx.pipeline().addAfter(getCompressionHandlerName(), HANDLER_ENCODER_NAME, encoder);
+            ctx.pipeline().addAfter(getDecompressionHandlerName(), VIA_DECODER_HANDLER_NAME, decoder);
+            ctx.pipeline().addAfter(getCompressionHandlerName(), VIA_ENCODER_HANDLER_NAME, encoder);
         }
     }
 
