@@ -18,6 +18,7 @@
 package de.florianmichael.vialoadingbase.netty;
 
 import com.viaversion.viaversion.api.connection.UserConnection;
+import de.florianmichael.vialoadingbase.netty.event.CompressionReorderEvent;
 import de.florianmichael.vialoadingbase.netty.handler.VLBViaDecodeHandler;
 import de.florianmichael.vialoadingbase.netty.handler.VLBViaEncodeHandler;
 import io.netty.channel.ChannelHandler;
@@ -46,18 +47,20 @@ public abstract class VLBPipeline extends ChannelInboundHandlerAdapter {
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         super.userEventTriggered(ctx, evt);
 
-        final int decoderIndex = ctx.pipeline().names().indexOf(getDecompressionHandlerName());
-        if (decoderIndex == -1) return;
+        if (evt instanceof CompressionReorderEvent) {
+            final int decoderIndex = ctx.pipeline().names().indexOf(getDecompressionHandlerName());
+            if (decoderIndex == -1) return;
 
-        if (decoderIndex > ctx.pipeline().names().indexOf(VIA_DECODER_HANDLER_NAME)) {
-            final ChannelHandler decoder = ctx.pipeline().get(VIA_DECODER_HANDLER_NAME);
-            final ChannelHandler encoder = ctx.pipeline().get(VIA_ENCODER_HANDLER_NAME);
+            if (decoderIndex > ctx.pipeline().names().indexOf(VIA_DECODER_HANDLER_NAME)) {
+                final ChannelHandler decoder = ctx.pipeline().get(VIA_DECODER_HANDLER_NAME);
+                final ChannelHandler encoder = ctx.pipeline().get(VIA_ENCODER_HANDLER_NAME);
 
-            ctx.pipeline().remove(decoder);
-            ctx.pipeline().remove(encoder);
+                ctx.pipeline().remove(decoder);
+                ctx.pipeline().remove(encoder);
 
-            ctx.pipeline().addAfter(getDecompressionHandlerName(), VIA_DECODER_HANDLER_NAME, decoder);
-            ctx.pipeline().addAfter(getCompressionHandlerName(), VIA_ENCODER_HANDLER_NAME, encoder);
+                ctx.pipeline().addAfter(getDecompressionHandlerName(), VIA_DECODER_HANDLER_NAME, decoder);
+                ctx.pipeline().addAfter(getCompressionHandlerName(), VIA_ENCODER_HANDLER_NAME, encoder);
+            }
         }
     }
 
