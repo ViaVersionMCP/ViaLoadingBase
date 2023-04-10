@@ -87,7 +87,7 @@ In case your platform has compression, you can call the **CompressionReorderEven
 ```java
 channel.pipeline().fireUserEventTriggered(new CompressionReorderEvent());
 ```
-In order for ViaLoadingBase to find the compression handler in the pipeline, there is a String[] in the **NettyConstants** class that has **decompress, compress** by default. you can modify this field
+ViaLoadingBase will use the provided handler names in the VLB Pipeline in order to do that.
 
 ### For a mcp based implementation you can have a look at the code in [ViaForge](https://github.com/FlorianMichael/ViaForge)
 
