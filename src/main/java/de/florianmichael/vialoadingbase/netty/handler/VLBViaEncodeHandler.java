@@ -30,23 +30,23 @@ import java.util.List;
 
 @ChannelHandler.Sharable
 public class VLBViaEncodeHandler extends MessageToMessageEncoder<ByteBuf> {
-    private final UserConnection info;
+    private final UserConnection user;
 
-    public VLBViaEncodeHandler(UserConnection info) {
-        this.info = info;
+    public VLBViaEncodeHandler(UserConnection user) {
+        this.user = user;
     }
 
     @Override
     protected void encode(final ChannelHandlerContext ctx, ByteBuf bytebuf, List<Object> out) throws Exception {
-        if (!info.checkOutgoingPacket()) throw CancelEncoderException.generate(null);
-        if (!info.shouldTransformPacket()) {
+        if (!user.checkOutgoingPacket()) throw CancelEncoderException.generate(null);
+        if (!user.shouldTransformPacket()) {
             out.add(bytebuf.retain());
             return;
         }
 
         ByteBuf transformedBuf = ctx.alloc().buffer().writeBytes(bytebuf);
         try {
-            info.transformOutgoing(transformedBuf, CancelEncoderException::generate);
+            user.transformOutgoing(transformedBuf, CancelEncoderException::generate);
 
             out.add(transformedBuf.retain());
         } finally {

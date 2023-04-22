@@ -26,8 +26,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 public abstract class VLBPipeline extends ChannelInboundHandlerAdapter {
-    public static final String VIA_DECODER_HANDLER_NAME = "via-decoder";
-    public static final String VIA_ENCODER_HANDLER_NAME = "via-encoder";
+    public final static String VIA_DECODER_HANDLER_NAME = "via-decoder";
+    public final static String VIA_ENCODER_HANDLER_NAME = "via-encoder";
 
     private final UserConnection info;
 
