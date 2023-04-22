@@ -29,10 +29,10 @@ public abstract class VLBPipeline extends ChannelInboundHandlerAdapter {
     public final static String VIA_DECODER_HANDLER_NAME = "via-decoder";
     public final static String VIA_ENCODER_HANDLER_NAME = "via-encoder";
 
-    private final UserConnection info;
+    private final UserConnection user;
 
-    public VLBPipeline(final UserConnection info) {
-        this.info = info;
+    public VLBPipeline(final UserConnection user) {
+        this.user = user;
     }
 
     @Override
@@ -65,11 +65,11 @@ public abstract class VLBPipeline extends ChannelInboundHandlerAdapter {
     }
 
     public VLBViaDecodeHandler createVLBViaDecodeHandler() {
-        return new VLBViaDecodeHandler(this.info);
+        return new VLBViaDecodeHandler(this.user);
     }
 
     public VLBViaEncodeHandler createVLBViaEncodeHandler() {
-        return new VLBViaEncodeHandler(this.info);
+        return new VLBViaEncodeHandler(this.user);
     }
 
     public abstract String getDecoderHandlerName();
@@ -80,7 +80,7 @@ public abstract class VLBPipeline extends ChannelInboundHandlerAdapter {
 
     public abstract String getCompressionHandlerName();
 
-    public UserConnection getInfo() {
-        return info;
+    public UserConnection getUser() {
+        return user;
     }
 }
