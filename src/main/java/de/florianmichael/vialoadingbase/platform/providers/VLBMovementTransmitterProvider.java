@@ -1,6 +1,6 @@
 /*
- * This file is part of ViaLoadingBase - https://github.com/FlorianMichael/ViaLoadingBase
- * Copyright (C) 2022-2023 FlorianMichael/EnZaXD and contributors
+ * This file is part of ViaProtocolHack - https://github.com/RaphiMC/ViaProtocolHack
+ * Copyright (C) 2023 RK_01/RaphiMC and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,20 +40,19 @@ public class VLBMovementTransmitterProvider extends MovementTransmitterProvider 
     @Override
     public void sendPlayer(UserConnection userConnection) {
         if (userConnection.getProtocolInfo().getState() != State.PLAY) return;
-
-        final int playerId = userConnection.getEntityTracker(Protocol1_9To1_8.class).clientEntityId();
-        if (playerId == -1) return; // Only apply if the player is initialized
+        if (userConnection.getEntityTracker(Protocol1_9To1_8.class).clientEntityId() == -1) return;
 
         final MovementTracker movementTracker = userConnection.get(MovementTracker.class);
         movementTracker.incrementIdlePacket();
+        final boolean onGround = movementTracker.isGround();
 
-        final PacketWrapper c03 = PacketWrapper.create(ServerboundPackets1_8.PLAYER_MOVEMENT, userConnection);
-        c03.write(Type.BOOLEAN, movementTracker.isGround());
-
-        try {
-            c03.scheduleSendToServer(Protocol1_9To1_8.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        userConnection.getChannel().eventLoop().submit(() -> {
+            try {
+                final PacketWrapper playerMovement = PacketWrapper.create(ServerboundPackets1_8.PLAYER_MOVEMENT, userConnection);
+                playerMovement.write(Type.BOOLEAN, onGround); // on ground
+                playerMovement.sendToServer(Protocol1_9To1_8.class);
+            } catch (Throwable ignored) {
+            }
+        });
     }
 }
