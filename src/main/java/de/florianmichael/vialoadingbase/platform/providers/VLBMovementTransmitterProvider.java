@@ -47,15 +47,13 @@ public class VLBMovementTransmitterProvider extends MovementTransmitterProvider 
         final MovementTracker movementTracker = userConnection.get(MovementTracker.class);
         movementTracker.incrementIdlePacket();
 
-        userConnection.getChannel().eventLoop().submit(() -> { // Sync
-            final PacketWrapper c03 = PacketWrapper.create(ServerboundPackets1_8.PLAYER_MOVEMENT, userConnection);
-            c03.write(Type.BOOLEAN, movementTracker.isGround());
+        final PacketWrapper c03 = PacketWrapper.create(ServerboundPackets1_8.PLAYER_MOVEMENT, userConnection);
+        c03.write(Type.BOOLEAN, movementTracker.isGround());
 
-            try {
-                c03.sendToServer(Protocol1_9To1_8.class);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        try {
+            c03.scheduleSendToServer(Protocol1_9To1_8.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
