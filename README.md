@@ -27,15 +27,16 @@ repositories {
 }
 
 dependencies {
-    implementation "com.viaversion:viaversion:4.7.0-23w13a-SNAPSHOT"
-    implementation "com.viaversion:viabackwards:4.7.0-23w13a-SNAPSHOT"
+    // https://ci.viaversion.com/
+    implementation "com.viaversion:viaversion:4.7.0-23w16a-SNAPSHOT"
+    implementation "com.viaversion:viabackwards:4.7.0-23w16a-SNAPSHOT"
     implementation "com.viaversion:viarewind-core:2.0.4-SNAPSHOT"
+    
     implementation "org.yaml:snakeyaml:2.0"
     
     implementation "com.github.FlorianMichael:ViaLoadingBase:4.4.8" // https://jitpack.io/#FlorianMichael/ViaLoadingBase
     
     // You also need Netty, Guava and Log4j in your class path, but they should be there if your project is based on Minecraft.
-    implementation "org.yaml:snakeyaml:2.0"
     implementation "com.google.guava:guava:31.1-jre"
     implementation "io.netty:netty-all:5.0.0.Alpha2"
     implementation "org.apache.logging.log4j:log4j-core:2.19.0"
