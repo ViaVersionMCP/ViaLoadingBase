@@ -3,7 +3,9 @@ plugins {
     id "net.kyori.blossom" version "1.2.0"
 }
 
+archivesBaseName = "ViaLoadingBase"
 version = "4.4.8"
+group = "de.florianmichael"
 
 repositories {
     maven {
@@ -22,6 +24,12 @@ blossom {
     replaceToken("\${vialoadingbase_version}", project.version, "src/main/java/de/florianmichael/vialoadingbase/ViaLoadingBase.java")
 }
 
+java {
+    withSourcesJar()
+
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
 
 dependencies {
     // Via Version
@@ -33,4 +41,12 @@ dependencies {
     compileOnly("com.google.guava:guava:31.1-jre")
     compileOnly("io.netty:netty-all:5.0.0.Alpha2")
     compileOnly("org.apache.logging.log4j:log4j-core:2.19.0")
+}
+
+jar {
+    from("LICENSE") {
+        rename {
+            "${it}_${project.archivesBaseName}"
+        }
+    }
 }
