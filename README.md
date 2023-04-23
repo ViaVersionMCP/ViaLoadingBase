@@ -10,9 +10,9 @@ If you encounter any issues, please report them on the
 If you just want to talk or need help with ViaLoadingBase feel free to join my
 [Discord](https://discord.gg/BwWhCHUKDf).
 
-## Projects where this is used:
+## Projects implementing ViaLoadingBase
 1. [ViaForge](https://github.com/FlorianMichael/ViaForge): Clientside ViaVersion for Forge
-2. [ViaFabricPlus](https://github.com/FlorianMichael/ViaFabricPlus): Clientside ViaVersion, ViaLegacy, ViaBedrock and ViaAprilFools implementation with clientside fixes for Fabric
+2. [ViaFabricPlus](https://github.com/FlorianMichael/ViaFabricPlus): Fabric mod to connect to EVERY Minecraft server version (Release, Beta, Alpha, Classic, Snapshots, Bedrock) with QoL fixes to the gameplay
 
 ## Add this to your own project
 build.gradle
@@ -30,8 +30,15 @@ dependencies {
     implementation "com.viaversion:viaversion:4.7.0-23w13a-SNAPSHOT"
     implementation "com.viaversion:viabackwards:4.7.0-23w13a-SNAPSHOT"
     implementation "com.viaversion:viarewind-core:2.0.4-SNAPSHOT"
+    implementation "org.yaml:snakeyaml:2.0"
     
-    implementation "com.github.FlorianMichael:ViaLoadingBase:a660bf00d5" // https://jitpack.io/#FlorianMichael/ViaLoadingBase
+    implementation "com.github.FlorianMichael:ViaLoadingBase:4.4.8" // https://jitpack.io/#FlorianMichael/ViaLoadingBase
+    
+    // You also need Netty, Guava and Log4j in your class path, but they should be there if your project is based on Minecraft.
+    implementation "org.yaml:snakeyaml:2.0"
+    implementation "com.google.guava:guava:31.1-jre"
+    implementation "io.netty:netty-all:5.0.0.Alpha2"
+    implementation "org.apache.logging.log4j:log4j-core:2.19.0"
 }
 ```
 
@@ -43,7 +50,7 @@ A `1.8.x` Minecraft client for example would need `ViaVersion + ViaBackwards + V
 A `1.12.x` Minecraft client for example would need `ViaVersion + ViaBackwards`. <br>
 A `1.19.x` Minecraft client, for example, would need `ViaVersion`. <br>
 
-## Example implementation:
+## Example implementation
 ```java
 public void init() { // Basic code to load all platforms which are in the class path
     ViaLoadingBase.ViaLoadingBaseBuilder.
@@ -91,7 +98,7 @@ ViaLoadingBase will use the provided handler names in the VLB Pipeline in order 
 
 ### For a mcp based implementation you can have a look at the code in [ViaForge](https://github.com/FlorianMichael/ViaForge)
 
-## API examples:
+## API examples
 ViaLoadingBase also offers a system to compare the target version with other versions:
 ```java
 if (ViaLoadingBase.getInstance().getTargetVersion().isOlderThan(ProtocolVersion.v1_8)) {
@@ -126,8 +133,7 @@ if (allVersionsAbove1_8.contains(ProtocolVersion.v1_10)) {
 ```
 The class also has a toString() method that automatically formats the range
 
-## How to load platforms:
-
+## How to load platforms
 ```java
 public class ExampleImplementation {
 
