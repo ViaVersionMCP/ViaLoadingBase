@@ -20,9 +20,9 @@ package de.florianmichael.vialoadingbase.platform.viaversion;
 import com.viaversion.viaversion.commands.ViaCommandHandler;
 import de.florianmichael.vialoadingbase.command.impl.LeakDetectSubCommand;
 
-public class VLBCommandHandler extends ViaCommandHandler {
+public class VLBViaCommandHandler extends ViaCommandHandler {
 
-    public VLBCommandHandler() {
+    public VLBViaCommandHandler() {
         super();
         this.registerVLBDefaults();
     }
