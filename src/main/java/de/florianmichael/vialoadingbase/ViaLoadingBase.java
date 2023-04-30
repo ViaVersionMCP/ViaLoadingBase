@@ -27,6 +27,7 @@ import de.florianmichael.vialoadingbase.model.Platform;
 import de.florianmichael.vialoadingbase.model.ComparableProtocolVersion;
 import de.florianmichael.vialoadingbase.platform.ViaBackwardsPlatformImpl;
 import de.florianmichael.vialoadingbase.platform.ViaRewindPlatformImpl;
+import de.florianmichael.vialoadingbase.platform.viaversion.VLBCommandHandler;
 import de.florianmichael.vialoadingbase.platform.viaversion.VLBViaProviders;
 import de.florianmichael.vialoadingbase.platform.ViaVersionPlatformImpl;
 import de.florianmichael.vialoadingbase.platform.viaversion.VLBViaInjector;
@@ -105,7 +106,13 @@ public class ViaLoadingBase {
         this.targetProtocolVersion = this.nativeProtocolVersion;
 
         final ViaVersionPlatformImpl viaVersionPlatform = new ViaVersionPlatformImpl(ViaLoadingBase.LOGGER);
-        final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().injector(new VLBViaInjector()).loader(new VLBViaProviders()).platform(viaVersionPlatform);
+        final ViaManagerImpl.ViaManagerBuilder builder = ViaManagerImpl.builder().
+                platform(viaVersionPlatform).
+                loader(new VLBViaProviders()).
+                injector(new VLBViaInjector()).
+                commandHandler(new VLBCommandHandler())
+                ;
+
         if (this.managerBuilderConsumer != null) this.managerBuilderConsumer.accept(builder);
 
         Via.init(builder.build());
