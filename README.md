@@ -1,18 +1,13 @@
 # ViaLoadingBase
 Universal ViaVersion, ViaBackwards and ViaRewind standalone implementation <br>
 <br>
-This library is mainly designed for clientside implementations, it is also very abstract and doesn't give the <br>
-implementors much room to change ViaVersion, for a platform with less abstraction you can look at [ViaProtocolHack](https://github.com/RaphiMC/ViaProtocolHack).
+### This library is outdated and only maintained to be used in [ViaMCP](https://github.com/FlorianMichael/ViaMCP), please use [ViaLoader](https://github.com/ViaVersion/ViaLoader)
 
 ## Contact
 If you encounter any issues, please report them on the
 [issue tracker](https://github.com/FlorianMichael/ViaLoadingBase/issues).  
 If you just want to talk or need help with ViaLoadingBase feel free to join my
 [Discord](https://discord.gg/BwWhCHUKDf).
-
-## Projects implementing ViaLoadingBase
-1. [ViaForge](https://github.com/FlorianMichael/ViaForge): Clientside ViaVersion for Forge
-2. [ViaFabricPlus](https://github.com/FlorianMichael/ViaFabricPlus): Fabric mod to connect to EVERY Minecraft server version (Release, Beta, Alpha, Classic, Snapshots, Bedrock) with QoL fixes to the gameplay
 
 ## Add this to your own project
 build.gradle
@@ -28,13 +23,13 @@ repositories {
 
 dependencies {
     // https://ci.viaversion.com/
-    implementation "com.viaversion:viaversion:4.7.0-23w17a-SNAPSHOT"
-    implementation "com.viaversion:viabackwards:4.7.0-23w17a-SNAPSHOT"
-    implementation "com.viaversion:viarewind-core:2.0.4-SNAPSHOT"
+    implementation "com.viaversion:viaversion-common:4.9.0-23w45a-SNAPSHOT"
+    implementation "com.viaversion:viabackwards-common:4.9.0-23w45a-SNAPSHOT"
+    implementation "com.viaversion:viarewind-common:3.0.4-SNAPSHOT"
     
-    implementation "org.yaml:snakeyaml:2.0"
+    implementation "org.yaml:snakeyaml:2.2"
     
-    implementation "com.github.FlorianMichael:ViaLoadingBase:4.5.0" // https://jitpack.io/#FlorianMichael/ViaLoadingBase
+    implementation "com.github.FlorianMichael:ViaLoadingBase:4.6.0" // https://jitpack.io/#FlorianMichael/ViaLoadingBase
     
     // You also need Netty, Guava and Log4j in your class path, but they should be there if your project is based on Minecraft.
     implementation "com.google.guava:guava:31.1-jre"
