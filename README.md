@@ -23,9 +23,9 @@ repositories {
 
 dependencies {
     // https://ci.viaversion.com/
-    implementation "com.viaversion:viaversion-common:4.9.0-23w45a-SNAPSHOT"
-    implementation "com.viaversion:viabackwards-common:4.9.0-23w45a-SNAPSHOT"
-    implementation "com.viaversion:viarewind-common:3.0.4-SNAPSHOT"
+    implementation "com.viaversion:viaversion-common:4.9.0-24w09a-SNAPSHOT"
+    implementation "com.viaversion:viabackwards-common:4.9.0-24w09a-SNAPSHOT"
+    implementation "com.viaversion:viarewind-common:3.0.7-24w09a-SNAPSHOT"
     
     implementation "org.yaml:snakeyaml:2.2"
     
@@ -97,19 +97,19 @@ ViaLoadingBase will use the provided handler names in the VLB Pipeline in order 
 ## API examples
 ViaLoadingBase also offers a system to compare the target version with other versions:
 ```java
-if (ViaLoadingBase.getInstance().getTargetVersion().isOlderThan(ProtocolVersion.v1_8)) {
+if (ViaLoadingBase.getInstance().getTargetVersion().olderThan(ProtocolVersion.v1_8)) {
     // Code is executed when the target version is < than 1.8
 }
-if (ViaLoadingBase.getInstance().getTargetVersion().isOlderThanOrEqualTo(ProtocolVersion.v1_16_4)) {
+if (ViaLoadingBase.getInstance().getTargetVersion().olderThanOrEqualTo(ProtocolVersion.v1_16_4)) {
     // Code is executed when the target version is < = than 1.16.4
 }
-if (ViaLoadingBase.getInstance().getTargetVersion().isNewerThan(ProtocolVersion.v1_12_2)) {
+if (ViaLoadingBase.getInstance().getTargetVersion().newerThan(ProtocolVersion.v1_12_2)) {
     // Code is executed when the target version is > than 1.12.2
 }
-if (ViaLoadingBase.getInstance().getTargetVersion().isNewerThanOrEqualTo(ProtocolVersion.v1_14_4)) {
+if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_14_4)) {
     // Code is executed when the target version is > = than 1.14.4
 }
-if (ViaLoadingBase.getInstance().getTargetVersion().isEqualTo(ProtocolVersion.v1_10)) {
+if (ViaLoadingBase.getInstance().getTargetVersion().equalTo(ProtocolVersion.v1_10)) {
     // Code is executed when the target version is equal to 1.10
 }
 ```

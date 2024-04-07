@@ -33,9 +33,9 @@ java {
 
 dependencies {
     // Via Version
-    compileOnly("com.viaversion:viaversion-common:4.10.0-23w51b-SNAPSHOT")
-    compileOnly("com.viaversion:viabackwards-common:4.10.0-23w51b-SNAPSHOT")
-    compileOnly("com.viaversion:viarewind-common:3.0.6-SNAPSHOT")
+    compileOnly("com.viaversion:viaversion-common:4.10.0-24w09a-SNAPSHOT")
+    compileOnly("com.viaversion:viabackwards-common:4.10.0-24w09a-SNAPSHOT")
+    compileOnly("com.viaversion:viarewind-common:3.0.7-24w09a-SNAPSHOT")
 
     compileOnly("org.yaml:snakeyaml:2.2")
     compileOnly("com.google.guava:guava:31.1-jre")
