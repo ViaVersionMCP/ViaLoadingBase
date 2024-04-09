@@ -53,7 +53,7 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UserConnection> {
     }
 
     public static List<ProtocolVersion> createVersionList() {
-        final List<ProtocolVersion> versions = new ArrayList<>(ProtocolVersion.getProtocols()).stream().filter(protocolVersion -> protocolVersion != ProtocolVersion.unknown && ProtocolVersion.getProtocols().indexOf(protocolVersion) >= 7).collect(Collectors.toList());
+        final List<ProtocolVersion> versions = new ArrayList<>(ProtocolVersion.getProtocols()).stream().filter(version -> version.newerThanOrEqualTo(ProtocolVersion.v1_8)).collect(Collectors.toList());
         Collections.reverse(versions);
         return versions;
     }
@@ -143,7 +143,7 @@ public class ViaVersionPlatformImpl implements ViaPlatform<UserConnection> {
 
     @Override
     public String getPlatformName() {
-        return "ViaLoadingBase by FlorianMichael";
+        return "ViaLoadingBase";
     }
 
     @Override
