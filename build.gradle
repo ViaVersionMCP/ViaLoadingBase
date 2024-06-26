@@ -4,7 +4,7 @@ plugins {
 }
 
 archivesBaseName = "ViaLoadingBase"
-version = "4.6.0"
+version = "4.7.0"
 group = "de.florianmichael"
 
 repositories {
@@ -33,9 +33,9 @@ java {
 
 dependencies {
     // Via Version
-    compileOnly("com.viaversion:viaversion-common:4.10.0-24w09a-SNAPSHOT")
-    compileOnly("com.viaversion:viabackwards-common:4.10.0-24w09a-SNAPSHOT")
-    compileOnly("com.viaversion:viarewind-common:3.0.7-24w09a-SNAPSHOT")
+    compileOnly("com.viaversion:viaversion-common:5.0.2-SNAPSHOT")
+    compileOnly("com.viaversion:viabackwards-common:5.0.2-SNAPSHOT")
+    compileOnly("com.viaversion:viarewind-common:4.0.1-SNAPSHOT")
 
     compileOnly("org.yaml:snakeyaml:2.2")
     compileOnly("com.google.guava:guava:31.1-jre")

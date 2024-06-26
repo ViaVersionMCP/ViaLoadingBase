@@ -23,13 +23,13 @@ repositories {
 
 dependencies {
     // https://ci.viaversion.com/
-    implementation "com.viaversion:viaversion-common:4.9.0-24w09a-SNAPSHOT"
-    implementation "com.viaversion:viabackwards-common:4.9.0-24w09a-SNAPSHOT"
-    implementation "com.viaversion:viarewind-common:3.0.7-24w09a-SNAPSHOT"
+    implementation "com.viaversion:viaversion-common:5.0.2-SNAPSHOT"
+    implementation "com.viaversion:viabackwards-common:5.0.2-SNAPSHOT"
+    implementation "com.viaversion:viarewind-common:4.0.1-SNAPSHOT"
     
     implementation "org.yaml:snakeyaml:2.2"
     
-    implementation "com.github.FlorianMichael:ViaLoadingBase:4.6.0" // https://jitpack.io/#FlorianMichael/ViaLoadingBase
+    implementation "com.github.FlorianMichael:ViaLoadingBase:4.7.0" // https://jitpack.io/#FlorianMichael/ViaLoadingBase
     
     // You also need Netty, Guava and Log4j in your class path, but they should be there if your project is based on Minecraft.
     implementation "com.google.guava:guava:31.1-jre"
@@ -152,5 +152,3 @@ public class ExampleImplementation {
     }
 }
 ```
-
-For some example implementations and applications you can have a look at the code in [ViaFabricPlus](https://github.com/FlorianMichael/ViaFabricPlus) 
